@@ -1,59 +1,18 @@
 %lex
 
-%{
-#include "y.tab.h"
-
-#include "compiler.h"
-
-static int tail;
-%}
-
-%X TAIL
-
 %%
 
 [ \t\n]+ ;
 
-\{[^}]+\} {
-	char *text = &yytext[1];
-	int leng = yyleng - 2;
+\{[^}]+\} return "CODE";
 
-	yylval.text = chkptr(strndup(text, leng), "strndup");
-	return CODE;
-}
+\$\$[ \t\n]* return "MARK";
 
-<TAIL>(.|\n)* {
-	yylval.text = STRDUP(yytext);
-	return CODE;
-}
+[A-Za-z][A-Za-z0-9]* return "NAME";
 
-\$\$[ \t\n]* {
-	if (tail)
-		BEGIN TAIL;
-
-	++tail;
-	return MARK;
-}
-
-[A-Za-z][A-Za-z0-9]* {
-	yylval.text = STRDUP(yytext);
-	return NAME;
-}
-
-. return yytext[0];
+. return yytext;
 
 /lex
-
-%{
-#include "compiler.h"
-%}
-
-%union {
-	char *text;
-	struct tree *tree;
-	struct list *list;
-	struct node *node;
-}
 
 %token MARK NAME CODE
 
@@ -95,11 +54,3 @@ tail : /* empty */
      | MARK
      | MARK CODE {fprintf(inc, "%s\n", $2); free($2);}
      ;
-
-%%
-
-int yyerror(const char *msg)
-{
-	fprintf(stderr, "%s\n", msg);
-	return 0;
-}
