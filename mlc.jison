@@ -19,7 +19,7 @@
 
 %%
 
-text : defs term {console.log($1, $2);}
+text : defs term {return {macros: $1, term: $2};}
      ;
 defs : /* empty */ {$$ = {};}
      | defs NAME '=' term ';' {$1[$2] = $4; $$ = $1;}

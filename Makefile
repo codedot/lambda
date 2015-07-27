@@ -2,7 +2,7 @@ JISON = node_modules/.bin/jison
 
 all: $(JISON)
 	$(MAKE) parsers
-	node mlc.js example.mlc
+	node parse.js example.mlc
 
 parsers: mlc.js inet.js
 
