@@ -2,36 +2,37 @@
 
 %%
 
----.* ;
+\s+ /* skip whitespace */
 
-[ \t\n]+ ;
+\w+\b return "NAME";
 
-[A-Za-z][A-Za-z0-9]* return NAME;
-
-. return yytext;
+"=" return "=";
+";" return ";";
+"," return ",";
+":" return ":";
+"(" return "(";
+")" return ")";
 
 /lex
 
-%token <name> NAME
-
-%type <expr> term appl abst atom
+%token NAME
 
 %%
 
-text : defs term {output($2);}
+text : defs term {console.log($1, $2);}
      ;
-defs : /* empty */
-     | defs NAME '=' term ';' {bind($2, $4);}
+defs : /* empty */ {$$ = {};}
+     | defs NAME '=' term ';' {$1[$2] = $4; $$ = $1;}
      ;
 term : appl
      | abst
      ;
-abst : NAME ',' abst {$$ = mkabst($1, $3);}
-     | NAME ':' term {$$ = mkabst($1, $3);}
+abst : NAME ',' abst {$$ = {}; $$[$1] = $3;}
+     | NAME ':' term {$$ = {}; $$[$1] = $3;}
      ;
 appl :      atom
-     | appl atom {$$ = mkappl($1, $2);}
+     | appl atom {$$ = [$1, $2];}
      ;
 atom : '(' term ')' {$$ = $2;}
-     |     NAME     {$$ = mkname($1);}
+     |     NAME     {$$ = yytext;}
      ;

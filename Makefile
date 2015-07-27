@@ -1,8 +1,10 @@
 JISON = node_modules/.bin/jison
 
 all: $(JISON)
-	$(JISON) inet.jison
-	$(JISON) mlc.jison
+	$(MAKE) parsers
+	node mlc.js example.mlc
+
+parsers: mlc.js inet.js
 
 $(JISON):
 	npm install jison
@@ -10,3 +12,10 @@ $(JISON):
 clean:
 	-rm -fr node_modules
 	-rm -f inet.js mlc.js
+
+.POSIX:
+
+.SUFFIXES: .js .jison
+
+.jison.js:
+	$(JISON) $<
