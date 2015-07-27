@@ -21,8 +21,8 @@
 
 text : defs term {return {macros: $1, term: $2};}
      ;
-defs : /* empty */ {$$ = {};}
-     | defs NAME '=' term ';' {$1[$2] = $4; $$ = $1;}
+defs : /* empty */ {$$ = [];}
+     | defs NAME '=' term ';' {$1.unshift({id: $2, def: $4}); $$ = $1;}
      ;
 term : appl
      | abst
