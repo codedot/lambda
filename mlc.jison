@@ -27,12 +27,12 @@ defs : /* empty */ {$$ = [];}
 term : appl
      | abst
      ;
-abst : NAME ',' abst {$$ = {}; $$[$1] = $3;}
-     | NAME ':' term {$$ = {}; $$[$1] = $3;}
+abst : NAME ',' abst {$$ = {node: "abst", var: $1, body: $3};}
+     | NAME ':' term {$$ = {node: "abst", var: $1, body: $3};}
      ;
 appl :      atom
-     | appl atom {$$ = [$1, $2];}
+     | appl atom {$$ = {node: "appl", left: $1, right: $2};}
      ;
 atom : '(' term ')' {$$ = $2;}
-     |     NAME     {$$ = yytext;}
+     |     NAME     {$$ = {node: "atom", name: yytext};}
      ;
