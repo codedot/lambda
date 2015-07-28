@@ -5,6 +5,7 @@ var parser = new mlc.Parser();
 var src = fs.readFileSync(process.argv[2], "utf8");
 var dict = parser.parse(src);
 var macros = dict.macros;
+var term = dict.term;
 
 var i;
 
@@ -41,12 +42,24 @@ function obj2mlc(obj)
 	}
 }
 
-console.log(obj2mlc(dict.term) + ", where:");
+console.log(obj2mlc(term) + ", where:\n");
 
 for (i = 0; i < macros.length; i++) {
 	var macro = macros[i];
 	var id = macro.id;
 	var def = macro.def;
 
+	term = {
+		node: "appl",
+		left: {
+			node: "abst",
+			var: id,
+			body: term
+		},
+		right: def
+	};
+
 	console.log(id + " = " + obj2mlc(def) + ";");
 }
+
+console.log("\n" + obj2mlc(term));
