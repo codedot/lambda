@@ -9,12 +9,37 @@ var term = dict.term;
 
 var i;
 
+function markfv(obj, bv)
+{
+	var node = obj.node;
+
+	if (!bv)
+		bv = {};
+
+	if ("atom" == node) {
+		if (obj.name in bv)
+			obj.free = false;
+		else
+			obj.free = true;
+	} else if ("abst" == node) {
+		bv[obj.var] = true;
+		markfv(obj.body, bv);
+		delete bv[obj.var];
+	} else if ("appl" == node) {
+		markfv(obj.left, bv);
+		markfv(obj.right, bv);
+	}
+}
+
 function obj2mlc(obj)
 {
 	var node = obj.node;
 
-	if ("atom" == node)
-		return obj.name;
+	if ("atom" == node) {
+		var mark = obj.free ? "*" : "";
+
+		return obj.name + mark;
+	}
 
 	if ("abst" == node) {
 		var body = obj2mlc(obj.body);
@@ -42,6 +67,7 @@ function obj2mlc(obj)
 	}
 }
 
+markfv(term);
 console.log(obj2mlc(term) + ", where:\n");
 
 for (i = 0; i < macros.length; i++) {
@@ -59,7 +85,9 @@ for (i = 0; i < macros.length; i++) {
 		right: def
 	};
 
+	markfv(def);
 	console.log(id + " = " + obj2mlc(def) + ";");
 }
 
+markfv(term);
 console.log("\n" + obj2mlc(term));
