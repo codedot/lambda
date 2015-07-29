@@ -9,6 +9,43 @@ var term = dict.term;
 
 var i;
 
+function merge(left, right)
+{
+	var dict = {};
+	var prop;
+
+	for (prop in left)
+		dict[prop] = left[prop];
+
+	for (prop in right)
+		dict[prop] = right[prop];
+
+	return dict;
+}
+
+function getfv(obj, fv)
+{
+	var node = obj.node;
+
+	if ("atom" == node) {
+		var fv = {};
+
+		fv[obj.name] = true;
+		return fv;
+	} else if ("abst" == node) {
+		var fv = getfv(obj.body);
+
+		delete fv[obj.var];
+		return fv;
+	} else if ("appl" == node) {
+		var left = getfv(obj.left);
+		var right = getfv(obj.right);
+		var fv = merge(left, right);
+
+		return fv;
+	}
+}
+
 function markfv(obj, bv)
 {
 	var node = obj.node;
@@ -68,7 +105,7 @@ function obj2mlc(obj)
 }
 
 markfv(term);
-console.log(obj2mlc(term) + ", where:\n");
+console.log(obj2mlc(term) + ", where:", getfv(term));
 
 for (i = 0; i < macros.length; i++) {
 	var macro = macros[i];
@@ -86,8 +123,8 @@ for (i = 0; i < macros.length; i++) {
 	};
 
 	markfv(def);
-	console.log(id + " = " + obj2mlc(def) + ";");
+	console.log(id + " = " + obj2mlc(def) + ";", getfv(def));
 }
 
 markfv(term);
-console.log("\n" + obj2mlc(term));
+console.log(obj2mlc(term), getfv(term));
