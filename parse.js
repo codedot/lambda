@@ -9,6 +9,18 @@ var term = dict.term;
 
 var i;
 
+function getcap(left, right)
+{
+	var dict = {};
+	var prop;
+
+	for (prop in left)
+		if (prop in right)
+			dict[prop] = left[prop];
+
+	return dict;
+}
+
 function merge(left, right)
 {
 	var dict = {};
