@@ -1,3 +1,7 @@
+var head = "${\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nchar *var(int fresh);\nchar *place(char *buf, const char *format, char *str);\n\n#define ABST(BUF, STR) place((BUF), \"%s: %%s\", (STR))\n#define APPL(BUF, STR) place((BUF), \"%s (%%s)\", (STR))\n#define ATOM(BUF, STR) place((BUF), \"%s\", (STR))\n}$\n\n\\print {\n\t/* Output results of read-back. */\n\tputs(RVAL);\n\tfree(RVAL);\n} \\atom;\n\n\\read[a] {\n\t/* Unshare variable. */\n} \\share[\\copy(b, \\read_{LVAL}(a)), b];\n\n\\read[a] {\n\t/* Initiate application. */\n} \\apply[\\lambda(b, \\read_{LVAL}(a)), b];\n\n\\read[a] {\n\t/* Read back abstraction. */\n} \\lambda[\\atom_{var(1)}, \\read_{ABST(LVAL, var(0))}(a)];\n\n\\lambda[\\read_{APPL(strdup(\"%s\"), RVAL)}(a), a] {\n\t/* Read back application. */\n} \\atom;\n\n\\read[\\atom_{ATOM(LVAL, RVAL)}] {\n\t/* Read back an atom. */\n} \\atom;\n\n\\copy[\\atom_{RVAL}, \\atom_{strdup(RVAL)}] {\n\t/* Copy an atom. */\n} \\atom;\n\n\\dup[\\atom_{RVAL}, \\atom_{strdup(RVAL)}] {\n\t/* Duplicate an atom. */\n} \\atom;\n\n\\lambda[a, b] {\n\t/* Unshare variable. */\n} \\share[\\copy(c, \\lambda(a, b)), c];\n\n\\lambda[a, b] {\n\t/* Initiate application. */\n} \\apply[\\lambda(c, \\lambda(a, b)), c];\n\n\\lambda[a, b] {\n\t/* Apply a closed term. */\n} \\lambda[a, b];\n\n\\copy[a, b] {\n\t/* Unshare variable. */\n} \\share[\\copy(c, \\copy(a, b)), c];\n\n\\copy[a, b] {\n\t/* Initiate application. */\n} \\apply[\\lambda(c, \\copy(a, b)), c];\n\n\\copy[\\lambda(a, b), \\lambda(c, d)] {\n\t/* Initiate copy of a closed term. */\n} \\lambda[\\dup(a, c), \\dup(b, d)];\n\n\\dup[\\amb(a, \\share(b, c), c), \\amb(d, \\share(e, f), f)] {\n\t/* Duplicate sharing. */\n} \\share[\\dup(b, e), \\dup(a, d)];\n\n\\dup[\\apply(a, b), \\apply(c, d)] {\n\t/* Duplicate application. */\n} \\apply[\\dup(a, c), \\dup(b, d)];\n\n\\dup[\\lambda(a, b), \\lambda(c, d)] {\n\t/* Duplicate abstraction. */\n} \\lambda[\\dup(a, c), \\dup(b, d)];\n\n\\dup[a, b] {\n\t/* Finish duplication. */\n} \\dup[a, b];\n\n\\erase {\n\t/* Erase an atom. */\n\tfree(RVAL);\n} \\atom;\n\n\\erase {\n\t/* Erase sharing. */\n} \\share[a, a];\n\n\\erase {\n\t/* Erase application. */\n} \\apply[\\erase, \\erase];\n\n\\erase {\n\t/* Erase abstraction. */\n} \\lambda[\\erase, \\erase];\n\n\\erase {\n\t/* Erase copy initiator. */\n} \\copy[\\erase, \\erase];\n\n\\erase {\n\t/* Erase duplicator. */\n} \\dup[\\erase, \\erase];\n\n\\erase {\n\t/* Finish erasing. */\n} \\erase;\n\n$$\n";
+
+var tail = "\n$$\n\nchar *var(int fresh)\n{\n\tstatic int id;\n\n\tchar buf[BUFSIZ];\n\n\tif (fresh)\n\t\t++id;\n\n\tsprintf(buf, \"v%d\", id);\n\treturn strdup(buf);\n}\n\nchar *place(char *buf, const char *format, char *str)\n{\n\tsize_t size = strlen(format) + strlen(str);\n\tchar *sub = malloc(size);\n\tchar *result = malloc(strlen(buf) + size);\n\n\tsprintf(sub, format, str);\n\tsprintf(result, buf, sub);\n\n\tfree(buf);\n\tfree(str);\n\tfree(sub);\n\treturn result;\n}\n\ninagent *inaux(void *aux, void *offline)\n{\n\tfprintf(stderr, \"inaux: unexpected call\\n\");\n\texit(EXIT_FAILURE);\n\treturn NULL;\n}\n\nint main(int argc, char *argv[])\n{\n\tindebug = (1 < argc);\n\tinteract();\n\treturn 0;\n}";
+
 var mlc = require("./mlc");
 var fs = require("fs");
 
@@ -125,7 +129,7 @@ function mktwins(left, right)
 function psi(shared)
 {
 	var list = [];
-	var template = "%s = \\amb(%s, \share(%s, %s), %s)";
+	var template = "%s = \\amb(%s, \\share(%s, %s), %s)";
 	var atom;
 
 	for (atom in shared) {
@@ -255,8 +259,6 @@ function alpha(obj, bv)
 	return obj;
 }
 
-console.log(obj2mlc(term) + ", where:\n");
-
 for (i = 0; i < macros.length; i++) {
 	var macro = macros[i];
 	var id = macro.id;
@@ -271,15 +273,16 @@ for (i = 0; i < macros.length; i++) {
 		},
 		right: def
 	};
-
-	console.log(id + " = " + obj2mlc(def) + ";");
 }
 
 term = alpha(term);
-console.log("\n" + obj2mlc(term));
 
-console.log("\n\\read_{strdup(\"%s\")}(\\print) = root;");
+console.log(head);
+
+console.log("\\read_{strdup(\"%s\")}(\\print) = root;");
 
 eqns = gamma(term, "root");
 for (i = 0; i < eqns.length; i++)
 	console.log(eqns[i] + ";");
+
+console.log(tail);
