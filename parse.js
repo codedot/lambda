@@ -47,7 +47,9 @@ function getfv(obj, fv)
 	if ("atom" == node) {
 		var fv = {};
 
-		fv[obj.name] = true;
+		if (!obj.free)
+			fv[obj.name] = true;
+
 		return fv;
 	} else if ("abst" == node) {
 		var fv = getfv(obj.body);
