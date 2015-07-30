@@ -277,7 +277,7 @@ for (i = 0; i < macros.length; i++) {
 
 term = alpha(term);
 
-console.log(head);
+console.log("%s", head);
 
 console.log("\\read_{strdup(\"%s\")}(\\print) = root;");
 
@@ -285,4 +285,4 @@ eqns = gamma(term, "root");
 for (i = 0; i < eqns.length; i++)
 	console.log(eqns[i] + ";");
 
-console.log(tail);
+console.log("%s", tail);
