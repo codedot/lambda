@@ -92,11 +92,14 @@ function obj2mlc(obj)
 	}
 }
 
-function getwire()
+function getwire(hint)
 {
+	if (!hint)
+		hint = "";
+
 	++lastwire;
 
-	return "w" + lastwire.toFixed(0);
+	return "w" + lastwire.toFixed(0) + hint;
 }
 
 function mktwins(left, right)
@@ -107,8 +110,8 @@ function mktwins(left, right)
 	var atom;
 
 	for (atom in shared) {
-		var wleft = getwire();
-		var wright = getwire();
+		var wleft = getwire("left" + atom);
+		var wright = getwire("right" + atom);
 
 		shared[atom] = {
 			left: wleft,
@@ -129,7 +132,7 @@ function psi(shared)
 		var twins = shared[atom];
 		var wleft = twins.left;
 		var wright = twins.right;
-		var wire = getwire();
+		var wire = getwire("back" + atom);
 		var eqn = template;
 
 		eqn = eqn.replace("%s", wleft);
@@ -161,11 +164,11 @@ function gamma(obj, root)
 		eqn = eqn.replace("%s", agent);
 		list.push(eqn);
 	} else if ("abst" == node) {
-		var wire = getwire();
 		var tree = "\\lambda(%s, %s)";
 		var body = obj.body;
 		var fv = getfv(body);
 		var id = obj.var;
+		var wire = getwire("body" + id);
 
 		if (id in fv)
 			agent = id;
@@ -180,8 +183,8 @@ function gamma(obj, root)
 		body = gamma(body, wire);
 		list = list.concat(body);
 	} else if ("appl" == node) {
-		var wleft = getwire();
-		var wright = getwire();
+		var wleft = getwire("left");
+		var wright = getwire("right");
 		var agent = "\\apply(%s, %s)";
 		var left = obj.left;
 		var right = obj.right;
@@ -226,7 +229,7 @@ function alpha(obj, bv)
 		}
 	} else if ("abst" == node) {
 		var id = obj.var;
-		var wire = getwire();
+		var wire = getwire(id);
 		var body;
 
 		bv[id] = wire;
