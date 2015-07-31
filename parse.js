@@ -12,7 +12,7 @@ var macros = dict.macros;
 var term = dict.term;
 var lastwire = 0;
 
-var i;
+var eqns, i;
 
 function getcap(left, right)
 {
@@ -286,6 +286,16 @@ function alpha(obj, bv)
 	return obj;
 }
 
+function getconf(obj)
+{
+	var conf;
+
+	obj = alpha(obj);
+	conf = gamma(obj, "root");
+	conf.push("\\read_{strdup(\"%s\")}(\\print) = root");
+	return conf;
+}
+
 for (i = 0; i < macros.length; i++) {
 	var macro = macros[i];
 	var id = macro.id;
@@ -302,13 +312,9 @@ for (i = 0; i < macros.length; i++) {
 	};
 }
 
-term = alpha(term);
-
 console.log("%s", head);
 
-console.log("\\read_{strdup(\"%s\")}(\\print) = root;");
-
-eqns = gamma(term, "root");
+eqns = getconf(term);
 for (i = 0; i < eqns.length; i++)
 	console.log(eqns[i] + ";");
 
