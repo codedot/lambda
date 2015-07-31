@@ -108,6 +108,28 @@ function getwire(hint)
 	return "w" + lastwire.toFixed(0) + hint;
 }
 
+function subst(obj, shared, side)
+{
+	var node = obj.node;
+
+	if ("atom" == node) {
+		var name = obj.name;
+
+		if (name in shared) {
+			var entry = shared[name];
+
+			obj.name = entry[side];
+		}
+	} else if ("abst" == node) {
+		var body = obj.body;
+
+		subst(body, shared, side);
+	} else if ("appl" == node) {
+		subst(obj.left, shared, side);
+		subst(obj.right, shared, side);
+	}
+}
+
 function mktwins(left, right)
 {
 	var fvleft = getfv(left);
@@ -124,6 +146,9 @@ function mktwins(left, right)
 			right: wright
 		};
 	}
+
+	subst(left, shared, "left");
+	subst(right, shared, "right");
 
 	return shared;
 }
