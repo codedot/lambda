@@ -1,36 +1,30 @@
 I = x: x;
+K = x, y: x;
+S = x, y, z: x z (y z);
 
-TRUE = first, second: first;
-FALSE = first, second: second;
+T = K;
+F = x, y: y;
+AND = p, q: p q F;
+OR = p, q: p T q;
+NOT = p: (a, b: p b a);
 
-AND = cond1, cond2: cond1 cond2 FALSE;
-OR = cond1, cond2: cond1 TRUE cond2;
-NOT = cond: (first, second: cond second first);
-
-LIST = head, tail: (x: x head tail);
-LISTOP = op: (list: list op);
-HEAD = LISTOP TRUE;
-TAIL = LISTOP FALSE;
-NULL = LISTOP (first, second: FALSE);
-NIL = x: TRUE;
-
-N0 = NIL;
-N1 = LIST I N0;
-N2 = LIST I N1;
-N3 = LIST I N2;
-N4 = LIST I N3;
-SUCC = LIST I;
-PRED = TAIL;
-ZERO = NULL;
+C0 = f, x: x;
+C1 = f, x: f x;
+C2 = f, x: f (f x);
+C3 = f, x: f (f (f x));
+SUCC = n: (f, x: f (n f x));
+PLUS = m, n: (f, x: m f (n f x));
+MULT = m, n: (f: m (n f));
+EXP = m, n: n m;
+PRED = n: (f, x: n (g, h: h (g f)) (K x) I);
+MINUS = m, n: n PRED m;
+ZERO = n: n (K F) T;
 
 A = self, func: func (self self func);
 Y = A A;
-
-PLUSR = self, m, n: (ZERO m) n (SUCC (self (PRED m) n));
-PLUS = Y PLUSR;
-MULTR = self, m, n: (ZERO m) N0 (PLUS n (self (PRED m) n));
-MULT = Y MULTR;
-FACTR = self, n: (ZERO n) N1 (MULT n (self (PRED n)));
+FACTR = self, n: (ZERO n) C1 (MULT n (self (PRED n)));
 FACT = Y FACTR;
 
-ZERO (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (FACT N4)))))))))))))))))))))))))
+C24 = FACT (PLUS C2 C2);
+C27 = EXP C3 C3;
+MINUS C27 C24
