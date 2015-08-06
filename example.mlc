@@ -28,9 +28,9 @@ Y = A A;
 
 PLUSR = self, m, n: (ZERO m) n (SUCC (self (PRED m) n));
 PLUS = Y PLUSR;
-MULTR = self, m, n: (ZERO m) N0 (PLUS m (self (PRED m) n));
+MULTR = self, m, n: (ZERO m) N0 (PLUS n (self (PRED m) n));
 MULT = Y MULTR;
 FACTR = self, n: (ZERO n) N1 (MULT n (self (PRED n)));
 FACT = Y FACTR;
 
-FACT N4
+ZERO (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (PRED (FACT N4)))))))))))))))))))))))))
