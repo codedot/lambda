@@ -13,7 +13,6 @@ $(JISON):
 	npm install jison
 
 clean:
-	-rm -fr node_modules
 	-rm -f inet.js mlc.js
 	-rm -f example.in example.c example
 	-rm -f in.tab.c in.tab.h
