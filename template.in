@@ -69,9 +69,13 @@ char *place(char *buf, const char *format, char *str);
 	/* Initiate copy of a closed term. */
 } \lambda[\dup(a, c), \dup(b, d)];
 
-\dup[\amb(a, \share(b, c), c), \amb(d, \share(e, f), f)] {
+\dup[a, b] {
+	/* Unshare variable. */
+} \share[\copy(c, \dup(a, b)), c];
+
+\dup[a, b] {
 	/* Duplicate sharing. */
-} \share[\dup(b, e), \dup(a, d)];
+} \copy[\dup(\amb(c, \share(a, d), d), \amb(e, \share(b, f), f)), \dup(c, e)];
 
 \dup[\apply(a, b), \apply(c, d)] {
 	/* Duplicate application. */
