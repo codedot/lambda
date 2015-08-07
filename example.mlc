@@ -20,7 +20,7 @@ PRED = n: (f, x: n (g, h: h (g f)) (K x) I);
 MINUS = m, n: n PRED m;
 ZERO = n: n (K F) T;
 
-A = self, func: func (self self func);
+A = self, f: f (self self f);
 Y = A A;
 FACTR = self, n: (ZERO n) C1 (MULT n (self (PRED n)));
 FACT = Y FACTR;
