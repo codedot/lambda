@@ -3,7 +3,7 @@ JISON = node_modules/.bin/jison
 all: $(JISON)
 	$(MAKE) parsers
 	$(MAKE) example
-	valgrind ./example
+	./example
 
 example.c: example.in
 
