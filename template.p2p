@@ -1,0 +1,110 @@
+\print {
+	/* Output results of read-back. */
+	puts(RVAL);
+	free(RVAL);
+} \atom;
+
+\read[a] {
+	/* Unshare variable. */
+} \share[\copy(b, \read_{LVAL}(a)), b];
+
+\read[a] {
+	/* Initiate application. */
+} \apply[\lambda(b, \read_{LVAL}(a)), b];
+
+\read[a] {
+	/* Read back abstraction. */
+} \lambda[\atom_{var(1)}, \read_{ABST(LVAL, var(0))}(a)];
+
+\lambda[\read_{APPL(strdup("%s"), RVAL)}(a), a] {
+	/* Read back application. */
+} \atom;
+
+\read[\atom_{ATOM(LVAL, RVAL)}] {
+	/* Read back an atom. */
+} \atom;
+
+\copy[\atom_{RVAL}, \atom_{strdup(RVAL)}] {
+	/* Copy an atom. */
+} \atom;
+
+\dup[\atom_{RVAL}, \atom_{strdup(RVAL)}] {
+	/* Duplicate an atom. */
+} \atom;
+
+\lambda[a, b] {
+	/* Unshare variable. */
+} \share[\copy(c, \lambda(a, b)), c];
+
+\lambda[a, b] {
+	/* Initiate application. */
+} \apply[\lambda(c, \lambda(a, b)), c];
+
+\lambda[a, b] {
+	/* Apply a closed term. */
+} \lambda[a, b];
+
+\copy[a, b] {
+	/* Unshare variable. */
+} \share[\copy(c, \copy(a, b)), c];
+
+\copy[a, b] {
+	/* Initiate application. */
+} \apply[\lambda(c, \copy(a, b)), c];
+
+\copy[\lambda(a, b), \lambda(c, d)] {
+	/* Initiate copy of a closed term. */
+} \lambda[\dup(a, c), \dup(b, d)];
+
+\dup[a, b] {
+	/* Unshare variable. */
+} \share[\copy(c, \dup(a, b)), c];
+
+\dup[a, b] {
+	/* Duplicate sharing. */
+} \copy[\dup(\amb(c, \share(a, d), d), \amb(e, \share(b, f), f)), \dup(c, e)];
+
+\dup[\apply(a, b), \apply(c, d)] {
+	/* Duplicate application. */
+} \apply[\dup(a, c), \dup(b, d)];
+
+\dup[\lambda(a, b), \lambda(c, d)] {
+	/* Duplicate abstraction. */
+} \lambda[\dup(a, c), \dup(b, d)];
+
+\dup[a, b] {
+	/* Finish duplication. */
+} \dup[a, b];
+
+\erase {
+	/* Erase an atom. */
+	free(RVAL);
+} \atom;
+
+\erase {
+	/* Erase sharing. */
+} \share[a, a];
+
+\erase {
+	/* Erase application. */
+} \apply[\erase, \erase];
+
+\erase {
+	/* Erase abstraction. */
+} \lambda[\erase, \erase];
+
+\erase {
+	/* Erase copy initiator. */
+} \copy[\erase, \erase];
+
+\erase {
+	/* Erase duplicator. */
+} \dup[\erase, \erase];
+
+\erase {
+	/* Finish erasing. */
+} \erase;
+
+$$
+
+INCONFIG
