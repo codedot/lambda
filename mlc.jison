@@ -4,7 +4,7 @@
 
 \s+ /* skip whitespace */
 
-\w+\b return "NAME";
+[A-Za-z][A-Za-z0-9]* return "NAME";
 
 "=" return "=";
 ";" return ";";
