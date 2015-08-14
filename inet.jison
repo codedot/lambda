@@ -25,7 +25,7 @@
 
 %%
 
-prog : rset MARK init {console.log({nrules: $1.length, neqns: $3.length});}
+prog : rset MARK init {return {rules: $1, conf: $3};}
      ;
 rset : /* empty */ {$$ = [];}
      | rset side CODE side ';' {$1.push({left: $2, right: $4}); $$ = $1;}
