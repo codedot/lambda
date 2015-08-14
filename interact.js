@@ -65,6 +65,36 @@ function mreted(agent, amb)
 	determ(amb, agent);
 }
 
+function nnodes(tree)
+{
+	var pax = tree.pax;
+	var n = 1;
+	var i;
+
+	for (i = 0; i < pax.length; i++)
+		n += nnodes(pax[i]);
+
+	return n;
+}
+
+function getcost(left, right)
+{
+	var cost = -1;
+	var i;
+
+	--cost;
+	left = left.pax;
+	for (i = 0; i < left.length; i++)
+		cost += 1 + nnodes(left[i]);
+
+	--cost;
+	right = right.pax;
+	for (i = 0; i < right.length; i++)
+		cost += 1 + nnodes(right[i]);
+
+	return cost;
+}
+
 function apply(left, right)
 {
 	function interact(lagent, ragent)
@@ -72,6 +102,7 @@ function apply(left, right)
 		console.log(left, right);
 	}
 
+	interact.cost = getcost(left, right);
 	return interact;
 }
 
@@ -144,6 +175,7 @@ function gettable(system)
 			human = human.replace(/\bwire\b/g, "~");
 			human = human.replace(/\bamb\b/g, "?");
 			human = human.replace(/^(.).*><(.).*/, "$1><$2");
+			human = human.replace("><", ">" + rule.cost + "<");
 			process.stdout.write("\t" + human);
 
 			row[right] = rule;
@@ -155,5 +187,11 @@ function gettable(system)
 
 	return dict;
 }
+
+determ.cost = 1;
+mreted.cost = 1;
+
+rewire.cost = -3;
+eriwer.cost = -3;
 
 table = gettable(system);
