@@ -5,6 +5,7 @@ all: $(JISON)
 	$(MAKE) example
 	./example
 	$(MAKE) example.p2p
+	node inet.js example.p2p
 
 example.c: example.in
 
