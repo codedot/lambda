@@ -4,6 +4,8 @@ var fs = require("fs");
 var parser = new inet.Parser();
 var src = fs.readFileSync(process.argv[2], "utf8");
 var system = parser.parse(src);
+var inrules = system.rules;
+var inconf = system.conf;
 
 var inqueue = [];
 var table;
@@ -17,8 +19,7 @@ function gettypes(tree, dict)
 	if (!dict)
 		dict = {};
 
-	if ("agent" == node.type)
-		dict[node.name] = true;
+	dict[node.agent] = true;
 
 	for (i = 0; i < pax.length; i++)
 		gettypes(pax[i], dict);
@@ -98,8 +99,8 @@ function getcost(left, right)
 
 function apply(left, right)
 {
-	var ltype = left.node.name;
-	var rtype = right.node.name;
+	var ltype = left.node.agent;
+	var rtype = right.node.agent;
 
 	function interact(lagent, ragent)
 	{
@@ -113,10 +114,8 @@ function apply(left, right)
 	return interact;
 }
 
-function gettable(system)
+function gettable()
 {
-	var rules = system.rules;
-	var conf = system.conf;
 	var types = {
 		wire: true,
 		amb: true
@@ -125,8 +124,8 @@ function gettable(system)
 	var dict = {};
 	var i, j, n;
 
-	for (i = 0; i < rules.length; i++) {
-		var rule = rules[i];
+	for (i = 0; i < inrules.length; i++) {
+		var rule = inrules[i];
 		var left = rule.left;
 		var right = rule.right;
 		var lrfunc = apply(left, right);
@@ -139,8 +138,8 @@ function gettable(system)
 		custom[rlfunc.human] = rlfunc;
 	}
 
-	for (i = 0; i < conf.length; i++) {
-		var eqn = conf[i];
+	for (i = 0; i < inconf.length; i++) {
+		var eqn = inconf[i];
 		var left = eqn.left;
 		var right = eqn.right;
 
@@ -200,6 +199,42 @@ function compare(f, g)
 	return f.cost - g.cost;
 }
 
+function getpair()
+{
+	var i;
+
+	for (i = 0; i < inqueue.length; i++) {
+		var pair = inqueue[i].queue.shift();
+
+		if (pair)
+			return pair;
+	}
+}
+
+function putpair(left, right)
+{
+	var row = table[left.node.agent];
+	var cell = row[right.node.agent];
+
+	cell.queue.push({
+		left: left,
+		right: right
+	});
+}
+
+function init()
+{
+	var i;
+
+	for (i = 0; i < inconf.length; i++) {
+		var eqn = inconf[i];
+		var left = eqn.left;
+		var right = eqn.right;
+
+		putpair(left, right);
+	}
+}
+
 determ.cost = 1;
 mreted.cost = 1;
 determ.queue = [];
@@ -218,6 +253,8 @@ eriwer.human = "_><wire";
 inqueue.push(rewire);
 inqueue.push(eriwer);
 
-table = gettable(system);
+table = gettable();
 
 inqueue.sort(compare);
+
+init();
