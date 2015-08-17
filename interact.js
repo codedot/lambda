@@ -103,6 +103,7 @@ function apply(left, right)
 	}
 
 	interact.cost = getcost(left, right);
+	interact.queue = [];
 	return interact;
 }
 
@@ -190,8 +191,12 @@ function gettable(system)
 
 determ.cost = 1;
 mreted.cost = 1;
+determ.queue = [];
+mreted.queue = [];
 
 rewire.cost = -3;
 eriwer.cost = -3;
+rewire.queue = [];
+eriwer.queue = [];
 
 table = gettable(system);
