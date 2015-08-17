@@ -5,6 +5,7 @@ var parser = new inet.Parser();
 var src = fs.readFileSync(process.argv[2], "utf8");
 var system = parser.parse(src);
 
+var inqueue = [];
 var table;
 
 function gettypes(tree, dict)
@@ -97,6 +98,9 @@ function getcost(left, right)
 
 function apply(left, right)
 {
+	var ltype = left.node.name;
+	var rtype = right.node.name;
+
 	function interact(lagent, ragent)
 	{
 		console.log(left, right);
@@ -104,6 +108,8 @@ function apply(left, right)
 
 	interact.cost = getcost(left, right);
 	interact.queue = [];
+	interact.human = ltype + "><" + rtype;
+	inqueue.push(interact);
 	return interact;
 }
 
@@ -123,14 +129,14 @@ function gettable(system)
 		var rule = rules[i];
 		var left = rule.left;
 		var right = rule.right;
-		var ltype = left.node.name;
-		var rtype = right.node.name;
+		var lrfunc = apply(left, right);
+		var rlfunc = apply(right, left);
 
 		gettypes(left, types);
 		gettypes(right, types);
 
-		custom[ltype + "><" + rtype] = apply(left, right);
-		custom[rtype + "><" + ltype] = apply(right, left);
+		custom[lrfunc.human] = lrfunc;
+		custom[rlfunc.human] = rlfunc;
 	}
 
 	for (i = 0; i < conf.length; i++) {
@@ -189,14 +195,29 @@ function gettable(system)
 	return dict;
 }
 
+function compare(f, g)
+{
+	return f.cost - g.cost;
+}
+
 determ.cost = 1;
 mreted.cost = 1;
 determ.queue = [];
 mreted.queue = [];
+determ.human = "amb><_";
+mreted.human = "_><amb";
+inqueue.push(determ);
+inqueue.push(mreted);
 
 rewire.cost = -3;
 eriwer.cost = -3;
 rewire.queue = [];
 eriwer.queue = [];
+rewire.human = "wire><_";
+eriwer.human = "_><wire";
+inqueue.push(rewire);
+inqueue.push(eriwer);
 
 table = gettable(system);
+
+inqueue.sort(compare);
