@@ -222,8 +222,53 @@ function putpair(left, right)
 	});
 }
 
+function getnum(agent)
+{
+	return agent;
+}
+
+function encode(tree, wires)
+{
+	var node = tree.node;
+	var agent = node.agent;
+	var type = getnum(agent);
+	var pax = tree.pax;
+	var i;
+
+	for (i = 0; i < pax.length; i++)
+		pax[i] = encode(pax[i], wires);
+
+	tree.type = type;
+
+	if ("wire" == agent) {
+		var name = node.name;
+		var wire = wires[name];
+
+		if (wire) {
+			wire.twin = tree;
+			tree.twin = wire;
+		}
+
+		wires[name] = tree;
+	} else if ("amb" == agent) {
+		var active = pax.shift();
+		var twin = {
+			type: type,
+			node: node,
+			twin: tree,
+			pax: pax
+		};
+
+		tree.twin = twin;
+		putpair(active, twin);
+	}
+
+	return tree;
+}
+
 function init()
 {
+	var wires = {};
 	var i;
 
 	for (i = 0; i < inconf.length; i++) {
@@ -231,6 +276,8 @@ function init()
 		var left = eqn.left;
 		var right = eqn.right;
 
+		left = encode(left, wires);
+		right = encode(right, wires);
 		putpair(left, right);
 	}
 }
