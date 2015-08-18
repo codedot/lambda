@@ -9,10 +9,9 @@ var inconf = system.conf;
 
 var inqueue = [];
 var types = {
-	wire: 1,
-	amb: 2
+	wire: 0
 };
-var ntypes = 2;
+var ntypes = 1;
 var table;
 
 function addtypes(tree)
@@ -23,9 +22,12 @@ function addtypes(tree)
 	var type = types[agent];
 	var i;
 
+	if ("wire" == agent)
+		return;
+
 	if (!type) {
-		++ntypes;
 		types[agent] = ntypes;
+		++ntypes;
 	}
 
 	for (i = 0; i < pax.length; i++)
@@ -141,13 +143,13 @@ function gettable()
 
 	process.stdout.write("\n");
 
-	for (i = 1; i <= ntypes; i++) {
+	for (i = 0; i < list.length; i++) {
 		var left = list[i];
 		var row = {};
 
 		process.stdout.write(left);
 
-		for (j = 1; j <= ntypes; j++) {
+		for (j = 0; j < list.length; j++) {
 			var right = list[j];
 			var lr = custom[left + "><" + right];
 			var rl = custom[right + "><" + left];
