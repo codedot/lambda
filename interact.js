@@ -106,10 +106,9 @@ function apply(left, right)
 
 function gettable()
 {
-	var list = [];
+	var tab = [];
 	var custom = {};
-	var dict = {};
-	var i, j, type;
+	var left, right, type;
 
 	for (i = 0; i < inrules.length; i++) {
 		var rule = inrules[i];
@@ -135,22 +134,16 @@ function gettable()
 	}
 
 	process.stdout.write("_><_");
-
-	for (type in types) {
+	for (type in types)
 		process.stdout.write("\t" + type);
-		list[types[type]] = type;
-	}
-
 	process.stdout.write("\n");
 
-	for (i = 0; i < list.length; i++) {
-		var left = list[i];
-		var row = {};
+	for (left in types) {
+		var row = [];
 
 		process.stdout.write(left);
 
-		for (j = 0; j < list.length; j++) {
-			var right = list[j];
+		for (right in types) {
 			var lr = custom[left + "><" + right];
 			var rl = custom[right + "><" + left];
 			var human = left + "><" + right;
@@ -177,14 +170,14 @@ function gettable()
 			human = human.replace("><", ">" + rule.cost + "<");
 			process.stdout.write("\t" + human);
 
-			row[right] = rule;
+			row[types[right]] = rule;
 		}
 
 		process.stdout.write("\n");
-		dict[left] = row;
+		tab[types[left]] = row;
 	}
 
-	return dict;
+	return tab;
 }
 
 function compare(f, g)
@@ -206,8 +199,8 @@ function getpair()
 
 function putpair(left, right)
 {
-	var row = table[left.node.agent];
-	var cell = row[right.node.agent];
+	var row = table[left.type];
+	var cell = row[right.type];
 
 	cell.queue.push({
 		left: left,
