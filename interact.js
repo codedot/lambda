@@ -14,7 +14,7 @@ var types = {
 	amb: 1
 };
 var ntypes = 2;
-var table;
+var wiretype, ambtype, table;
 
 function addtypes(tree)
 {
@@ -46,9 +46,9 @@ function rewire(wire, agent)
 	var twin = wire.twin;
 	var key;
 
-	if (wire.type != types["wire"]) {
+	if (wire.type != wiretype) {
 		addpair(wire, agent);
-		stdout.write("#");
+		stdout.write("@");
 		return;
 	}
 
@@ -71,6 +71,27 @@ function eriwer(agent, wire)
 
 function determ(amb, agent)
 {
+	var wire = amb;
+	var twin = amb.twin;
+	var main = amb.main;
+	var aux = amb.aux;
+
+	if (amb.type != ambtype) {
+		addpair(amb, agent);
+		stdout.write("&");
+		return;
+	}
+
+	addpair(main, agent);
+
+	wire.type = wiretype;
+	delete wire.main;
+	delete wire.aux;
+	twin.type = wiretype;
+	delete twin.main;
+	delete twin.aux;
+	addpair(wire, aux);
+
 	stdout.write("?");
 }
 
@@ -326,6 +347,9 @@ inqueue.push(rewire);
 inqueue.push(eriwer);
 
 table = gettable();
+
+wiretype = types["wire"];
+ambtype = types["amb"];
 
 inqueue.sort(compare);
 
