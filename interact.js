@@ -43,7 +43,6 @@ function deadlock()
 
 function rewire(wire, agent)
 {
-	stdout.write(rewire.human + " not implemented\n");
 }
 
 function eriwer(agent, wire)
@@ -53,7 +52,6 @@ function eriwer(agent, wire)
 
 function determ(amb, agent)
 {
-	stdout.write(determ.human + " not implemented\n");
 }
 
 function mreted(agent, amb)
@@ -99,7 +97,6 @@ function apply(left, right)
 
 	function interact(lagent, ragent)
 	{
-		stdout.write(human + " not implemented\n");
 	}
 
 	interact.cost = getcost(left, right);
@@ -190,16 +187,23 @@ function compare(f, g)
 	return f.cost - g.cost;
 }
 
-function getpair()
+function reduce()
 {
 	var i;
 
 	for (i = 0; i < inqueue.length; i++) {
-		var pair = inqueue[i].queue.shift();
+		var rule = inqueue[i];
+		var human = rule.human;
+		var queue = rule.queue;
+		var pair = queue.shift();
 
-		if (pair)
-			return pair;
+		if (pair) {
+			rule(pair.left, pair.right);
+			return true;
+		}
 	}
+
+	return false;
 }
 
 function putpair(left, right)
@@ -278,6 +282,8 @@ function init()
 }
 
 deadlock.cost = Infinity;
+deadlock.queue = [];
+deadlock.human = "dead>!<lock";
 inqueue.push(deadlock);
 
 determ.cost = 1;
@@ -303,3 +309,8 @@ table = gettable();
 inqueue.sort(compare);
 
 init();
+
+stdout.write("\nApplying interaction rules:\n");
+while (reduce())
+	stdout.write(".");
+stdout.write("\nNo more active pairs left.\n");
