@@ -1,6 +1,7 @@
 var inet = require("./inet");
 var fs = require("fs");
 
+var stdout = process.stdout;
 var parser = new inet.Parser();
 var src = fs.readFileSync(process.argv[2], "utf8");
 var system = parser.parse(src);
@@ -37,11 +38,12 @@ function addtypes(tree)
 
 function deadlock()
 {
-	console.error("No applicable rule");
+	stdout.write("No applicable rule\n");
 }
 
 function rewire(wire, agent)
 {
+	stdout.write(rewire.human + " not implemented\n");
 }
 
 function eriwer(agent, wire)
@@ -51,6 +53,7 @@ function eriwer(agent, wire)
 
 function determ(amb, agent)
 {
+	stdout.write(determ.human + " not implemented\n");
 }
 
 function mreted(agent, amb)
@@ -92,15 +95,16 @@ function apply(left, right)
 {
 	var ltype = left.node.agent;
 	var rtype = right.node.agent;
+	var human = ltype + "><" + rtype;
 
 	function interact(lagent, ragent)
 	{
-		console.log(left, right);
+		stdout.write(human + " not implemented\n");
 	}
 
 	interact.cost = getcost(left, right);
 	interact.queue = [];
-	interact.human = ltype + "><" + rtype;
+	interact.human = human;
 	inqueue.push(interact);
 	return interact;
 }
@@ -134,15 +138,15 @@ function gettable()
 		addtypes(right);
 	}
 
-	process.stdout.write("_><_");
+	stdout.write("_><_");
 	for (type in types)
-		process.stdout.write("\t" + type);
-	process.stdout.write("\n");
+		stdout.write("\t" + type);
+	stdout.write("\n");
 
 	for (left in types) {
 		var row = [];
 
-		process.stdout.write(left);
+		stdout.write(left);
 
 		for (right in types) {
 			var lr = custom[left + "><" + right];
@@ -169,12 +173,12 @@ function gettable()
 			human = human.replace(/\bamb\b/g, "?");
 			human = human.replace(/^(.).*><(.).*/, "$1><$2");
 			human = human.replace("><", ">" + rule.cost + "<");
-			process.stdout.write("\t" + human);
+			stdout.write("\t" + human);
 
 			row[types[right]] = rule;
 		}
 
-		process.stdout.write("\n");
+		stdout.write("\n");
 		tab[types[left]] = row;
 	}
 
@@ -272,6 +276,9 @@ function init()
 		putpair(left, right);
 	}
 }
+
+deadlock.cost = Infinity;
+inqueue.push(deadlock);
 
 determ.cost = 1;
 mreted.cost = 1;
