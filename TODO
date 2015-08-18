@@ -1,3 +1,2 @@
-! wire><_: re-queue pairs if the wire has become an agent
-* amb><_: do not re-queue pairs if the amb has become a wire
-~ Apply normal interaction rules
+! amb><_: do not re-queue pairs if the amb has become a wire
+* Apply normal interaction rules

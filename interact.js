@@ -38,11 +38,30 @@ function addtypes(tree)
 
 function deadlock()
 {
-	stdout.write("No applicable rule\n");
+	stdout.write("!");
 }
 
 function rewire(wire, agent)
 {
+	var twin = wire.twin;
+	var key;
+
+	if (wire.type != types["wire"]) {
+		addpair(wire, agent);
+		stdout.write("#");
+		return;
+	}
+
+	for (key in twin)
+		delete twin[key];
+
+	for (key in agent)
+		twin[key] = agent[key];
+
+	for (key in wire)
+		delete wire[key];
+
+	stdout.write("~");
 }
 
 function eriwer(agent, wire)
@@ -52,6 +71,7 @@ function eriwer(agent, wire)
 
 function determ(amb, agent)
 {
+	stdout.write("?");
 }
 
 function mreted(agent, amb)
@@ -97,6 +117,7 @@ function apply(left, right)
 
 	function interact(lagent, ragent)
 	{
+		stdout.write("x");
 	}
 
 	interact.cost = getcost(left, right);
@@ -206,7 +227,7 @@ function reduce()
 	return false;
 }
 
-function putpair(left, right)
+function addpair(left, right)
 {
 	var row = table[left.type];
 	var cell = row[right.type];
@@ -258,7 +279,7 @@ function encode(tree, wires)
 		tree.twin = twin;
 		delete tree.pax;
 
-		putpair(active, twin);
+		addpair(active, twin);
 	}
 
 	delete tree.node;
@@ -277,7 +298,7 @@ function init()
 
 		left = encode(left, wires);
 		right = encode(right, wires);
-		putpair(left, right);
+		addpair(left, right);
 	}
 }
 
@@ -311,6 +332,10 @@ inqueue.sort(compare);
 init();
 
 stdout.write("\nApplying interaction rules:\n");
-while (reduce())
-	stdout.write(".");
+while (true) {
+	var active = reduce();
+
+	if (!active)
+		break;
+}
 stdout.write("\nNo more active pairs left.\n");
