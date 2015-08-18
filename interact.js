@@ -8,40 +8,28 @@ var inrules = system.rules;
 var inconf = system.conf;
 
 var inqueue = [];
+var types = {
+	wire: 1,
+	amb: 2
+};
+var ntypes = 2;
 var table;
 
-function gettypes(tree, dict)
+function addtypes(tree)
 {
 	var node = tree.node;
 	var pax = tree.pax;
+	var agent = node.agent;
+	var type = types[agent];
 	var i;
 
-	if (!dict)
-		dict = {};
-
-	dict[node.agent] = true;
-
-	for (i = 0; i < pax.length; i++)
-		gettypes(pax[i], dict);
-
-	return dict;
-}
-
-function getkeys(dict)
-{
-	var list = [];
-	var name;
-
-	process.stdout.write("_><_");
-
-	for (name in dict) {
-		process.stdout.write("\t" + name);
-		list.push(name);
+	if (!type) {
+		++ntypes;
+		types[agent] = ntypes;
 	}
 
-	process.stdout.write("\n");
-
-	return list;
+	for (i = 0; i < pax.length; i++)
+		addtypes(pax[i]);
 }
 
 function deadlock()
@@ -116,13 +104,10 @@ function apply(left, right)
 
 function gettable()
 {
-	var types = {
-		wire: true,
-		amb: true
-	};
+	var list = [];
 	var custom = {};
 	var dict = {};
-	var i, j, n;
+	var i, j, type;
 
 	for (i = 0; i < inrules.length; i++) {
 		var rule = inrules[i];
@@ -131,8 +116,8 @@ function gettable()
 		var lrfunc = apply(left, right);
 		var rlfunc = apply(right, left);
 
-		gettypes(left, types);
-		gettypes(right, types);
+		addtypes(left);
+		addtypes(right);
 
 		custom[lrfunc.human] = lrfunc;
 		custom[rlfunc.human] = rlfunc;
@@ -143,21 +128,27 @@ function gettable()
 		var left = eqn.left;
 		var right = eqn.right;
 
-		gettypes(left, types);
-		gettypes(right, types);
+		addtypes(left);
+		addtypes(right);
 	}
 
-	types = getkeys(types);
-	n = types.length;
+	process.stdout.write("_><_");
 
-	for (i = 0; i < n; i++) {
-		var left = types[i];
+	for (type in types) {
+		process.stdout.write("\t" + type);
+		list[types[type]] = type;
+	}
+
+	process.stdout.write("\n");
+
+	for (i = 1; i <= ntypes; i++) {
+		var left = list[i];
 		var row = {};
 
 		process.stdout.write(left);
 
-		for (j = 0; j < n; j++) {
-			var right = types[j];
+		for (j = 1; j <= ntypes; j++) {
+			var right = list[j];
 			var lr = custom[left + "><" + right];
 			var rl = custom[right + "><" + left];
 			var human = left + "><" + right;
@@ -222,16 +213,11 @@ function putpair(left, right)
 	});
 }
 
-function getnum(agent)
-{
-	return agent;
-}
-
 function encode(tree, wires)
 {
 	var node = tree.node;
 	var agent = node.agent;
-	var type = getnum(agent);
+	var type = types[agent];
 	var pax = tree.pax;
 	var i;
 
