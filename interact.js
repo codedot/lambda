@@ -9,9 +9,10 @@ var inconf = system.conf;
 
 var inqueue = [];
 var types = {
-	wire: 0
+	wire: 0,
+	amb: 1
 };
-var ntypes = 1;
+var ntypes = 2;
 var table;
 
 function addtypes(tree)
@@ -230,20 +231,29 @@ function encode(tree, wires)
 			tree.twin = wire;
 		}
 
+		delete tree.pax;
+
 		wires[name] = tree;
 	} else if ("amb" == agent) {
 		var active = pax.shift();
+		var main = pax.shift();
+		var aux = pax.shift();
 		var twin = {
 			type: type,
-			node: node,
-			twin: tree,
-			pax: pax
+			main: main,
+			aux: aux,
+			twin: tree
 		};
 
+		tree.main = main;
+		tree.aux = aux;
 		tree.twin = twin;
+		delete tree.pax;
+
 		putpair(active, twin);
 	}
 
+	delete tree.node;
 	return tree;
 }
 
