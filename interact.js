@@ -135,6 +135,10 @@ function apply(left, right)
 	var ltype = left.node.agent;
 	var rtype = right.node.agent;
 	var human = ltype + "><" + rtype;
+	var limg = [];
+	var rimg = [];
+	var wires = {};
+	var i;
 
 	function interact(lagent, ragent)
 	{
@@ -145,6 +149,15 @@ function apply(left, right)
 	interact.queue = [];
 	interact.human = human;
 	inqueue.push(interact);
+
+	left = left.pax;
+	for (i = 0; i < left.length; i++)
+		limg[i] = encode(left[i], wires);
+
+	right = right.pax;
+	for (i = 0; i < right.length; i++)
+		rimg[i] = encode(right[i], wires);
+
 	return interact;
 }
 
@@ -259,20 +272,25 @@ function addpair(left, right)
 	});
 }
 
-function encode(tree, wires)
+function encode(tree, wires, rt)
 {
 	var node = tree.node;
 	var agent = node.agent;
 	var type = types[agent];
 	var pax = tree.pax;
+	var imgpax = [];
 	var i;
 
 	for (i = 0; i < pax.length; i++)
-		pax[i] = encode(pax[i], wires);
+		imgpax[i] = encode(pax[i], wires, rt);
 
-	tree.type = type;
+	pax = imgpax;
+	tree = {
+		type: type,
+		pax: imgpax
+	};
 
-	if ("wire" == agent) {
+	if (wiretype == type) {
 		var name = node.name;
 		var wire = wires[name];
 
@@ -284,7 +302,7 @@ function encode(tree, wires)
 		delete tree.pax;
 
 		wires[name] = tree;
-	} else if ("amb" == agent) {
+	} else if (ambtype == type) {
 		var active = pax.shift();
 		var main = pax.shift();
 		var aux = pax.shift();
@@ -300,10 +318,10 @@ function encode(tree, wires)
 		tree.twin = twin;
 		delete tree.pax;
 
-		addpair(active, twin);
+		if (rt)
+			addpair(active, twin);
 	}
 
-	delete tree.node;
 	return tree;
 }
 
@@ -317,8 +335,8 @@ function init()
 		var left = eqn.left;
 		var right = eqn.right;
 
-		left = encode(left, wires);
-		right = encode(right, wires);
+		left = encode(left, wires, true);
+		right = encode(right, wires, true);
 		addpair(left, right);
 	}
 }
