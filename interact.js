@@ -138,7 +138,8 @@ function apply(left, right)
 	var limg = [];
 	var rimg = [];
 	var wires = {};
-	var i;
+	var wlist = [];
+	var i, name;
 
 	function interact(lagent, ragent)
 	{
@@ -158,6 +159,17 @@ function apply(left, right)
 	for (i = 0; i < right.length; i++)
 		rimg[i] = encode(right[i], wires);
 
+	for (name in wires) {
+		var wire = wires[name];
+		var twin = wire.twin;
+
+		wire.id = wlist.length;
+		wlist.push(wire);
+
+		twin.id = wlist.length;
+		wlist.push(twin);
+	}
+
 	return interact;
 }
 
@@ -171,13 +183,15 @@ function gettable()
 		var rule = inrules[i];
 		var left = rule.left;
 		var right = rule.right;
-		var lrfunc = apply(left, right);
-		var rlfunc = apply(right, left);
+		var lrfunc, rlfunc;
 
 		addtypes(left);
 		addtypes(right);
 
+		lrfunc = apply(left, right);
 		custom[lrfunc.human] = lrfunc;
+
+		rlfunc = apply(right, left);
 		custom[rlfunc.human] = rlfunc;
 	}
 
@@ -320,6 +334,8 @@ function encode(tree, wires, rt)
 
 		if (rt)
 			addpair(active, twin);
+		else
+			twin.active = active;
 	}
 
 	return tree;
@@ -364,10 +380,10 @@ eriwer.human = "_><wire";
 inqueue.push(rewire);
 inqueue.push(eriwer);
 
-table = gettable();
-
 wiretype = types["wire"];
 ambtype = types["amb"];
+
+table = gettable();
 
 inqueue.sort(compare);
 
