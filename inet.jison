@@ -1,6 +1,10 @@
 %lex
 
+%s CONF TAIL
+
 %%
+
+<TAIL>(.|\n)*<<EOF>> return "CODE";
 
 \s+ /* skip whitespace */
 
@@ -8,17 +12,17 @@
 
 [A-Za-z][A-Za-z0-9]* return "NAME";
 
-"$$" return "MARK";
+<CONF>"$$" %{ this.begin("TAIL"); return "MARK"; %}
+"$$" %{ this.begin("CONF"); return "MARK"; %}
 ";" return ";";
-"[" return "[";
-"]" return "]";
+<INITIAL>"[" return "[";
+<INITIAL>"]" return "]";
 "(" return "(";
 ")" return ")";
 "," return ",";
 "\\" return "\\";
 "_" return "_";
-"=" return "=";
-"$" return "$";
+<CONF>"=" return "=";
 
 /lex
 
@@ -26,7 +30,7 @@
 
 %%
 
-prog : head rset MARK init {return {code: $1, rules: $2, conf: $4};}
+prog : rset MARK init tail {return {rules: $1, conf: $3, code: $4};}
      ;
 head : /* empty */ {$$ = "";}
      | '$' CODE '$' {$$ = $2;}
@@ -51,4 +55,7 @@ cell : '\' NAME {$$ = {agent: $2, code: "void(0)"};}
      ;
 init : /* empty */ {$$ = [];}
      | tree '=' tree ';' init {$5.push({left: $1, right: $3}); $$ = $5;}
+     ;
+tail : /* empty */ {$$ = "";}
+     | MARK CODE {$$ = $2;}
      ;

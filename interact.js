@@ -5,7 +5,7 @@ var stdout = process.stdout;
 var parser = new inet.Parser();
 var src = fs.readFileSync(process.argv[2], "utf8");
 var system = parser.parse(src);
-var inhead = system.code;
+var inverb = system.code;
 var inrules = system.rules;
 var inconf = system.conf;
 
@@ -466,7 +466,7 @@ function encode(tree, wires, rt)
 function init()
 {
 	var wires = {};
-	var effect = mkeffect(inhead);
+	var effect = mkeffect(inverb);
 	var i;
 
 	for (i = 0; i < inconf.length; i++) {

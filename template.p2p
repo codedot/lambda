@@ -1,7 +1,3 @@
-${
-process.stdout.write("\nHello World!\n");
-}$
-
 \print {
 	/* Output results of read-back. */
 	puts(RVAL);
@@ -112,3 +108,7 @@ process.stdout.write("\nHello World!\n");
 $$
 
 INCONFIG
+
+$$
+
+process.stdout.write("\nHello World!\n");
