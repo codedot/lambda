@@ -206,19 +206,29 @@ function clone(img, context)
 	}
 }
 
-function mkeffect(code, expr)
+function mkeffect(code, expr, rl)
 {
+	var lval, rval;
+
+	if (rl) {
+		lval = "RVAL";
+		rval = "LVAL";
+	} else {
+		lval = "LVAL";
+		rval = "RVAL";
+	}
+
 	code = code.replace(/^{(.*)}$/, "$1");
 
 	if (expr)
 		code = "return (" + code + ");";
 
-	return new Function("LVAL", "RVAL", code);
+	return new Function(lval, rval, code);
 }
 
-function apply(left, right, code)
+function apply(left, right, code, rl)
 {
-	var effect = mkeffect(code);
+	var effect = mkeffect(code, false, rl);
 	var ltype = left.node.agent;
 	var rtype = right.node.agent;
 	var human = ltype + "><" + rtype;
@@ -308,7 +318,7 @@ function gettable()
 		lrfunc = apply(left, right, code);
 		custom[lrfunc.human] = lrfunc;
 
-		rlfunc = apply(right, left, code);
+		rlfunc = apply(right, left, code, true);
 		custom[rlfunc.human] = rlfunc;
 	}
 
