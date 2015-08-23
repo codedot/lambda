@@ -58,9 +58,6 @@ function rewire(wire, agent)
 	for (key in agent)
 		twin[key] = agent[key];
 
-	for (key in wire)
-		delete wire[key];
-
 	stdout.write("~");
 }
 
@@ -154,6 +151,51 @@ function cpwlist(orig)
 	return copy;
 }
 
+function clone(img, wlist)
+{
+	var type = img.type;
+
+	if (wiretype == type) {
+		var id = img.id;
+
+		return wlist[id];
+	} else if (ambtype == type) {
+		var active = clone(img.twin.active, wlist);
+		var main = clone(img.main, wlist);
+		var aux = clone(img.aux, wlist);
+		var twin = {
+			type: type,
+			main: main,
+			aux: aux
+		};
+		var copy = {
+			type: type,
+			main: main,
+			aux: aux
+		};
+
+		copy.twin = twin;
+		twin.twin = copy;
+
+		addpair(active, twin);
+
+		return copy;
+	} else {
+		var imgpax = img.pax;
+		var pax = [];
+		var copy = {
+			type: type,
+			pax: pax
+		};
+		var i;
+
+		for (i = 0; i < imgpax.length; i++)
+			pax[i] = clone(imgpax[i], wlist);
+
+		return copy;
+	}
+}
+
 function apply(left, right)
 {
 	var ltype = left.node.agent;
@@ -168,6 +210,24 @@ function apply(left, right)
 	function interact(lagent, ragent)
 	{
 		var wcopy = cpwlist(wlist);
+		var lpax = lagent.pax;
+		var rpax = ragent.pax;
+
+		for (i = 0; i < limg.length; i++) {
+			var img = limg[i];
+			var active = lpax[i];
+			var copy = clone(img, wcopy);
+
+			addpair(copy, active);
+		}
+
+		for (i = 0; i < rimg.length; i++) {
+			var img = rimg[i];
+			var active = rpax[i];
+			var copy = clone(img, wcopy);
+
+			addpair(copy, active);
+		}
 
 		stdout.write("x");
 	}
