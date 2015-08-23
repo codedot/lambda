@@ -60,6 +60,9 @@ function rewire(wire, agent)
 	for (key in agent)
 		twin[key] = agent[key];
 
+	if (agent.twin)
+		agent.twin.twin = twin;
+
 	stdout.write("~");
 }
 

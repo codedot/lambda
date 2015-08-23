@@ -1,7 +1,6 @@
 \print {
 	/* Output results of read-back. */
-	puts(RVAL);
-	free(RVAL);
+	process.stdout.write("\n" + RVAL + "\n");
 } \atom;
 
 \read[a] {
@@ -14,21 +13,21 @@
 
 \read[a] {
 	/* Read back abstraction. */
-} \lambda[\atom_{mkvar(1)}, \read_{ABST(LVAL, mkvar(0))}(a)];
+} \lambda[\atom_{'mkvar(1)'}, \read_{'ABST(LVAL, mkvar(0))'}(a)];
 
-\lambda[\read_{APPL(strdup("%s"), RVAL)}(a), a] {
+\lambda[\read_{'APPL("%s", RVAL)'}(a), a] {
 	/* Read back application. */
 } \atom;
 
-\read[\atom_{ATOM(LVAL, RVAL)}] {
+\read[\atom_{'ATOM(LVAL, RVAL)'}] {
 	/* Read back an atom. */
 } \atom;
 
-\copy[\atom_{RVAL}, \atom_{strdup(RVAL)}] {
+\copy[\atom_{RVAL}, \atom_{RVAL}] {
 	/* Copy an atom. */
 } \atom;
 
-\dup[\atom_{RVAL}, \atom_{strdup(RVAL)}] {
+\dup[\atom_{RVAL}, \atom_{RVAL}] {
 	/* Duplicate an atom. */
 } \atom;
 
@@ -78,7 +77,6 @@
 
 \erase {
 	/* Erase an atom. */
-	free(RVAL);
 } \atom;
 
 \erase {
