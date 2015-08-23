@@ -130,6 +130,30 @@ function getcost(left, right)
 	return cost;
 }
 
+function cpwlist(orig)
+{
+	var copy = [];
+	var i;
+
+	for (i = 0; i < orig.length; i++) {
+		var img = orig[i];
+		var wire = {
+			type: wiretype,
+			twin: img.twin.id
+		};
+
+		copy.push(wire);
+	}
+
+	for (i = 0; i < copy.length; i++) {
+		var wire = copy[i];
+
+		wire.twin = copy[wire.twin];
+	}
+
+	return copy;
+}
+
 function apply(left, right)
 {
 	var ltype = left.node.agent;
@@ -143,6 +167,8 @@ function apply(left, right)
 
 	function interact(lagent, ragent)
 	{
+		var wcopy = cpwlist(wlist);
+
 		stdout.write("x");
 	}
 
