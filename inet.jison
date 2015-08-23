@@ -28,7 +28,7 @@
 prog : rset MARK init {return {rules: $1, conf: $3};}
      ;
 rset : /* empty */ {$$ = [];}
-     | rset side CODE side ';' {$1.push({left: $2, right: $4}); $$ = $1;}
+     | rset side CODE side ';' {$1.push({left: $2, right: $4, code: $3}); $$ = $1;}
      ;
 side : cell {$$ = {node: $1, pax: []};}
      | cell '[' list ']' {$$ = {node: $1, pax: $3};}

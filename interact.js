@@ -196,8 +196,9 @@ function clone(img, wlist)
 	}
 }
 
-function apply(left, right)
+function apply(left, right, code)
 {
+	var effect = new Function("LVAL", "RVAL", code);
 	var ltype = left.node.agent;
 	var rtype = right.node.agent;
 	var human = ltype + "><" + rtype;
@@ -228,6 +229,8 @@ function apply(left, right)
 
 			addpair(copy, active);
 		}
+
+		effect(lagent.data, effect.data);
 
 		stdout.write("x");
 	}
@@ -269,15 +272,16 @@ function gettable()
 		var rule = inrules[i];
 		var left = rule.left;
 		var right = rule.right;
+		var code = rule.code;
 		var lrfunc, rlfunc;
 
 		addtypes(left);
 		addtypes(right);
 
-		lrfunc = apply(left, right);
+		lrfunc = apply(left, right, code);
 		custom[lrfunc.human] = lrfunc;
 
-		rlfunc = apply(right, left);
+		rlfunc = apply(right, left, code);
 		custom[rlfunc.human] = rlfunc;
 	}
 
