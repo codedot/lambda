@@ -5,6 +5,7 @@ var stdout = process.stdout;
 var parser = new inet.Parser();
 var src = fs.readFileSync(process.argv[2], "utf8");
 var system = parser.parse(src);
+var inhead = system.code;
 var inrules = system.rules;
 var inconf = system.conf;
 
@@ -202,9 +203,19 @@ function clone(img, context)
 	}
 }
 
+function mkeffect(code, expr)
+{
+	code = code.replace(/^{(.*)}$/, "$1");
+
+	if (expr)
+		code = "return (" + code + ");";
+
+	return new Function("LVAL", "RVAL", code);
+}
+
 function apply(left, right, code)
 {
-	var effect = new Function("LVAL", "RVAL", code);
+	var effect = mkeffect(code);
 	var ltype = left.node.agent;
 	var rtype = right.node.agent;
 	var human = ltype + "><" + rtype;
@@ -441,11 +452,7 @@ function encode(tree, wires, rt)
 		else
 			twin.active = active;
 	} else {
-		var effect;
-
-		code = code.replace(/^{(.*)}$/, "$1");
-		code = "return (" + code + ");";
-		effect = new Function("LVAL", "RVAL", code);
+		var effect = mkeffect(code, true);
 
 		if (rt)
 			tree.data = effect.call(inenv);
@@ -459,6 +466,7 @@ function encode(tree, wires, rt)
 function init()
 {
 	var wires = {};
+	var effect = mkeffect(inhead);
 	var i;
 
 	for (i = 0; i < inconf.length; i++) {
@@ -470,6 +478,8 @@ function init()
 		right = encode(right, wires, true);
 		addpair(left, right);
 	}
+
+	effect.call(inenv);
 }
 
 deadlock.cost = Infinity;

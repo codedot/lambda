@@ -18,6 +18,7 @@
 "\\" return "\\";
 "_" return "_";
 "=" return "=";
+"$" return "$";
 
 /lex
 
@@ -25,7 +26,10 @@
 
 %%
 
-prog : rset MARK init {return {rules: $1, conf: $3};}
+prog : head rset MARK init {return {code: $1, rules: $2, conf: $4};}
+     ;
+head : /* empty */ {$$ = "";}
+     | '$' CODE '$' {$$ = $2;}
      ;
 rset : /* empty */ {$$ = [];}
      | rset side CODE side ';' {$1.push({left: $2, right: $4, code: $3}); $$ = $1;}

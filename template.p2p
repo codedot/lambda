@@ -1,3 +1,7 @@
+${
+process.stdout.write("\nHello World!\n");
+}$
+
 \print {
 	/* Output results of read-back. */
 	puts(RVAL);
