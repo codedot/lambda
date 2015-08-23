@@ -42,7 +42,7 @@ list : tree {$$ = [$1];}
 leaf : cell
      | NAME {$$ = {agent: "wire", name: $1};}
      ;
-cell : '\' NAME {$$ = {agent: $2, code: ""};}
+cell : '\' NAME {$$ = {agent: $2, code: "void(0)"};}
      | '\' NAME '_' CODE {$$ = {agent: $2, code: $4};}
      ;
 init : /* empty */ {$$ = [];}

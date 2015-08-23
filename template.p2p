@@ -14,7 +14,7 @@
 
 \read[a] {
 	/* Read back abstraction. */
-} \lambda[\atom_{var(1)}, \read_{ABST(LVAL, var(0))}(a)];
+} \lambda[\atom_{mkvar(1)}, \read_{ABST(LVAL, mkvar(0))}(a)];
 
 \lambda[\read_{APPL(strdup("%s"), RVAL)}(a), a] {
 	/* Read back application. */

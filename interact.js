@@ -8,6 +8,7 @@ var system = parser.parse(src);
 var inrules = system.rules;
 var inconf = system.conf;
 
+var inenv = {};
 var inqueue = [];
 var types = {
 	wire: 0,
@@ -151,18 +152,19 @@ function cpwlist(orig)
 	return copy;
 }
 
-function clone(img, wlist)
+function clone(img, context)
 {
 	var type = img.type;
 
 	if (wiretype == type) {
+		var wlist = context.wlist;
 		var id = img.id;
 
 		return wlist[id];
 	} else if (ambtype == type) {
-		var active = clone(img.twin.active, wlist);
-		var main = clone(img.main, wlist);
-		var aux = clone(img.aux, wlist);
+		var active = clone(img.twin.active, context);
+		var main = clone(img.main, context);
+		var aux = clone(img.aux, context);
 		var twin = {
 			type: type,
 			main: main,
@@ -181,6 +183,9 @@ function clone(img, wlist)
 
 		return copy;
 	} else {
+		var lval = context.lval;
+		var rval = context.rval;
+		var effect = img.effect;
 		var imgpax = img.pax;
 		var pax = [];
 		var copy = {
@@ -190,8 +195,9 @@ function clone(img, wlist)
 		var i;
 
 		for (i = 0; i < imgpax.length; i++)
-			pax[i] = clone(imgpax[i], wlist);
+			pax[i] = clone(imgpax[i], context);
 
+		copy.data = effect.call(inenv, lval, rval);
 		return copy;
 	}
 }
@@ -213,11 +219,18 @@ function apply(left, right, code)
 		var wcopy = cpwlist(wlist);
 		var lpax = lagent.pax;
 		var rpax = ragent.pax;
+		var lval = lagent.data;
+		var rval = ragent.data;
+		var context = {
+			wlist: wcopy,
+			lval: lval,
+			rval: rval
+		};
 
 		for (i = 0; i < limg.length; i++) {
 			var img = limg[i];
 			var active = lpax[i];
-			var copy = clone(img, wcopy);
+			var copy = clone(img, context);
 
 			addpair(copy, active);
 		}
@@ -225,12 +238,12 @@ function apply(left, right, code)
 		for (i = 0; i < rimg.length; i++) {
 			var img = rimg[i];
 			var active = rpax[i];
-			var copy = clone(img, wcopy);
+			var copy = clone(img, context);
 
 			addpair(copy, active);
 		}
 
-		effect(lagent.data, effect.data);
+		effect.call(inenv, lval, rval);
 
 		stdout.write("x");
 	}
@@ -379,6 +392,7 @@ function addpair(left, right)
 function encode(tree, wires, rt)
 {
 	var node = tree.node;
+	var code = node.code;
 	var agent = node.agent;
 	var type = types[agent];
 	var pax = tree.pax;
@@ -426,6 +440,17 @@ function encode(tree, wires, rt)
 			addpair(active, twin);
 		else
 			twin.active = active;
+	} else {
+		var effect;
+
+		code = code.replace(/^{(.*)}$/, "$1");
+		code = "return (" + code + ");";
+		effect = new Function("LVAL", "RVAL", code);
+
+		if (rt)
+			tree.data = effect.call(inenv);
+		else
+			tree.effect = effect;
 	}
 
 	return tree;
