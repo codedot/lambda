@@ -3,9 +3,9 @@ JISON = node_modules/.bin/jison
 all: $(JISON)
 	$(MAKE) parsers
 	$(MAKE) example
-	./example
+	time -p ./example
 	$(MAKE) example.p2p
-	node interact.js example.p2p
+	time -p node interact.js example.p2p
 
 example.c: example.in
 

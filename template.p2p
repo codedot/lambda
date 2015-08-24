@@ -1,6 +1,6 @@
 \print {
 	/* Output results of read-back. */
-	process.stdout.write("\n" + RVAL + "\n");
+	console.log(RVAL);
 } \atom;
 
 \read[a] {
@@ -13,13 +13,13 @@
 
 \read[a] {
 	/* Read back abstraction. */
-} \lambda[\atom_{'mkvar(1)'}, \read_{'ABST(LVAL, mkvar(0))'}(a)];
+} \lambda[\atom_{this.mkvar(true)}, \read_{this.abst(LVAL, this.mkvar())}(a)];
 
-\lambda[\read_{'APPL("%s", RVAL)'}(a), a] {
+\lambda[\read_{this.appl("%s", RVAL)}(a), a] {
 	/* Read back application. */
 } \atom;
 
-\read[\atom_{'ATOM(LVAL, RVAL)'}] {
+\read[\atom_{this.atom(LVAL, RVAL)}] {
 	/* Read back an atom. */
 } \atom;
 
@@ -109,4 +109,41 @@ INCONFIG
 
 $$
 
-process.stdout.write("\nHello World!\n");
+var id = 0;
+
+function mkvar(fresh)
+{
+	if (fresh)
+		++id;
+
+	return "v" + id.toFixed(0);
+}
+
+function place(buf, format, str)
+{
+	var sub = format.replace("%s", str);
+
+	sub = sub.replace("%%", "%s");
+
+	return buf.replace("%s", sub);
+}
+
+function abst(buf, str)
+{
+	return place(buf, "%s: %%", str);
+}
+
+function appl(buf, str)
+{
+	return place(buf, "%s (%%)", str);
+}
+
+function atom(buf, str)
+{
+	return place(buf, "%s", str)
+}
+
+this.mkvar = mkvar;
+this.abst = abst;
+this.appl = appl;
+this.atom = atom;

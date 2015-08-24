@@ -1,7 +1,6 @@
 var inet = require("./inet");
 var fs = require("fs");
 
-var stdout = process.stdout;
 var parser = new inet.Parser();
 var src = fs.readFileSync(process.argv[2], "utf8");
 var system = parser.parse(src);
@@ -40,7 +39,8 @@ function addtypes(tree)
 
 function deadlock()
 {
-	stdout.write("!");
+	console.error("No applicable rule");
+	process.exit(1);
 }
 
 function rewire(wire, agent)
@@ -48,11 +48,8 @@ function rewire(wire, agent)
 	var twin = wire.twin;
 	var key;
 
-	if (wire.type != wiretype) {
-		addpair(wire, agent);
-		stdout.write("@");
-		return;
-	}
+	if (wire.type != wiretype)
+		return addpair(wire, agent);
 
 	for (key in twin)
 		delete twin[key];
@@ -62,8 +59,6 @@ function rewire(wire, agent)
 
 	if (agent.twin)
 		agent.twin.twin = twin;
-
-	stdout.write("~");
 }
 
 function eriwer(agent, wire)
@@ -78,11 +73,8 @@ function determ(amb, agent)
 	var main = amb.main;
 	var aux = amb.aux;
 
-	if (amb.type != ambtype) {
-		addpair(amb, agent);
-		stdout.write("&");
-		return;
-	}
+	if (amb.type != ambtype)
+		return addpair(amb, agent);
 
 	addpair(main, agent);
 
@@ -93,8 +85,6 @@ function determ(amb, agent)
 	delete twin.main;
 	delete twin.aux;
 	addpair(wire, aux);
-
-	stdout.write("?");
 }
 
 function mreted(agent, amb)
@@ -206,29 +196,19 @@ function clone(img, context)
 	}
 }
 
-function mkeffect(code, expr, rl)
+function mkeffect(code, expr)
 {
-	var lval, rval;
-
-	if (rl) {
-		lval = "RVAL";
-		rval = "LVAL";
-	} else {
-		lval = "LVAL";
-		rval = "RVAL";
-	}
-
 	code = code.replace(/^{(.*)}$/, "$1");
 
 	if (expr)
 		code = "return (" + code + ");";
 
-	return new Function(lval, rval, code);
+	return new Function("LVAL", "RVAL", code);
 }
 
 function apply(left, right, code, rl)
 {
-	var effect = mkeffect(code, false, rl);
+	var effect = mkeffect(code);
 	var ltype = left.node.agent;
 	var rtype = right.node.agent;
 	var human = ltype + "><" + rtype;
@@ -243,9 +223,17 @@ function apply(left, right, code, rl)
 		var wcopy = cpwlist(wlist);
 		var lpax = lagent.pax;
 		var rpax = ragent.pax;
-		var lval = lagent.data;
-		var rval = ragent.data;
-		var context = {
+		var lval, rval, context;
+
+		if (rl) {
+			rval = lagent.data;
+			lval = ragent.data;
+		} else {
+			lval = lagent.data;
+			rval = ragent.data;
+		}
+
+		context = {
 			wlist: wcopy,
 			lval: lval,
 			rval: rval
@@ -268,8 +256,6 @@ function apply(left, right, code, rl)
 		}
 
 		effect.call(inenv, lval, rval);
-
-		stdout.write("x");
 	}
 
 	interact.cost = getcost(left, right);
@@ -331,21 +317,13 @@ function gettable()
 		addtypes(right);
 	}
 
-	stdout.write("_><_");
-	for (type in types)
-		stdout.write("\t" + type);
-	stdout.write("\n");
-
 	for (left in types) {
 		var row = [];
-
-		stdout.write(left);
 
 		for (right in types) {
 			var lr = custom[left + "><" + right];
 			var rl = custom[right + "><" + left];
-			var human = left + "><" + right;
-			var rule = deadlock;
+			var rule;
 
 			if ("wire" == left)
 				rule = rewire;
@@ -360,18 +338,11 @@ function gettable()
 			else if (rl)
 				rule = rl;
 			else
-				human = "----";
-
-			human = human.replace(/\bwire\b/g, "~");
-			human = human.replace(/\bamb\b/g, "?");
-			human = human.replace(/^(.).*><(.).*/, "$1><$2");
-			human = human.replace("><", ">" + rule.cost + "<");
-			stdout.write("\t" + human);
+				rule = deadlock;
 
 			row[types[right]] = rule;
 		}
 
-		stdout.write("\n");
 		tab[types[left]] = row;
 	}
 
@@ -527,11 +498,9 @@ inqueue.sort(compare);
 
 init();
 
-stdout.write("\nApplying interaction rules:\n");
 while (true) {
 	var active = reduce();
 
 	if (!active)
 		break;
 }
-stdout.write("\nNo more active pairs left.\n");
