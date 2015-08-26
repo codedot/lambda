@@ -1,4 +1,4 @@
-var mlc = require("./mlc");
+var mlc = require("./lambda");
 var fs = require("fs");
 
 var parser = new mlc.Parser();

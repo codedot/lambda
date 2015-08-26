@@ -1,18 +1,18 @@
 JISON = node_modules/.bin/jison
 
 all: parsers
-	$(MAKE) example.in
-	time -p node interact.js example.in
+	$(MAKE) fact.in
+	time -p node cli.js fact.in
 
 parsers: $(JISON)
-	$(MAKE) mlc.js
-	$(MAKE) inet.js
+	$(MAKE) lambda.js
+	$(MAKE) system.js
 
 $(JISON):
 	npm install jison
 
 clean:
-	-rm -f inet.js mlc.js example.in
+	-rm -f lambda.js system.js fact.in
 
 .POSIX:
 
@@ -22,4 +22,4 @@ clean:
 	$(JISON) $<
 
 .mlc.in:
-	node parse.js $<
+	node encode.js $<

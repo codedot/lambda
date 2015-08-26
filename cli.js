@@ -1,4 +1,4 @@
-var inet = require("./inet");
+var inet = require("./system");
 var fs = require("fs");
 
 var parser = new inet.Parser();
