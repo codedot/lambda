@@ -2,10 +2,9 @@ var mlc = require("./mlc");
 var fs = require("fs");
 
 var parser = new mlc.Parser();
-var p2p = !!process.argv[3];
-var suffix = (p2p ? ".p2p" : ".in");
-var system = fs.readFileSync("template" + suffix, "utf8");
-var src = fs.readFileSync(process.argv[2], "utf8");
+var system = fs.readFileSync("template.txt", "utf8");
+var filename = process.argv[2];
+var src = fs.readFileSync(filename, "utf8");
 var dict = parser.parse(src);
 var macros = dict.macros;
 var term = dict.term;
@@ -185,11 +184,7 @@ function gamma(obj, root)
 	var eqn = root + " = %s";
 
 	if ("atom" == node) {
- if (p2p) {
 		var agent = "\\atom_{\"%s\"}";
- } else {
-		var agent = "\\atom_{strdup(\"%s\")}";
- }
 
 		if (obj.free)
 			agent = agent.replace("%s", obj.name);
@@ -296,11 +291,7 @@ function getconf(obj)
 
 	obj = alpha(obj);
 	conf = gamma(obj, "root");
- if (p2p) {
 	conf.push("\\read_{\"%s\"}(\\print) = root");
- } else {
-	conf.push("\\read_{strdup(\"%s\")}(\\print) = root");
- }
 	return conf;
 }
 
@@ -324,4 +315,6 @@ eqns = getconf(term);
 for (i = 0; i < eqns.length; i++)
 	inconfig = inconfig.concat(eqns[i] + ";\n");
 
-process.stdout.write(system.replace("INCONFIG\n", inconfig));
+filename = filename.replace(/\.mlc$/, "").concat(".in");
+system = system.replace("INCONFIG\n", inconfig);
+fs.writeFileSync(filename, system);
