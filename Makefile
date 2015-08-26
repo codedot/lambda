@@ -1,25 +1,25 @@
-JISON = node_modules/.bin/jison
+JISON = node_modules/jison/package.json
 
-all: parsers
-	$(MAKE) fact.in
+SRC = \
+	cli.js \
+	encode.js \
+	fact.in \
+	lambda.jison \
+	system.jison \
+	template.txt
+
+all: $(JISON) $(SRC)
 	time -p node cli.js fact.in
-
-parsers: $(JISON)
-	$(MAKE) lambda.js
-	$(MAKE) system.js
 
 $(JISON):
 	npm install jison
 
 clean:
-	-rm -f lambda.js system.js fact.in
+	-rm -f fact.in
 
 .POSIX:
 
-.SUFFIXES: .js .jison .mlc .in
-
-.jison.js:
-	$(JISON) $<
+.SUFFIXES: .mlc .in
 
 .mlc.in:
 	node encode.js $<

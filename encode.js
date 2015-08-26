@@ -1,7 +1,8 @@
-var mlc = require("./lambda");
+var jison = require("jison");
 var fs = require("fs");
 
-var parser = new mlc.Parser();
+var grammar = fs.readFileSync("lambda.jison", "utf8");
+var parser = new jison.Parser(grammar);
 var system = fs.readFileSync("template.txt", "utf8");
 var filename = process.argv[2];
 var src = fs.readFileSync(filename, "utf8");
