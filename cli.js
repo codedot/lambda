@@ -1,9 +1,11 @@
+var mlc2in = require("./encode");
 var jison = require("jison");
 var fs = require("fs");
 
 var grammar = fs.readFileSync("system.jison", "utf8");
 var parser = new jison.Parser(grammar);
-var src = fs.readFileSync(process.argv[2], "utf8");
+var mlc = fs.readFileSync(process.argv[2], "utf8");
+var src = mlc2in(mlc);
 var system = parser.parse(src);
 var inverb = system.code;
 var inrules = system.rules;

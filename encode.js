@@ -4,15 +4,7 @@ var fs = require("fs");
 var grammar = fs.readFileSync("lambda.jison", "utf8");
 var parser = new jison.Parser(grammar);
 var system = fs.readFileSync("template.txt", "utf8");
-var filename = process.argv[2];
-var src = fs.readFileSync(filename, "utf8");
-var dict = parser.parse(src);
-var macros = dict.macros;
-var term = dict.term;
-var lastwire = 0;
-var inconfig = "";
-
-var eqns, i;
+var lastwire;
 
 function getcap(left, right)
 {
@@ -290,32 +282,44 @@ function getconf(obj)
 {
 	var conf;
 
+	lastwire = 0;
+
 	obj = alpha(obj);
 	conf = gamma(obj, "root");
 	conf.push("\\read_{\"%s\"}(\\print) = root");
 	return conf;
 }
 
-for (i = 0; i < macros.length; i++) {
-	var macro = macros[i];
-	var id = macro.id;
-	var def = macro.def;
+function encode(mlc)
+{
+	var dict = parser.parse(mlc);
+	var macros = dict.macros;
+	var term = dict.term;
+	var inconfig = "";
+	var eqns, i;
 
-	term = {
-		node: "appl",
-		left: {
-			node: "abst",
-			var: id,
-			body: term
-		},
-		right: def
-	};
+	for (i = 0; i < macros.length; i++) {
+		var macro = macros[i];
+		var id = macro.id;
+		var def = macro.def;
+
+		term = {
+			node: "appl",
+			left: {
+				node: "abst",
+				var: id,
+				body: term
+			},
+			right: def
+		};
+	}
+
+	eqns = getconf(term);
+
+	for (i = 0; i < eqns.length; i++)
+		inconfig = inconfig.concat(eqns[i] + ";\n");
+
+	return system.replace("INCONFIG\n", inconfig);
 }
 
-eqns = getconf(term);
-for (i = 0; i < eqns.length; i++)
-	inconfig = inconfig.concat(eqns[i] + ";\n");
-
-filename = filename.replace(/\.mlc$/, "").concat(".in");
-system = system.replace("INCONFIG\n", inconfig);
-fs.writeFileSync(filename, system);
+module.exports = encode;
