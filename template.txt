@@ -1,6 +1,6 @@
 \print {
 	/* Output results of read-back. */
-	console.log(RVAL);
+	this.result = RVAL;
 } \atom;
 
 \read[a] {
