@@ -1,13 +1,15 @@
 var run = require("./system");
 var fs = require("fs");
 
+var textarea;
+
 function find()
 {
-	var mlc = $("textarea").val();
+	var mlc = textarea.val();
 
 	mlc = run(mlc);
 
-	$("pre").text(mlc);
+	$("#result").text(mlc);
 }
 
 function setup()
@@ -15,6 +17,8 @@ function setup()
 	var fact = fs.readFileSync("fact.mlc", "utf8");
 	var cols = 0;
 	var i, rows;
+
+	textarea = $("textarea");
 
 	fact = fact.replace(/\n*$/, "");
 
@@ -25,9 +29,9 @@ function setup()
 
 	rows = rows.length;
 
-	$("textarea").attr("rows", rows);
-	$("textarea").attr("cols", cols);
-	$("textarea").text(fact);
+	textarea.attr("rows", rows);
+	textarea.attr("cols", cols);
+	textarea.text(fact);
 
 	$("button").click(find);
 }
