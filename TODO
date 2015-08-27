@@ -1,3 +1,2 @@
-! Use BRFS directly only when needed to avoid issue #55
-* Try to delete params.json
-~ Make use of Twitter's Bootstrap
+* Use BRFS directly only when needed to avoid issue #55
+* Make use of Twitter's Bootstrap
