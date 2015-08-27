@@ -3,10 +3,10 @@ BROWSERIFY = node_modules/.bin/browserify
 JISON = node_modules/.bin/jison
 
 SRC = \
-	agents.jison \
+	agents.js \
 	encode.js \
 	fact.mlc \
-	lambda.jison \
+	lambda.js \
 	system.js \
 	template.txt \
 	web.js
@@ -14,7 +14,7 @@ SRC = \
 all: bundle.js
 	time -p node cli.js fact.mlc
 
-bundle.js: $(JISON) $(BROWSERIFY) $(BRFS) $(SRC)
+bundle.js: $(BROWSERIFY) $(BRFS) $(SRC)
 	node_modules/.bin/browserify -t brfs -o bundle.js web.js
 
 $(JISON):
@@ -27,4 +27,15 @@ $(BRFS):
 	npm install brfs
 
 clean:
+	-rm -f agents.js lambda.js *.tmp
 	-rm -fr node_modules
+
+.POSIX:
+
+.SUFFIXES: .jison .js
+
+.jison.js:
+	$(MAKE) $(JISON)
+	$(JISON) $< -o $*.tmp -m js
+	printf '\nmodule.exports = parser;\n' >>$*.tmp
+	mv $*.tmp $@

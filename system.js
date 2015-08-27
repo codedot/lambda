@@ -1,9 +1,8 @@
 var mlc2in = require("./encode");
-var jison = require("jison");
+var inet = require("./agents");
 var fs = require("fs");
 
-var grammar = fs.readFileSync("agents.jison", "utf8");
-var parser = new jison.Parser(grammar);
+var parser = new inet.Parser();
 var inverb, inrules, inconf, inenv, inqueue;
 var types, ntypes, wiretype, ambtype, table;
 
@@ -30,7 +29,6 @@ function addtypes(tree)
 function deadlock()
 {
 	console.error("No applicable rule");
-	process.exit(1);
 }
 
 function rewire(wire, agent)
