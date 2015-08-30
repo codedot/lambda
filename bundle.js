@@ -1594,6 +1594,7 @@ var mlc2in = require("./encode");
 var inet = require("./agents");
 
 
+var example = "I = x: x;\nK = x, y: x;\nS = x, y, z: x z (y z);\n\nT = K;\nF = x, y: y;\nAND = p, q: p q F;\nOR = p, q: p T q;\nNOT = p: (a, b: p b a);\n\nC0 = f, x: x;\nC1 = f, x: f x;\nC2 = f, x: f (f x);\nC3 = f, x: f (f (f x));\nSUCC = n: (f, x: f (n f x));\nPLUS = m, n: (f, x: m f (n f x));\nMULT = m, n: (f: m (n f));\nEXP = m, n: n m;\nPRED = n: (f, x: n (g, h: h (g f)) (K x) I);\nMINUS = m, n: n PRED m;\nZERO = n: n (K F) T;\n\nA = self, f: f (self self f);\nY = A A;\nFACTR = self, n: (ZERO n) C1 (MULT n (self (PRED n)));\nFACT = Y FACTR;\n\nC24 = FACT (PLUS C2 C2);\nC27 = EXP C3 C3;\nMINUS C27 C24\n";
 var parser = new inet.Parser();
 var inverb, inrules, inconf, inenv, inqueue;
 var types, ntypes, wiretype, ambtype, table;
@@ -2103,11 +2104,11 @@ function run(mlc)
 	return inenv.result;
 }
 
+run.example = example.replace(/\n*$/, "");
 module.exports = run;
 
 },{"./agents":1,"./encode":2}],5:[function(require,module,exports){
 var run = require("./system");
-
 
 var textarea, button;
 
@@ -2127,15 +2128,13 @@ function allow()
 
 function setup()
 {
-	var fact = "I = x: x;\nK = x, y: x;\nS = x, y, z: x z (y z);\n\nT = K;\nF = x, y: y;\nAND = p, q: p q F;\nOR = p, q: p T q;\nNOT = p: (a, b: p b a);\n\nC0 = f, x: x;\nC1 = f, x: f x;\nC2 = f, x: f (f x);\nC3 = f, x: f (f (f x));\nSUCC = n: (f, x: f (n f x));\nPLUS = m, n: (f, x: m f (n f x));\nMULT = m, n: (f: m (n f));\nEXP = m, n: n m;\nPRED = n: (f, x: n (g, h: h (g f)) (K x) I);\nMINUS = m, n: n PRED m;\nZERO = n: n (K F) T;\n\nA = self, f: f (self self f);\nY = A A;\nFACTR = self, n: (ZERO n) C1 (MULT n (self (PRED n)));\nFACT = Y FACTR;\n\nC24 = FACT (PLUS C2 C2);\nC27 = EXP C3 C3;\nMINUS C27 C24\n";
+	var example = run.example;
 	var cols = 0;
 	var i, rows;
 
 	textarea = $("textarea");
 
-	fact = fact.replace(/\n*$/, "");
-
-	rows = fact.split("\n");
+	rows = example.split("\n");
 	for (i = 0; i < rows.length; i++)
 		if (cols < rows[i].length)
 			cols = rows[i].length;
@@ -2144,7 +2143,7 @@ function setup()
 
 	textarea.attr("rows", rows);
 	textarea.attr("cols", cols);
-	textarea.text(fact);
+	textarea.text(example);
 
 	button = $("button");
 	button.click(find);

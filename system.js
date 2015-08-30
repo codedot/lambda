@@ -2,6 +2,7 @@ var mlc2in = require("./encode");
 var inet = require("./agents");
 var fs = require("fs");
 
+var example = fs.readFileSync("fact.mlc", "utf8");
 var parser = new inet.Parser();
 var inverb, inrules, inconf, inenv, inqueue;
 var types, ntypes, wiretype, ambtype, table;
@@ -511,4 +512,5 @@ function run(mlc)
 	return inenv.result;
 }
 
+run.example = example.replace(/\n*$/, "");
 module.exports = run;

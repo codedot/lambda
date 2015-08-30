@@ -1,5 +1,4 @@
 var run = require("./system");
-var fs = require("fs");
 
 var textarea, button;
 
@@ -19,15 +18,13 @@ function allow()
 
 function setup()
 {
-	var fact = fs.readFileSync("fact.mlc", "utf8");
+	var example = run.example;
 	var cols = 0;
 	var i, rows;
 
 	textarea = $("textarea");
 
-	fact = fact.replace(/\n*$/, "");
-
-	rows = fact.split("\n");
+	rows = example.split("\n");
 	for (i = 0; i < rows.length; i++)
 		if (cols < rows[i].length)
 			cols = rows[i].length;
@@ -36,7 +33,7 @@ function setup()
 
 	textarea.attr("rows", rows);
 	textarea.attr("cols", cols);
-	textarea.text(fact);
+	textarea.text(example);
 
 	button = $("button");
 	button.click(find);

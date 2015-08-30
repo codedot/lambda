@@ -12,7 +12,7 @@ SRC = \
 	web.js
 
 all: bundle.js
-	time -p node cli.js fact.mlc
+	time -p node check.js
 
 bundle.js: $(BROWSERIFY) $(BRFS) $(SRC)
 	node_modules/.bin/browserify -t brfs -o bundle.js web.js
