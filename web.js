@@ -1,7 +1,7 @@
 var run = require("./system");
 var fs = require("fs");
 
-var textarea;
+var textarea, button;
 
 function find()
 {
@@ -10,6 +10,11 @@ function find()
 	mlc = run(mlc);
 
 	$("#result").text(mlc);
+}
+
+function allow()
+{
+	button.attr("disabled", !this.checked);
 }
 
 function setup()
@@ -33,7 +38,10 @@ function setup()
 	textarea.attr("cols", cols);
 	textarea.text(fact);
 
-	$("button").click(find);
+	button = $("button");
+	button.click(find);
+
+	$("input").click(allow);
 }
 
 $(setup);
