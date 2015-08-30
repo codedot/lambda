@@ -5,20 +5,37 @@
 <meta charset="utf-8">
 <title>MLC</title>
 
+<link href="http://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.css" rel="stylesheet">
+
 <script src="http://code.jquery.com/jquery.js"></script>
 <script src="bundle.js"></script>
 </head>
 
 <body>
-<div style="margin: 1em 3em; font: xx-large Georgia">
-<h1 style="color: #8080ff">Macro Lambda Calculus</h1>
-<p>Call-by-need Lambda Calculus for Web using Interaction Nets</p>
+<div class="container">
+<div class="page-header">
+<h1>Macro Lambda Calculus
+<small class="text-nowrap">
+Call-by-need Lambda Calculus for Web using Interaction Nets
+</small>
+</h1>
+</div>
 
-<p>
-<button>Find normal form</button>
-<pre id="result"></pre>
-<textarea></textarea>
-</p>
+<div class="form-group">
+<div class="checkbox">
+<label>
+<input type="checkbox"> I understand
+<a href="https://en.wikipedia.org/wiki/Halting_problem">the halting problem</a>
+</label>
+</div>
+
+<button class="btn btn-danger">Find normal form</button>
+</div>
+
+<div class="form-group">
+<label id="result">Define a lambda term</label>
+<textarea class="form-control"></textarea>
+</div>
 
 <div id="disqus_thread"></div>
 <script type="text/javascript">
@@ -35,6 +52,7 @@
     })();
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+</div>
 </div>
 
 <a href="http://github.com/codedot/lambda"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
