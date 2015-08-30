@@ -1,3 +1,3 @@
-var run = require("./system");
+require("./bundle");
 
-console.log(run(run.example));
+console.log(mlcjs(mlcjs.example));

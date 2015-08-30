@@ -513,4 +513,4 @@ function run(mlc)
 }
 
 run.example = example.replace(/\n*$/, "");
-module.exports = run;
+global.mlcjs = run;

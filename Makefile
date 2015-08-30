@@ -8,14 +8,13 @@ SRC = \
 	fact.mlc \
 	lambda.js \
 	system.js \
-	template.txt \
-	web.js
+	template.txt
 
 all: bundle.js
 	time -p node check.js
 
 bundle.js: $(BROWSERIFY) $(BRFS) $(SRC)
-	node_modules/.bin/browserify -t brfs -o bundle.js web.js
+	node_modules/.bin/browserify -t brfs -o bundle.js system.js
 
 $(JISON):
 	npm install jison

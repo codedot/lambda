@@ -1590,6 +1590,7 @@ return new Parser;
 module.exports = parser;
 
 },{}],4:[function(require,module,exports){
+(function (global){
 var mlc2in = require("./encode");
 var inet = require("./agents");
 
@@ -2105,52 +2106,7 @@ function run(mlc)
 }
 
 run.example = example.replace(/\n*$/, "");
-module.exports = run;
+global.mlcjs = run;
 
-},{"./agents":1,"./encode":2}],5:[function(require,module,exports){
-var run = require("./system");
-
-var textarea, button;
-
-function find()
-{
-	var mlc = textarea.val();
-
-	mlc = run(mlc);
-
-	$("#result").text(mlc);
-}
-
-function allow()
-{
-	button.attr("disabled", !this.checked);
-}
-
-function setup()
-{
-	var example = run.example;
-	var cols = 0;
-	var i, rows;
-
-	textarea = $("textarea");
-
-	rows = example.split("\n");
-	for (i = 0; i < rows.length; i++)
-		if (cols < rows[i].length)
-			cols = rows[i].length;
-
-	rows = rows.length;
-
-	textarea.attr("rows", rows);
-	textarea.attr("cols", cols);
-	textarea.text(example);
-
-	button = $("button");
-	button.click(find);
-
-	$("input").click(allow);
-}
-
-$(setup);
-
-},{"./system":4}]},{},[5]);
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./agents":1,"./encode":2}]},{},[4]);
