@@ -35,19 +35,22 @@ function deadlock()
 function rewire(wire, agent)
 {
 	var twin = wire.twin;
+	var twin2 = agent.twin;
 	var key;
 
 	if (wire.type != wiretype)
 		return addpair(wire, agent);
 
-	for (key in twin)
-		delete twin[key];
+	twin.type = agent.type;
+	twin.pax = agent.pax;
+	twin.main = agent.main;
+	twin.aux = agent.aux;
+	twin.data = agent.data;
 
-	for (key in agent)
-		twin[key] = agent[key];
-
-	if (agent.twin)
-		agent.twin.twin = twin;
+	if (twin2) {
+		twin.twin = twin2;
+		twin2.twin = twin;
+	}
 }
 
 function eriwer(agent, wire)
