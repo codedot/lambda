@@ -41,6 +41,7 @@
 
 \lambda[a, b] {
 	/* Apply a closed term. */
+	++this.beta;
 } \lambda[a, b];
 
 \copy[a, b] {
@@ -147,3 +148,4 @@ this.mkvar = mkvar;
 this.abst = abst;
 this.appl = appl;
 this.atom = atom;
+this.beta = 0;

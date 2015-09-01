@@ -512,7 +512,7 @@ function run(mlc)
 			break;
 	}
 
-	return inenv.result;
+	return inenv;
 }
 
 run.example = example.replace(/\n*$/, "");

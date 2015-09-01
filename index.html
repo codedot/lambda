@@ -25,7 +25,9 @@ function find()
 
 	mlc = mlcjs(mlc);
 
-	$("#result").text(mlc);
+	console.info(mlc.beta, mlc.result);
+
+	$("#result").text(mlc.result);
 }
 
 function allow()
