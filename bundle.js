@@ -653,7 +653,7 @@ var mlc = require("./lambda");
 
 
 var parser = new mlc.Parser();
-var system = "\\print {\n\t/* Output results of read-back. */\n\tthis.result = RVAL;\n\t++this.total;\n} \\atom;\n\n\\read[a] {\n\t/* Unshare variable. */\n\t++this.total;\n} \\share[\\copy(b, \\read_{LVAL}(a)), b];\n\n\\read[a] {\n\t/* Initiate application. */\n\t++this.total;\n} \\apply[\\lambda(b, \\read_{LVAL}(a)), b];\n\n\\read[a] {\n\t/* Read back abstraction. */\n\t++this.total;\n} \\lambda[\\atom_{this.mkvar(true)}, \\read_{this.abst(LVAL, this.mkvar())}(a)];\n\n\\lambda[\\read_{this.appl(\"%s\", RVAL)}(a), a] {\n\t/* Read back application. */\n\t++this.total;\n} \\atom;\n\n\\read[\\atom_{this.atom(LVAL, RVAL)}] {\n\t/* Read back an atom. */\n\t++this.total;\n} \\atom;\n\n\\copy[\\atom_{RVAL}, \\atom_{RVAL}] {\n\t/* Copy an atom. */\n\t++this.total;\n} \\atom;\n\n\\dup[\\atom_{RVAL}, \\atom_{RVAL}] {\n\t/* Duplicate an atom. */\n\t++this.total;\n} \\atom;\n\n\\lambda[a, b] {\n\t/* Unshare variable. */\n\t++this.total;\n} \\share[\\copy(c, \\lambda(a, b)), c];\n\n\\lambda[a, b] {\n\t/* Initiate application. */\n\t++this.total;\n} \\apply[\\lambda(c, \\lambda(a, b)), c];\n\n\\lambda[a, b] {\n\t/* Apply a closed term. */\n\t++this.beta;\n\t++this.total;\n} \\lambda[a, b];\n\n\\copy[a, b] {\n\t/* Unshare variable. */\n\t++this.total;\n} \\share[\\copy(c, \\copy(a, b)), c];\n\n\\copy[a, b] {\n\t/* Initiate application. */\n\t++this.total;\n} \\apply[\\lambda(c, \\copy(a, b)), c];\n\n\\copy[\\lambda(a, b), \\lambda(c, d)] {\n\t/* Initiate copy of a closed term. */\n\t++this.total;\n} \\lambda[\\dup(a, c), \\dup(b, d)];\n\n\\dup[a, b] {\n\t/* Unshare variable. */\n\t++this.total;\n} \\share[\\copy(c, \\dup(a, b)), c];\n\n\\dup[a, b] {\n\t/* Duplicate sharing. */\n\t++this.total;\n} \\copy[\\dup(\\amb(c, \\share(a, d), d), \\amb(e, \\share(b, f), f)), \\dup(c, e)];\n\n\\dup[\\apply(a, b), \\apply(c, d)] {\n\t/* Duplicate application. */\n\t++this.total;\n} \\apply[\\dup(a, c), \\dup(b, d)];\n\n\\dup[\\lambda(a, b), \\lambda(c, d)] {\n\t/* Duplicate abstraction. */\n\t++this.total;\n} \\lambda[\\dup(a, c), \\dup(b, d)];\n\n\\dup[a, b] {\n\t/* Finish duplication. */\n\t++this.total;\n} \\dup[a, b];\n\n\\erase {\n\t/* Erase an atom. */\n\t++this.total;\n} \\atom;\n\n\\erase {\n\t/* Erase sharing. */\n\t++this.total;\n} \\share[a, a];\n\n\\erase {\n\t/* Erase application. */\n\t++this.total;\n} \\apply[\\erase, \\erase];\n\n\\erase {\n\t/* Erase abstraction. */\n\t++this.total;\n} \\lambda[\\erase, \\erase];\n\n\\erase {\n\t/* Erase copy initiator. */\n\t++this.total;\n} \\copy[\\erase, \\erase];\n\n\\erase {\n\t/* Erase duplicator. */\n\t++this.total;\n} \\dup[\\erase, \\erase];\n\n\\erase {\n\t/* Finish erasing. */\n\t++this.total;\n} \\erase;\n\n$$\n\nINCONFIG\n\n$$\n\nvar id = 0;\n\nfunction mkvar(fresh)\n{\n\tif (fresh)\n\t\t++id;\n\n\treturn \"v\" + id.toFixed(0);\n}\n\nfunction place(buf, format, str)\n{\n\tvar sub = format.replace(\"%s\", str);\n\n\tsub = sub.replace(\"%%\", \"%s\");\n\n\treturn buf.replace(\"%s\", sub);\n}\n\nfunction abst(buf, str)\n{\n\treturn place(buf, \"%s: %%\", str);\n}\n\nfunction appl(buf, str)\n{\n\treturn place(buf, \"%s (%%)\", str);\n}\n\nfunction atom(buf, str)\n{\n\treturn place(buf, \"%s\", str)\n}\n\nthis.mkvar = mkvar;\nthis.abst = abst;\nthis.appl = appl;\nthis.atom = atom;\nthis.beta = 0;\nthis.total = 0;\n";
+var system = "\\print {\n\t/* Output results of read-back. */\n\tthis.nf = RVAL;\n\t++this.total;\n} \\atom;\n\n\\read[a] {\n\t/* Unshare variable. */\n\t++this.total;\n} \\share[\\copy(b, \\read_{LVAL}(a)), b];\n\n\\read[a] {\n\t/* Initiate application. */\n\t++this.total;\n} \\apply[\\lambda(b, \\read_{LVAL}(a)), b];\n\n\\read[a] {\n\t/* Read back abstraction. */\n\t++this.total;\n} \\lambda[\\atom_{this.mkvar(true)}, \\read_{this.abst(LVAL, this.mkvar())}(a)];\n\n\\lambda[\\read_{this.appl(\"%s\", RVAL)}(a), a] {\n\t/* Read back application. */\n\t++this.total;\n} \\atom;\n\n\\read[\\atom_{this.atom(LVAL, RVAL)}] {\n\t/* Read back an atom. */\n\t++this.total;\n} \\atom;\n\n\\copy[\\atom_{RVAL}, \\atom_{RVAL}] {\n\t/* Copy an atom. */\n\t++this.total;\n} \\atom;\n\n\\dup[\\atom_{RVAL}, \\atom_{RVAL}] {\n\t/* Duplicate an atom. */\n\t++this.total;\n} \\atom;\n\n\\lambda[a, b] {\n\t/* Unshare variable. */\n\t++this.total;\n} \\share[\\copy(c, \\lambda(a, b)), c];\n\n\\lambda[a, b] {\n\t/* Initiate application. */\n\t++this.total;\n} \\apply[\\lambda(c, \\lambda(a, b)), c];\n\n\\lambda[a, b] {\n\t/* Apply a closed term. */\n\t++this.beta;\n\t++this.total;\n} \\lambda[a, b];\n\n\\copy[a, b] {\n\t/* Unshare variable. */\n\t++this.total;\n} \\share[\\copy(c, \\copy(a, b)), c];\n\n\\copy[a, b] {\n\t/* Initiate application. */\n\t++this.total;\n} \\apply[\\lambda(c, \\copy(a, b)), c];\n\n\\copy[\\lambda(a, b), \\lambda(c, d)] {\n\t/* Initiate copy of a closed term. */\n\t++this.total;\n} \\lambda[\\dup(a, c), \\dup(b, d)];\n\n\\dup[a, b] {\n\t/* Unshare variable. */\n\t++this.total;\n} \\share[\\copy(c, \\dup(a, b)), c];\n\n\\dup[a, b] {\n\t/* Duplicate sharing. */\n\t++this.total;\n} \\copy[\\dup(\\amb(c, \\share(a, d), d), \\amb(e, \\share(b, f), f)), \\dup(c, e)];\n\n\\dup[\\apply(a, b), \\apply(c, d)] {\n\t/* Duplicate application. */\n\t++this.total;\n} \\apply[\\dup(a, c), \\dup(b, d)];\n\n\\dup[\\lambda(a, b), \\lambda(c, d)] {\n\t/* Duplicate abstraction. */\n\t++this.total;\n} \\lambda[\\dup(a, c), \\dup(b, d)];\n\n\\dup[a, b] {\n\t/* Finish duplication. */\n\t++this.total;\n} \\dup[a, b];\n\n\\erase {\n\t/* Erase an atom. */\n\t++this.total;\n} \\atom;\n\n\\erase {\n\t/* Erase sharing. */\n\t++this.total;\n} \\share[a, a];\n\n\\erase {\n\t/* Erase application. */\n\t++this.total;\n} \\apply[\\erase, \\erase];\n\n\\erase {\n\t/* Erase abstraction. */\n\t++this.total;\n} \\lambda[\\erase, \\erase];\n\n\\erase {\n\t/* Erase copy initiator. */\n\t++this.total;\n} \\copy[\\erase, \\erase];\n\n\\erase {\n\t/* Erase duplicator. */\n\t++this.total;\n} \\dup[\\erase, \\erase];\n\n\\erase {\n\t/* Finish erasing. */\n\t++this.total;\n} \\erase;\n\n$$\n\nINCONFIG\n\n$$\n\nvar id = 0;\n\nfunction mkvar(fresh)\n{\n\tif (fresh)\n\t\t++id;\n\n\treturn \"v\" + id.toFixed(0);\n}\n\nfunction place(buf, format, str)\n{\n\tvar sub = format.replace(\"%s\", str);\n\n\tsub = sub.replace(\"%%\", \"%s\");\n\n\treturn buf.replace(\"%s\", sub);\n}\n\nfunction abst(buf, str)\n{\n\treturn place(buf, \"%s: %%\", str);\n}\n\nfunction appl(buf, str)\n{\n\treturn place(buf, \"%s (%%)\", str);\n}\n\nfunction atom(buf, str)\n{\n\treturn place(buf, \"%s\", str)\n}\n\nthis.mkvar = mkvar;\nthis.abst = abst;\nthis.appl = appl;\nthis.atom = atom;\nthis.beta = 0;\nthis.total = 0;\n";
 var lastwire;
 
 function getcap(left, right)
@@ -964,6 +964,8 @@ function encode(mlc)
 		};
 	}
 
+	encode.term = obj2mlc(term);
+
 	eqns = getconf(term);
 
 	for (i = 0; i < eqns.length; i++)
@@ -971,6 +973,8 @@ function encode(mlc)
 
 	return system.replace("INCONFIG\n", inconfig);
 }
+
+encode.obj2mlc = obj2mlc;
 
 module.exports = encode;
 
@@ -2013,7 +2017,10 @@ function run(mlc)
 	inverb = system.code;
 	inrules = system.rules;
 	inconf = system.conf;
-	inenv = {};
+	inenv = {
+		term: mlc2in.term,
+		obj2mlc: mlc2in.obj2mlc
+	};
 	inqueue = [];
 	types = {
 		wire: 0,

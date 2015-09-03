@@ -313,6 +313,8 @@ function encode(mlc)
 		};
 	}
 
+	encode.term = obj2mlc(term);
+
 	eqns = getconf(term);
 
 	for (i = 0; i < eqns.length; i++)
@@ -320,5 +322,7 @@ function encode(mlc)
 
 	return system.replace("INCONFIG\n", inconfig);
 }
+
+encode.obj2mlc = obj2mlc;
 
 module.exports = encode;

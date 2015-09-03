@@ -25,9 +25,11 @@ function find()
 
 	mlc = mlcjs(mlc);
 
-	console.info(mlc.total, mlc.beta, mlc.result);
+	console.log(mlc.term);
+	console.info("%s(%s)", mlc.total, mlc.beta);
+	console.log(mlc.nf);
 
-	$("#result").text(mlc.result);
+	$("#result").text(mlc.nf);
 }
 
 function allow()

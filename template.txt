@@ -1,6 +1,6 @@
 \print {
 	/* Output results of read-back. */
-	this.result = RVAL;
+	this.nf = RVAL;
 	++this.total;
 } \atom;
 

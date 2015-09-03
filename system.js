@@ -420,7 +420,10 @@ function run(mlc)
 	inverb = system.code;
 	inrules = system.rules;
 	inconf = system.conf;
-	inenv = {};
+	inenv = {
+		term: mlc2in.term,
+		obj2mlc: mlc2in.obj2mlc
+	};
 	inqueue = [];
 	types = {
 		wire: 0,
