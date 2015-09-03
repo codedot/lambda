@@ -17,7 +17,7 @@ textarea {
 <script src="bundle.js"></script>
 
 <script>
-var textarea, button;
+var textarea, button, result;
 
 function find()
 {
@@ -25,11 +25,10 @@ function find()
 
 	mlc = mlcjs(mlc);
 
-	console.log(mlc.term);
 	console.info("%s(%s)", mlc.total, mlc.beta);
-	console.log(mlc.nf);
 
-	$("#result").text(mlc.nf);
+	result.attr("title", mlc.term);
+	result.text(mlc.nf);
 }
 
 function allow()
@@ -58,6 +57,8 @@ function setup()
 
 	button = $("button");
 	button.click(find);
+
+	result = $("abbr");
 
 	$("input").click(allow);
 }
@@ -107,7 +108,7 @@ Give&nbsp;it&nbsp;a&nbsp;try.
 </div>
 
 <div class="form-group">
-<label id="result">Define a lambda term</label>
+<label><abbr>Define a lambda term</abbr></label>
 <textarea class="form-control"></textarea>
 </div>
 </div>
