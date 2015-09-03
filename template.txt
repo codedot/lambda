@@ -1,6 +1,6 @@
 \print {
 	/* Output results of read-back. */
-	this.nf = RVAL;
+	this.nf = this.obj2mlc(RVAL);
 	++this.total;
 } \atom;
 
@@ -17,9 +17,9 @@
 \read[a] {
 	/* Read back abstraction. */
 	++this.total;
-} \lambda[\atom_{this.mkvar(true)}, \read_{this.abst(LVAL, this.mkvar())}(a)];
+} \lambda[\atom_{this.mkid()}, \read_{this.abst(LVAL, this.mkvar())}(a)];
 
-\lambda[\read_{this.appl("%s", RVAL)}(a), a] {
+\lambda[\read_{this.appl(this.mkhole(), RVAL)}(a), a] {
 	/* Read back application. */
 	++this.total;
 } \atom;
@@ -146,31 +146,67 @@ function mkvar(fresh)
 	return "v" + id.toFixed(0);
 }
 
-function place(buf, format, str)
+function mkid(name)
 {
-	var sub = format.replace("%s", str);
+	var obj = {
+		node: "atom",
+		name: name ? name : mkvar(true)
+	};
 
-	sub = sub.replace("%%", "%s");
-
-	return buf.replace("%s", sub);
+	return obj;
 }
 
-function abst(buf, str)
+function mkhole()
 {
-	return place(buf, "%s: %%", str);
+	var obj = {
+		node: "hole"
+	};
+
+	obj.hole = obj;
+	return obj;
 }
 
-function appl(buf, str)
+function atom(context, obj)
 {
-	return place(buf, "%s (%%)", str);
+	var hole = context.hole;
+	var key;
+
+	for (key in obj)
+		hole[key] = obj[key];
+
+	context.hole = obj.hole;
+	return context;
 }
 
-function atom(buf, str)
+function abst(context, name)
 {
-	return place(buf, "%s", str)
+	var hole = mkhole();
+	var obj = {
+		node: "abst",
+		var: name,
+		body: hole,
+		hole: hole
+	};
+
+	return atom(context, obj);
 }
 
+function appl(context, left)
+{
+	var hole = mkhole();
+	var obj = {
+		node: "appl",
+		left: left,
+		right: hole,
+		hole: hole
+	};
+
+	return atom(context, obj);
+}
+
+this.mkid = mkid;
 this.mkvar = mkvar;
+this.mkhole = mkhole;
 this.abst = abst;
 this.appl = appl;
 this.atom = atom;

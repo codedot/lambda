@@ -398,6 +398,8 @@ function init()
 	var effect = mkeffect(inverb);
 	var i;
 
+	effect.call(inenv);
+
 	for (i = 0; i < inconf.length; i++) {
 		var eqn = inconf[i];
 		var left = eqn.left;
@@ -407,8 +409,6 @@ function init()
 		right = encode(right, wires, true);
 		addpair(left, right);
 	}
-
-	effect.call(inenv);
 }
 
 function run(mlc)

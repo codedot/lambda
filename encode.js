@@ -176,7 +176,7 @@ function gamma(obj, root)
 	var eqn = root + " = %s";
 
 	if ("atom" == node) {
-		var agent = "\\atom_{\"%s\"}";
+		var agent = "\\atom_{this.mkid(\"%s\")}";
 
 		if (obj.free)
 			agent = agent.replace("%s", obj.name);
@@ -285,7 +285,7 @@ function getconf(obj)
 
 	obj = alpha(obj);
 	conf = gamma(obj, "root");
-	conf.push("\\read_{\"%s\"}(\\print) = root");
+	conf.push("\\read_{this.mkhole()}(\\print) = root");
 	return conf;
 }
 
