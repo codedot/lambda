@@ -244,6 +244,19 @@ function apply(left, right, code, rl)
 	return interact;
 }
 
+function addrule(dict, rule)
+{
+	var human = rule.human;
+	var entry = dict[human];
+
+	if (!entry) {
+		entry = [];
+		dict[human] = entry;
+	}
+
+	entry.push(rule);
+}
+
 function gettable()
 {
 	var tab = [];
@@ -261,10 +274,10 @@ function gettable()
 		addtypes(right);
 
 		lrfunc = apply(left, right, code);
-		custom[lrfunc.human] = lrfunc;
+		addrule(custom, lrfunc);
 
 		rlfunc = apply(right, left, code, true);
-		custom[rlfunc.human] = rlfunc;
+		addrule(custom, rlfunc);
 	}
 
 	for (i = 0; i < inconf.length; i++) {
@@ -282,24 +295,24 @@ function gettable()
 		for (right in types) {
 			var lr = custom[left + "><" + right];
 			var rl = custom[right + "><" + left];
-			var rule;
+			var rules;
 
 			if ("wire" == left)
-				rule = rewire;
+				rules = [rewire];
 			else if ("wire" == right)
-				rule = eriwer;
+				rules = [eriwer];
 			else if ("amb" == left)
-				rule = determ;
+				rules = [determ];
 			else if ("amb" == right)
-				rule = mreted;
+				rules = [mreted];
 			else if (lr)
-				rule = lr;
+				rules = lr;
 			else if (rl)
-				rule = rl;
+				rules = rl;
 			else
-				rule = deadlock;
+				rules = [deadlock];
 
-			row[types[right]] = rule;
+			row[types[right]] = rules;
 		}
 
 		tab[types[left]] = row;
@@ -308,13 +321,28 @@ function gettable()
 	return tab;
 }
 
+function traverse(pair)
+{
+	var rules = pair.rules;
+	var i;
+
+	for (i = 0; i < rules.length; i++) {
+		var rule = rules[i];
+		var next = rule(pair.left, pair.right);
+
+		if (!next)
+			return;
+	}
+
+	deadlock(pair.left, pair.right);
+}
+
 function reduce()
 {
-	while (pair = inqueue.shift()) {
-		var rule = pair.rule;
+	var pair;
 
-		rule(pair.left, pair.right);
-	}
+	while (pair = inqueue.shift())
+		traverse(pair);
 }
 
 function addpair(left, right)
@@ -323,7 +351,7 @@ function addpair(left, right)
 	var cell = row[right.type];
 
 	inqueue.push({
-		rule: cell,
+		rules: cell,
 		left: left,
 		right: right
 	});
@@ -415,7 +443,6 @@ function run(mlc)
 {
 	var src = mlc2in(mlc);
 	var system = parser.parse(src);
-	var pair;
 
 	inverb = system.code;
 	inrules = system.rules;
