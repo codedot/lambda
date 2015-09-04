@@ -1,6 +1,6 @@
 \print {
 	/* Output results of read-back. */
-	this.nf = this.obj2mlc(RVAL);
+	this.nf = RVAL;
 	++this.total;
 } \atom;
 
@@ -17,7 +17,8 @@
 \read[a] {
 	/* Read back abstraction. */
 	++this.total;
-} \lambda[\atom_{this.mkid()}, \read_{this.abst(LVAL, this.mkvar())}(a)];
+} \lambda[\atom_{this.mkid()},
+	\read_{this.abst(LVAL, this.mkvar())}(a)];
 
 \lambda[\read_{this.appl(this.mkhole(), RVAL)}(a), a] {
 	/* Read back application. */
@@ -78,7 +79,8 @@
 \dup[a, b] {
 	/* Duplicate sharing. */
 	++this.total;
-} \copy[\dup(\amb(c, \share(a, d), d), \amb(e, \share(b, f), f)), \dup(c, e)];
+} \copy[\dup(\amb(c, \share(a, d), d), \amb(e, \share(b, f), f)),
+	\dup(c, e)];
 
 \dup[\apply(a, b), \apply(c, d)] {
 	/* Duplicate application. */
@@ -158,9 +160,7 @@ function mkid(name)
 
 function mkhole()
 {
-	var obj = {
-		node: "hole"
-	};
+	var obj = {};
 
 	obj.hole = obj;
 	return obj;

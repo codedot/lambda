@@ -14,10 +14,19 @@ textarea {
 </style>
 
 <script src="https://code.jquery.com/jquery.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/latest/js/bootstrap.js"></script>
 <script src="bundle.js"></script>
 
 <script>
-var textarea, button, result;
+var textarea, button, result, pre;
+
+function inet()
+{
+	var mlc = textarea.val();
+	var system = mlcjs.mlc2in(mlc);
+
+	pre.text(system);
+}
 
 function find()
 {
@@ -55,12 +64,14 @@ function setup()
 	textarea.attr("cols", cols);
 	textarea.text(example);
 
-	button = $("button");
+	button = $("button#reduce");
 	button.click(find);
 
 	result = $("abbr");
+	pre = $("pre");
 
 	$("input").click(allow);
+	$(".modal").on("show.bs.modal", inet);
 }
 
 $(setup);
@@ -103,7 +114,40 @@ Give&nbsp;it&nbsp;a&nbsp;try.
 </label>
 </div>
 
-<button class="btn btn-danger" disabled>Find normal form</button>
+<button id="reduce" class="btn btn-danger" disabled>Find normal form</button>
+<button type="button" id="encode" class="btn btn-success" data-toggle="modal" data-target=".modal">Show interaction net</button>
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal-dialog modal-lg">
+<div class="modal-content">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+<h4 class="modal-title" id="myModalLabel">Generated Interaction Net</h4>
+</div>
+
+<div class="modal-body">
+<p>
+The specified lambda term is automatically encoded into an interaction net.
+Below is the generated source in the INC language that consists of three parts:
+interaction rules, initial configuration,
+and&nbsp;initial&nbsp;side&nbsp;effect.
+</p>
+
+<pre></pre>
+
+<p>
+You may notice side effects written in JavaScript.
+They are executed during reduction of&nbsp;the&nbsp;interaction&nbsp;net.
+</p>
+</div>
+
+<div class="modal-footer">
+<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+</div>
+</div>
+</div>
+</div>
+
 <p class="help-block">It may take a while... or forever!</p>
 </div>
 

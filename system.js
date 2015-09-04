@@ -451,10 +451,7 @@ function run(mlc)
 	inverb = system.code;
 	inrules = system.rules;
 	inconf = system.conf;
-	inenv = {
-		term: mlc2in.term,
-		obj2mlc: mlc2in.obj2mlc
-	};
+	inenv = {};
 	inqueue = [];
 	types = {
 		wire: 0,
@@ -479,8 +476,11 @@ function run(mlc)
 
 	reduce();
 
+	inenv.term = mlc2in.term;
+	inenv.nf = mlc2in.obj2mlc(inenv.nf);
 	return inenv;
 }
 
+run.mlc2in = mlc2in;
 run.example = example.replace(/\n*$/, "");
 global.mlcjs = run;

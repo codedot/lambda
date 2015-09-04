@@ -96,7 +96,7 @@ function getwire(hint)
 
 	++lastwire;
 
-	return "w" + lastwire.toFixed(0) + hint;
+	return "w" + lastwire.toFixed(0);
 }
 
 function subst(obj, shared, side)
