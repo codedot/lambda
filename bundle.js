@@ -1761,6 +1761,8 @@ function mkeffect(code, expr)
 
 	if (expr)
 		code = "return (" + code + ");";
+	else
+		code = code + "\n\treturn true;";
 
 	return new Function("LVAL", "RVAL", code);
 }
@@ -1779,10 +1781,7 @@ function apply(left, right, code, rl)
 
 	function interact(lagent, ragent)
 	{
-		var wcopy = cpwlist(wlist);
-		var lpax = lagent.pax;
-		var rpax = ragent.pax;
-		var lval, rval, context;
+		var wcopy, lpax, rpax, lval, rval, context;
 
 		if (rl) {
 			rval = lagent.data;
@@ -1791,6 +1790,13 @@ function apply(left, right, code, rl)
 			lval = lagent.data;
 			rval = ragent.data;
 		}
+
+		if (!effect.call(inenv, lval, rval))
+			return true;
+
+		wcopy = cpwlist(wlist);
+		lpax = lagent.pax;
+		rpax = ragent.pax;
 
 		context = {
 			wlist: wcopy,
@@ -1813,8 +1819,6 @@ function apply(left, right, code, rl)
 
 			addpair(copy, active);
 		}
-
-		effect.call(inenv, lval, rval);
 	}
 
 	interact.human = human;
