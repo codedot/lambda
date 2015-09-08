@@ -1894,24 +1894,20 @@ function gettable()
 		var row = [];
 
 		for (right in types) {
-			var lr = custom[left + "><" + right];
-			var rl = custom[right + "><" + left];
-			var rules;
+			var rules = custom[left + "><" + right];
 
-			if ("wire" == left)
-				rules = [rewire];
-			else if ("wire" == right)
-				rules = [eriwer];
-			else if ("amb" == left)
-				rules = [determ];
-			else if ("amb" == right)
-				rules = [mreted];
-			else if (lr)
-				rules = lr;
-			else if (rl)
-				rules = rl;
-			else
-				rules = [deadlock];
+			if (!rules) {
+				if ("wire" == left)
+					rules = [rewire];
+				else if ("wire" == right)
+					rules = [eriwer];
+				else if ("amb" == left)
+					rules = [determ];
+				else if ("amb" == right)
+					rules = [mreted];
+				else
+					rules = [];
+			}
 
 			row[types[right]] = rules;
 		}
