@@ -1602,7 +1602,7 @@ var inet = require("./agents");
 var example = "I = x: x;\nK = x, y: x;\nS = x, y, z: x z (y z);\n\nT = K;\nF = x, y: y;\nAND = p, q: p q F;\nOR = p, q: p T q;\nNOT = p: (a, b: p b a);\n\nC0 = f, x: x;\nC1 = f, x: f x;\nC2 = f, x: f (f x);\nC3 = f, x: f (f (f x));\nSUCC = n: (f, x: f (n f x));\nPLUS = m, n: (f, x: m f (n f x));\nMULT = m, n: (f: m (n f));\nEXP = m, n: n m;\nPRED = n: (f, x: n (g, h: h (g f)) (K x) I);\nMINUS = m, n: n PRED m;\nZERO = n: n (K F) T;\n\nA = self, f: f (self self f);\nY = A A;\nFACTR = self, n: (ZERO n) C1 (MULT n (self (PRED n)));\nFACT = Y FACTR;\n\nC24 = FACT (PLUS C2 C2);\nC27 = EXP C3 C3;\nMINUS C27 C24\n";
 var parser = new inet.Parser();
 var inverb, inrules, inconf, inenv, inqueue;
-var types, ntypes, wiretype, ambtype, table;
+var typelist, types, ntypes, wiretype, ambtype, table;
 
 function addtypes(tree)
 {
@@ -1624,9 +1624,14 @@ function addtypes(tree)
 		addtypes(pax[i]);
 }
 
-function deadlock()
+function deadlock(lagent, ragent)
 {
-	console.error("No applicable rule");
+	var ltype = typelist[lagent.type];
+	var rtype = typelist[ragent.type];
+	var pair = ltype + "><" + rtype;
+
+	console.error("%s: No applicable rule", pair);
+	inqueue = [];
 }
 
 function rewire(wire, agent)
@@ -1913,6 +1918,8 @@ function gettable()
 		}
 
 		tab[types[left]] = row;
+
+		typelist[types[left]] = left;
 	}
 
 	return tab;
@@ -2044,8 +2051,12 @@ function run(mlc)
 	inverb = system.code;
 	inrules = system.rules;
 	inconf = system.conf;
-	inenv = {};
+	inenv = {
+		term: mlc2in.term,
+		obj2mlc: mlc2in.obj2mlc
+	};
 	inqueue = [];
+	typelist = [];
 	types = {
 		wire: 0,
 		amb: 1
@@ -2069,8 +2080,11 @@ function run(mlc)
 
 	reduce();
 
-	inenv.term = mlc2in.term;
-	inenv.nf = mlc2in.obj2mlc(inenv.nf);
+	if (inenv.nf)
+		inenv.nf = mlc2in.obj2mlc(inenv.nf);
+	else
+		inenv.nf = inenv.term;
+
 	return inenv;
 }
 

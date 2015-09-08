@@ -5,7 +5,7 @@ var fs = require("fs");
 var example = fs.readFileSync("fact.mlc", "utf8");
 var parser = new inet.Parser();
 var inverb, inrules, inconf, inenv, inqueue;
-var types, ntypes, wiretype, ambtype, table;
+var typelist, types, ntypes, wiretype, ambtype, table;
 
 function addtypes(tree)
 {
@@ -27,9 +27,14 @@ function addtypes(tree)
 		addtypes(pax[i]);
 }
 
-function deadlock()
+function deadlock(lagent, ragent)
 {
-	console.error("No applicable rule");
+	var ltype = typelist[lagent.type];
+	var rtype = typelist[ragent.type];
+	var pair = ltype + "><" + rtype;
+
+	console.error("%s: No applicable rule", pair);
+	inqueue = [];
 }
 
 function rewire(wire, agent)
@@ -316,6 +321,8 @@ function gettable()
 		}
 
 		tab[types[left]] = row;
+
+		typelist[types[left]] = left;
 	}
 
 	return tab;
@@ -447,8 +454,12 @@ function run(mlc)
 	inverb = system.code;
 	inrules = system.rules;
 	inconf = system.conf;
-	inenv = {};
+	inenv = {
+		term: mlc2in.term,
+		obj2mlc: mlc2in.obj2mlc
+	};
 	inqueue = [];
+	typelist = [];
 	types = {
 		wire: 0,
 		amb: 1
@@ -472,8 +483,11 @@ function run(mlc)
 
 	reduce();
 
-	inenv.term = mlc2in.term;
-	inenv.nf = mlc2in.obj2mlc(inenv.nf);
+	if (inenv.nf)
+		inenv.nf = mlc2in.obj2mlc(inenv.nf);
+	else
+		inenv.nf = inenv.term;
+
 	return inenv;
 }
 
