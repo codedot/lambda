@@ -18,7 +18,35 @@ textarea {
 <script src="bundle.js"></script>
 
 <script>
-var textarea, button, result, pre;
+var textarea, button, result, pre, config, next, final;
+
+function reduce()
+{
+	var step = config.clone();
+	var output = mlcjs.debug();
+
+	if (output) {
+		step.text(output);
+		step.addClass("tmp");
+		step.insertBefore(config);
+		step.show();
+	} else {
+		next.hide();
+		final.show();
+	}
+}
+
+function debug()
+{
+	var mlc = textarea.val();
+
+	mlcjs.prepare(mlc);
+
+	$(".tmp").remove();
+
+	final.hide();
+	next.show();
+}
 
 function inet()
 {
@@ -64,14 +92,22 @@ function setup()
 	textarea.attr("cols", cols);
 	textarea.text(example);
 
-	button = $("button#reduce");
+	button = $("#reduce");
 	button.click(find);
 
+	next = $("#continue");
+	next.click(reduce);
+
+	config = $("#config");
+	config.hide();
+
 	result = $("abbr");
-	pre = $("pre");
+	pre = $("#incsrc");
+	final = $("#final");
 
 	$("input").click(allow);
-	$(".modal").on("show.bs.modal", inet);
+	$("#inet").on("show.bs.modal", inet);
+	$("#debug").on("show.bs.modal", debug);
 }
 
 $(setup);
@@ -115,14 +151,48 @@ Give&nbsp;it&nbsp;a&nbsp;try.
 </div>
 
 <button id="reduce" class="btn btn-danger" disabled>Find normal form</button>
-<button type="button" id="encode" class="btn btn-success" data-toggle="modal" data-target=".modal">Show interaction net</button>
+<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#debug">Step by step</button>
+<button type="button" class="btn btn-success" data-toggle="modal" data-target="#inet">Show interaction net</button>
 
-<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div id="debug" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="debugLabel">
 <div class="modal-dialog modal-lg">
 <div class="modal-content">
 <div class="modal-header">
 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-<h4 class="modal-title" id="myModalLabel">Generated Interaction Net</h4>
+<h4 class="modal-title" id="debugLabel">Interaction Net Reduction</h4>
+</div>
+
+<div class="modal-body">
+<p>
+Below is interactive step-by-step reduction of the interaction net.
+For each step, the current state of the interaction net will be
+printed in a form similar to initial configuration
+in&nbsp;the&nbsp;INC&nbsp;language.
+</p>
+
+<pre id="config"></pre>
+
+<button id="continue" class="btn btn-warning">Continue</button>
+
+<p id="final">
+The interaction net has reached its normal form.
+No&nbsp;more&nbsp;active&nbsp;pairs&nbsp;left.
+</p>
+</div>
+
+<div class="modal-footer">
+<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+</div>
+</div>
+</div>
+</div>
+
+<div id="inet" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="inetLabel">
+<div class="modal-dialog modal-lg">
+<div class="modal-content">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+<h4 class="modal-title" id="inetLabel">Generated Interaction Net</h4>
 </div>
 
 <div class="modal-body">
@@ -133,7 +203,7 @@ interaction rules, initial configuration,
 and&nbsp;initial&nbsp;side&nbsp;effect.
 </p>
 
-<pre></pre>
+<pre id="incsrc"></pre>
 
 <p>
 You may notice side effects written in JavaScript.
