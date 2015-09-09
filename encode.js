@@ -82,11 +82,16 @@ function obj2mlc(obj)
 		if ("abst" == obj.left.node)
 			left = "(" + left + ")";
 
-		if ("atom" != obj.right.node)
+		if ("abst" == obj.right.node)
+			right = "(" + right + ")";
+
+		if ("appl" == obj.right.node)
 			right = "(" + right + ")";
 
 		return left + " " + right;
 	}
+
+	return "[ ]";
 }
 
 function getwire(hint)

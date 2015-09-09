@@ -733,11 +733,16 @@ function obj2mlc(obj)
 		if ("abst" == obj.left.node)
 			left = "(" + left + ")";
 
-		if ("atom" != obj.right.node)
+		if ("abst" == obj.right.node)
+			right = "(" + right + ")";
+
+		if ("appl" == obj.right.node)
 			right = "(" + right + ")";
 
 		return left + " " + right;
 	}
+
+	return "[ ]";
 }
 
 function getwire(hint)
@@ -1599,6 +1604,7 @@ var mlc2in = require("./encode");
 var inet = require("./agents");
 
 
+var obj2mlc = mlc2in.obj2mlc;
 var example = "I = x: x;\nK = x, y: x;\nS = x, y, z: x z (y z);\n\nT = K;\nF = x, y: y;\nAND = p, q: p q F;\nOR = p, q: p T q;\nNOT = p: (a, b: p b a);\n\nC0 = f, x: x;\nC1 = f, x: f x;\nC2 = f, x: f (f x);\nC3 = f, x: f (f (f x));\nSUCC = n: (f, x: f (n f x));\nPLUS = m, n: (f, x: m f (n f x));\nMULT = m, n: (f: m (n f));\nEXP = m, n: n m;\nPRED = n: (f, x: n (g, h: h (g f)) (K x) I);\nMINUS = m, n: n PRED m;\nZERO = n: n (K F) T;\n\nA = self, f: f (self self f);\nY = A A;\nFACTR = self, n: (ZERO n) C1 (MULT n (self (PRED n)));\nFACT = Y FACTR;\n\nC24 = FACT (PLUS C2 C2);\nC27 = EXP C3 C3;\nMINUS C27 C24\n";
 var parser = new inet.Parser();
 var inverb, inrules, inconf, inenv, inqueue, nwires, nambs;
@@ -2044,10 +2050,7 @@ function prepare(mlc)
 	inverb = system.code;
 	inrules = system.rules;
 	inconf = system.conf;
-	inenv = {
-		term: mlc2in.term,
-		obj2mlc: mlc2in.obj2mlc
-	};
+	inenv = {};
 	inqueue = [];
 	typelist = [];
 	types = {
@@ -2087,6 +2090,16 @@ function getlist(pax)
 		return "";
 }
 
+function format(data)
+{
+	if ("object" == typeof data)
+		return obj2mlc(data);
+	else if ("number" == typeof data)
+		return data.toString();
+	else
+		return data;
+}
+
 function gettree(agent)
 {
 	var type = agent.type;
@@ -2119,7 +2132,14 @@ function gettree(agent)
 
 		human = "\\amb#" + index + list;
 	} else {
-		type = typelist[type];
+		var data = format(agent.data);
+
+		if (data)
+			data = "_{" + data + "}";
+		else
+			data = "";
+
+		type = typelist[type] + data;
 
 		human = "\\" + type + getlist(agent.pax);
 	}
@@ -2166,8 +2186,10 @@ function run(mlc)
 
 	reduce();
 
+	inenv.term = mlc2in.term;
+
 	if (inenv.nf)
-		inenv.nf = mlc2in.obj2mlc(inenv.nf);
+		inenv.nf = obj2mlc(inenv.nf);
 	else
 		inenv.nf = inenv.term;
 

@@ -2,6 +2,7 @@ var mlc2in = require("./encode");
 var inet = require("./agents");
 var fs = require("fs");
 
+var obj2mlc = mlc2in.obj2mlc;
 var example = fs.readFileSync("fact.mlc", "utf8");
 var parser = new inet.Parser();
 var inverb, inrules, inconf, inenv, inqueue, nwires, nambs;
@@ -447,10 +448,7 @@ function prepare(mlc)
 	inverb = system.code;
 	inrules = system.rules;
 	inconf = system.conf;
-	inenv = {
-		term: mlc2in.term,
-		obj2mlc: mlc2in.obj2mlc
-	};
+	inenv = {};
 	inqueue = [];
 	typelist = [];
 	types = {
@@ -490,6 +488,16 @@ function getlist(pax)
 		return "";
 }
 
+function format(data)
+{
+	if ("object" == typeof data)
+		return obj2mlc(data);
+	else if ("number" == typeof data)
+		return data.toString();
+	else
+		return data;
+}
+
 function gettree(agent)
 {
 	var type = agent.type;
@@ -522,7 +530,14 @@ function gettree(agent)
 
 		human = "\\amb#" + index + list;
 	} else {
-		type = typelist[type];
+		var data = format(agent.data);
+
+		if (data)
+			data = "_{" + data + "}";
+		else
+			data = "";
+
+		type = typelist[type] + data;
 
 		human = "\\" + type + getlist(agent.pax);
 	}
@@ -569,8 +584,10 @@ function run(mlc)
 
 	reduce();
 
+	inenv.term = mlc2in.term;
+
 	if (inenv.nf)
-		inenv.nf = mlc2in.obj2mlc(inenv.nf);
+		inenv.nf = obj2mlc(inenv.nf);
 	else
 		inenv.nf = inenv.term;
 
