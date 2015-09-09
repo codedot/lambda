@@ -43,9 +43,6 @@ function rewire(wire, agent)
 	var twin2 = agent.twin;
 	var key;
 
-	if (wire.type != wiretype)
-		return addpair(wire, agent);
-
 	twin.type = agent.type;
 	twin.pax = agent.pax;
 	twin.main = agent.main;
@@ -69,9 +66,6 @@ function determ(amb, agent)
 	var twin = amb.twin;
 	var main = amb.main;
 	var aux = amb.aux;
-
-	if (amb.type != ambtype)
-		return addpair(amb, agent);
 
 	addpair(main, agent);
 
@@ -330,18 +324,21 @@ function gettable()
 
 function traverse(pair)
 {
-	var rules = pair.rules;
+	var left = pair.left;
+	var right = pair.right;
+	var row = table[left.type];
+	var rules = row[right.type];
 	var i;
 
 	for (i = 0; i < rules.length; i++) {
 		var rule = rules[i];
-		var next = rule(pair.left, pair.right);
+		var next = rule(left, right);
 
 		if (!next)
 			return;
 	}
 
-	deadlock(pair.left, pair.right);
+	deadlock(left, right);
 }
 
 function reduce()
@@ -354,11 +351,7 @@ function reduce()
 
 function addpair(left, right)
 {
-	var row = table[left.type];
-	var cell = row[right.type];
-
 	inqueue.push({
-		rules: cell,
 		left: left,
 		right: right
 	});
