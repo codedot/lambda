@@ -1601,7 +1601,7 @@ var inet = require("./agents");
 
 var example = "I = x: x;\nK = x, y: x;\nS = x, y, z: x z (y z);\n\nT = K;\nF = x, y: y;\nAND = p, q: p q F;\nOR = p, q: p T q;\nNOT = p: (a, b: p b a);\n\nC0 = f, x: x;\nC1 = f, x: f x;\nC2 = f, x: f (f x);\nC3 = f, x: f (f (f x));\nSUCC = n: (f, x: f (n f x));\nPLUS = m, n: (f, x: m f (n f x));\nMULT = m, n: (f: m (n f));\nEXP = m, n: n m;\nPRED = n: (f, x: n (g, h: h (g f)) (K x) I);\nMINUS = m, n: n PRED m;\nZERO = n: n (K F) T;\n\nA = self, f: f (self self f);\nY = A A;\nFACTR = self, n: (ZERO n) C1 (MULT n (self (PRED n)));\nFACT = Y FACTR;\n\nC24 = FACT (PLUS C2 C2);\nC27 = EXP C3 C3;\nMINUS C27 C24\n";
 var parser = new inet.Parser();
-var inverb, inrules, inconf, inenv, inqueue;
+var inverb, inrules, inconf, inenv, inqueue, nwires, nambs;
 var typelist, types, ntypes, wiretype, ambtype, table;
 
 function addtypes(tree)
@@ -2043,7 +2043,7 @@ function init()
 	}
 }
 
-function run(mlc)
+function prepare(mlc)
 {
 	var src = mlc2in(mlc);
 	var system = parser.parse(src);
@@ -2062,6 +2062,7 @@ function run(mlc)
 		amb: 1
 	};
 	ntypes = 2;
+	nwires = 0;
 
 	deadlock.human = "dead>!<lock";
 
@@ -2077,6 +2078,98 @@ function run(mlc)
 	table = gettable();
 
 	init();
+}
+
+function getlist(pax)
+{
+	var list = [];
+	var i;
+
+	for (i = 0; i < pax.length; i++)
+		list[i] = gettree(pax[i]);
+
+	if (list.length)
+		return "(" + list.join(", ") + ")";
+	else
+		return "";
+}
+
+function gettree(agent)
+{
+	var type = agent.type;
+	var human;
+
+	if (wiretype == type) {
+		human = agent.human;
+
+		if (!human) {
+			++nwires;
+			human = "w" + nwires;
+			agent.human = human;
+		}
+
+		agent.twin.human = human;
+	} else if (ambtype == type) {
+		var index = agent.index;
+		var list = "";
+
+		if (!index || (nambs < index)) {
+			++nambs;
+			index = nambs;
+			agent.twin.index = nambs;
+
+			list = getlist([
+				agent.main,
+				agent.aux
+			]);
+		}
+
+		human = "\\amb#" + index + list;
+	} else {
+		type = typelist[type];
+
+		human = "\\" + type + getlist(agent.pax);
+	}
+
+	return human;
+}
+
+function geteqn(pair)
+{
+	var left = gettree(pair.left);
+	var right = gettree(pair.right);
+
+	return left + " = " + right + ";";
+}
+
+function getconf()
+{
+	var list = [];
+	var i;
+
+	nambs = 0;
+
+	for (i = 0; i < inqueue.length; i++)
+		list[i] = geteqn(inqueue[i]);
+
+	return list.join("\n");
+}
+
+function debug()
+{
+	var conf = getconf();
+	var pair;
+
+	pair = inqueue.shift();
+	if (pair)
+		traverse(pair);
+
+	return conf;
+}
+
+function run(mlc)
+{
+	prepare(mlc);
 
 	reduce();
 
@@ -2088,6 +2181,8 @@ function run(mlc)
 	return inenv;
 }
 
+run.prepare = prepare;
+run.debug = debug;
 run.mlc2in = mlc2in;
 run.example = example.replace(/\n*$/, "");
 global.mlcjs = run;
