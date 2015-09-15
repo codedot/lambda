@@ -745,13 +745,9 @@ function obj2mlc(obj)
 	return "[ ]";
 }
 
-function getwire(hint)
+function mkwire()
 {
-	if (!hint)
-		hint = "";
-
 	++lastwire;
-
 	return "w" + lastwire.toFixed(0);
 }
 
@@ -785,8 +781,8 @@ function mktwins(left, right)
 	var atom;
 
 	for (atom in shared) {
-		var wleft = getwire("left" + atom);
-		var wright = getwire("right" + atom);
+		var wleft = mkwire();
+		var wright = mkwire();
 
 		shared[atom] = {
 			left: wleft,
@@ -810,7 +806,7 @@ function psi(shared)
 		var twins = shared[atom];
 		var wleft = twins.left;
 		var wright = twins.right;
-		var wire = getwire("back" + atom);
+		var wire = mkwire();
 		var eqn = template;
 
 		eqn = eqn.replace("%s", wleft);
@@ -846,7 +842,7 @@ function gamma(obj, root)
 		var body = obj.body;
 		var fv = getfv(body);
 		var id = obj.var;
-		var wire = getwire("body" + id);
+		var wire = mkwire();
 
 		if (id in fv)
 			agent = id;
@@ -861,8 +857,8 @@ function gamma(obj, root)
 		body = gamma(body, wire);
 		list = list.concat(body);
 	} else if ("appl" == node) {
-		var wleft = getwire("left");
-		var wright = getwire("right");
+		var wleft = mkwire();
+		var wright = mkwire();
 		var agent = "\\apply(%s, %s)";
 		var left = obj.left;
 		var right = obj.right;
@@ -907,7 +903,7 @@ function alpha(obj, bv)
 		}
 	} else if ("abst" == node) {
 		var id = obj.var;
-		var wire = getwire(id);
+		var wire = mkwire();
 		var body;
 
 		bv[id] = wire;
