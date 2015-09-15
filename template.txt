@@ -17,10 +17,9 @@
 \read[a] {
 	/* Read back abstraction. */
 	++this.total;
-} \lambda[\atom_{this.mkid()},
-	\read_{this.abst(LVAL, this.mkvar())}(a)];
+} \lambda[\atom_{this.mkid()}, \read_{this.abst(LVAL)}(a)];
 
-\lambda[\read_{this.appl(this.mkhole(), RVAL)}(a), a] {
+\lambda[\read_{this.appl(RVAL)}(a), a] {
 	/* Read back application. */
 	++this.total;
 } \atom;
@@ -178,12 +177,12 @@ function atom(context, obj)
 	return context;
 }
 
-function abst(context, name)
+function abst(context)
 {
 	var hole = mkhole();
 	var obj = {
 		node: "abst",
-		var: name,
+		var: mkvar(),
 		body: hole,
 		hole: hole
 	};
@@ -191,8 +190,9 @@ function abst(context, name)
 	return atom(context, obj);
 }
 
-function appl(context, left)
+function appl(left)
 {
+	var context = mkhole();
 	var hole = mkhole();
 	var obj = {
 		node: "appl",
