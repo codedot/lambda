@@ -11,7 +11,8 @@ SRC = \
 	template.txt
 
 all: bundle.js
-	node check.js debug.mlc
+	node check.js debug.mlc >debug.tmp
+	tail debug.tmp
 	time -p node check.js
 
 bundle.js: $(BROWSERIFY) $(BRFS) $(SRC)
