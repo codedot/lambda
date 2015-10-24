@@ -1,43 +1,43 @@
 \print {
 	/* Output results of read-back. */
-	this.nf = RVAL;
+	this.nf = M;
 	++this.total;
-} \atom;
+} \atom_{M};
 
-\read[a] {
+\read_{C}[a] {
 	/* Unshare variable. */
 	++this.total;
-} \share[\copy(b, \read_{LVAL}(a)), b];
+} \share[\copy(b, \read_{C}(a)), b];
 
-\read[a] {
+\read_{C}[a] {
 	/* Initiate application. */
 	++this.total;
-} \apply[\lambda(b, \read_{LVAL}(a)), b];
+} \apply[\lambda(b, \read_{C}(a)), b];
 
-\read[a] {
+\read_{C}[a] {
 	/* Read back abstraction. */
 	++this.total;
-} \lambda[\atom_{this.mkid()}, \read_{this.abst(LVAL)}(a)];
+} \lambda[\atom_{this.mkid()}, \read_{this.abst(C)}(a)];
 
-\lambda[\read_{this.appl(RVAL)}(a), a] {
+\lambda[\read_{this.appl(M)}(a), a] {
 	/* Read back application. */
 	++this.total;
-} \atom;
+} \atom_{M};
 
-\read[\atom_{this.atom(LVAL, RVAL)}] {
+\read_{C}[\atom_{this.atom(C, M)}] {
 	/* Read back an atom. */
 	++this.total;
-} \atom;
+} \atom_{M};
 
-\copy[\atom_{RVAL}, \atom_{RVAL}] {
+\copy[\atom_{M}, \atom_{M}] {
 	/* Copy an atom. */
 	++this.total;
-} \atom;
+} \atom_{M};
 
-\dup[\atom_{RVAL}, \atom_{RVAL}] {
+\dup[\atom_{M}, \atom_{M}] {
 	/* Duplicate an atom. */
 	++this.total;
-} \atom;
+} \atom_{M};
 
 \lambda[a, b] {
 	/* Unshare variable. */
@@ -99,7 +99,7 @@
 \erase {
 	/* Erase an atom. */
 	++this.total;
-} \atom;
+} \atom_{M};
 
 \erase {
 	/* Erase sharing. */
