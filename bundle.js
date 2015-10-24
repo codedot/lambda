@@ -73,12 +73,12 @@
   }
 */
 var parser = (function(){
-var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[5,23],$V1=[1,6],$V2=[1,5],$V3=[2,16],$V4=[1,11],$V5=[10,12],$V6=[12,16,20,21,25],$V7=[10,12,14,16,19,20,21,25],$V8=[16,20];
+var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[5,21],$V1=[1,6],$V2=[1,5],$V3=[2,14],$V4=[1,11],$V5=[9,10],$V6=[10,14,18,19,23],$V7=[9,10,12,14,17,18,19,23],$V8=[14,18];
 var parser = {trace: function trace() { },
 yy: {},
-symbols_: {"error":2,"prog":3,"rset":4,"MARK":5,"init":6,"tail":7,"head":8,"$":9,"CODE":10,"side":11,";":12,"cell":13,"[":14,"list":15,"]":16,"tree":17,"leaf":18,"(":19,")":20,",":21,"NAME":22,"\\":23,"_":24,"=":25,"$accept":0,"$end":1},
-terminals_: {2:"error",5:"MARK",9:"$",10:"CODE",12:";",14:"[",16:"]",19:"(",20:")",21:",",22:"NAME",23:"\\",24:"_",25:"="},
-productions_: [0,[3,4],[8,0],[8,3],[4,0],[4,5],[11,1],[11,4],[17,1],[17,4],[15,1],[15,3],[18,1],[18,1],[13,2],[13,4],[6,0],[6,5],[7,0],[7,2]],
+symbols_: {"error":2,"prog":3,"rset":4,"MARK":5,"init":6,"tail":7,"side":8,"CODE":9,";":10,"cell":11,"[":12,"list":13,"]":14,"tree":15,"leaf":16,"(":17,")":18,",":19,"NAME":20,"\\":21,"_":22,"=":23,"$accept":0,"$end":1},
+terminals_: {2:"error",5:"MARK",9:"CODE",10:";",12:"[",14:"]",17:"(",18:")",19:",",20:"NAME",21:"\\",22:"_",23:"="},
+productions_: [0,[3,4],[4,0],[4,5],[8,1],[8,4],[15,1],[15,4],[13,1],[13,3],[16,1],[16,1],[11,2],[11,4],[6,0],[6,5],[7,0],[7,2]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
@@ -87,49 +87,46 @@ switch (yystate) {
 case 1:
 return {rules: $$[$0-3], conf: $$[$0-1], code: $$[$0]};
 break;
-case 2: case 18:
-this.$ = "";
-break;
-case 3:
-this.$ = $$[$0-1];
-break;
-case 4: case 16:
+case 2: case 14:
 this.$ = [];
 break;
-case 5:
+case 3:
 $$[$0-4].push({left: $$[$0-3], right: $$[$0-1], code: $$[$0-2]}); this.$ = $$[$0-4];
 break;
-case 6: case 8:
+case 4: case 6:
 this.$ = {node: $$[$0], pax: []};
 break;
-case 7: case 9:
+case 5: case 7:
 this.$ = {node: $$[$0-3], pax: $$[$0-1]};
 break;
-case 10:
+case 8:
 this.$ = [$$[$0]];
 break;
-case 11:
+case 9:
 $$[$0].unshift($$[$0-2]); this.$ = $$[$0];
 break;
-case 13:
+case 11:
 this.$ = {agent: "wire", name: $$[$0]};
 break;
-case 14:
-this.$ = {agent: $$[$0], code: "void(0)"};
+case 12:
+this.$ = {agent: $$[$0], code: ""};
+break;
+case 13:
+this.$ = {agent: $$[$0-2], code: $$[$0].slice(1, -1)};
 break;
 case 15:
-this.$ = {agent: $$[$0-2], code: $$[$0]};
-break;
-case 17:
 $$[$0].push({left: $$[$0-4], right: $$[$0-2]}); this.$ = $$[$0];
 break;
-case 19:
+case 16:
+this.$ = "";
+break;
+case 17:
 this.$ = $$[$0];
 break;
 }
 },
-table: [o($V0,[2,4],{3:1,4:2}),{1:[3]},{5:[1,3],11:4,13:5,23:$V1},o($V2,$V3,{6:7,17:8,18:9,13:10,22:$V4,23:$V1}),{10:[1,12]},o($V5,[2,6],{14:[1,13]}),{22:[1,14]},{1:[2,18],5:[1,16],7:15},{25:[1,17]},o($V6,[2,8]),o($V6,[2,12],{19:[1,18]}),o($V6,[2,13]),{11:19,13:5,23:$V1},{13:10,15:20,17:21,18:9,22:$V4,23:$V1},o($V7,[2,14],{24:[1,22]}),{1:[2,1]},{10:[1,23]},{13:10,17:24,18:9,22:$V4,23:$V1},{13:10,15:25,17:21,18:9,22:$V4,23:$V1},{12:[1,26]},{16:[1,27]},o($V8,[2,10],{21:[1,28]}),{10:[1,29]},{1:[2,19]},{12:[1,30]},{20:[1,31]},o($V0,[2,5]),o($V5,[2,7]),{13:10,15:32,17:21,18:9,22:$V4,23:$V1},o($V7,[2,15]),o($V2,$V3,{17:8,18:9,13:10,6:33,22:$V4,23:$V1}),o($V6,[2,9]),o($V8,[2,11]),o($V2,[2,17])],
-defaultActions: {15:[2,1],23:[2,19]},
+table: [o($V0,[2,2],{3:1,4:2}),{1:[3]},{5:[1,3],8:4,11:5,21:$V1},o($V2,$V3,{6:7,15:8,16:9,11:10,20:$V4,21:$V1}),{9:[1,12]},o($V5,[2,4],{12:[1,13]}),{20:[1,14]},{1:[2,16],5:[1,16],7:15},{23:[1,17]},o($V6,[2,6]),o($V6,[2,10],{17:[1,18]}),o($V6,[2,11]),{8:19,11:5,21:$V1},{11:10,13:20,15:21,16:9,20:$V4,21:$V1},o($V7,[2,12],{22:[1,22]}),{1:[2,1]},{9:[1,23]},{11:10,15:24,16:9,20:$V4,21:$V1},{11:10,13:25,15:21,16:9,20:$V4,21:$V1},{10:[1,26]},{14:[1,27]},o($V8,[2,8],{19:[1,28]}),{9:[1,29]},{1:[2,17]},{10:[1,30]},{18:[1,31]},o($V0,[2,3]),o($V5,[2,5]),{11:10,13:32,15:21,16:9,20:$V4,21:$V1},o($V7,[2,13]),o($V2,$V3,{15:8,16:9,11:10,6:33,20:$V4,21:$V1}),o($V6,[2,7]),o($V8,[2,9]),o($V2,[2,15])],
+defaultActions: {15:[2,1],23:[2,17]},
 parseError: function parseError(str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -1756,24 +1753,29 @@ function clone(img, context)
 	}
 }
 
-function mkeffect(code, expr)
+function mkeffect(lval, rval, code, expr)
 {
-	code = code.replace(/^{(.*)}$/, "$1");
+	var body = expr ? "return (%s);" : "%s\n\treturn true;";
 
-	if (expr)
-		code = "return (" + code + ");";
-	else
-		code = code + "\n\treturn true;";
+	if (!lval)
+		lval = "LVAL";
+	if (!rval)
+		rval = "RVAL";
+	if (!code && expr)
+		code = "void(0)";
 
-	return new Function("LVAL", "RVAL", code);
+	body = body.replace("%s", code);
+	return new Function(lval, rval, body);
 }
 
 function apply(left, right, code, rl)
 {
-	var effect = mkeffect(code);
-	var ltype = left.node.agent;
-	var rtype = right.node.agent;
-	var human = ltype + "><" + rtype;
+	var lnode = left.node;
+	var rnode = right.node;
+	var human = lnode.agent + "><" + rnode.agent;
+	var lval = rl ? rnode.code : lnode.code;
+	var rval = rl ? lnode.code : rnode.code;
+	var effect = mkeffect(lval, rval, code);
 	var limg = [];
 	var rimg = [];
 	var wires = {};
@@ -1826,11 +1828,11 @@ function apply(left, right, code, rl)
 
 	left = left.pax;
 	for (i = 0; i < left.length; i++)
-		limg[i] = encode(left[i], wires);
+		limg[i] = encode(lval, rval, left[i], wires);
 
 	right = right.pax;
 	for (i = 0; i < right.length; i++)
-		rimg[i] = encode(right[i], wires);
+		rimg[i] = encode(lval, rval, right[i], wires);
 
 	for (name in wires) {
 		var wire = wires[name];
@@ -1956,7 +1958,7 @@ function addpair(left, right)
 	});
 }
 
-function encode(tree, wires, rt)
+function encode(lval, rval, tree, wires, rt)
 {
 	var node = tree.node;
 	var code = node.code;
@@ -1966,8 +1968,11 @@ function encode(tree, wires, rt)
 	var imgpax = [];
 	var i;
 
-	for (i = 0; i < pax.length; i++)
-		imgpax[i] = encode(pax[i], wires, rt);
+	for (i = 0; i < pax.length; i++) {
+		var sub = pax[i];
+
+		imgpax[i] = encode(lval, rval, sub, wires, rt);
+	}
 
 	pax = imgpax;
 	tree = {
@@ -2008,7 +2013,7 @@ function encode(tree, wires, rt)
 		else
 			twin.active = active;
 	} else {
-		var effect = mkeffect(code, true);
+		var effect = mkeffect(lval, rval, code, true);
 
 		if (rt)
 			tree.data = effect.call(inenv);
@@ -2022,7 +2027,7 @@ function encode(tree, wires, rt)
 function init()
 {
 	var wires = {};
-	var effect = mkeffect(inverb);
+	var effect = mkeffect(null, null, inverb);
 	var i;
 
 	effect.call(inenv);
@@ -2032,8 +2037,8 @@ function init()
 		var left = eqn.left;
 		var right = eqn.right;
 
-		left = encode(left, wires, true);
-		right = encode(right, wires, true);
+		left = encode(null, null, left, wires, true);
+		right = encode(null, null, right, wires, true);
 		addpair(left, right);
 	}
 }

@@ -32,9 +32,6 @@
 
 prog : rset MARK init tail {return {rules: $1, conf: $3, code: $4};}
      ;
-head : /* empty */ {$$ = "";}
-     | '$' CODE '$' {$$ = $2;}
-     ;
 rset : /* empty */ {$$ = [];}
      | rset side CODE side ';' {$1.push({left: $2, right: $4, code: $3}); $$ = $1;}
      ;
@@ -50,8 +47,8 @@ list : tree {$$ = [$1];}
 leaf : cell
      | NAME {$$ = {agent: "wire", name: $1};}
      ;
-cell : '\' NAME {$$ = {agent: $2, code: "void(0)"};}
-     | '\' NAME '_' CODE {$$ = {agent: $2, code: $4};}
+cell : '\' NAME {$$ = {agent: $2, code: ""};}
+     | '\' NAME '_' CODE {$$ = {agent: $2, code: $4.slice(1, -1)};}
      ;
 init : /* empty */ {$$ = [];}
      | tree '=' tree ';' init {$5.push({left: $1, right: $3}); $$ = $5;}

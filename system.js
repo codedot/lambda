@@ -158,24 +158,29 @@ function clone(img, context)
 	}
 }
 
-function mkeffect(code, expr)
+function mkeffect(lval, rval, code, expr)
 {
-	code = code.replace(/^{(.*)}$/, "$1");
+	var body = expr ? "return (%s);" : "%s\n\treturn true;";
 
-	if (expr)
-		code = "return (" + code + ");";
-	else
-		code = code + "\n\treturn true;";
+	if (!lval)
+		lval = "LVAL";
+	if (!rval)
+		rval = "RVAL";
+	if (!code && expr)
+		code = "void(0)";
 
-	return new Function("LVAL", "RVAL", code);
+	body = body.replace("%s", code);
+	return new Function(lval, rval, body);
 }
 
 function apply(left, right, code, rl)
 {
-	var effect = mkeffect(code);
-	var ltype = left.node.agent;
-	var rtype = right.node.agent;
-	var human = ltype + "><" + rtype;
+	var lnode = left.node;
+	var rnode = right.node;
+	var human = lnode.agent + "><" + rnode.agent;
+	var lval = rl ? rnode.code : lnode.code;
+	var rval = rl ? lnode.code : rnode.code;
+	var effect = mkeffect(lval, rval, code);
 	var limg = [];
 	var rimg = [];
 	var wires = {};
@@ -228,11 +233,11 @@ function apply(left, right, code, rl)
 
 	left = left.pax;
 	for (i = 0; i < left.length; i++)
-		limg[i] = encode(left[i], wires);
+		limg[i] = encode(lval, rval, left[i], wires);
 
 	right = right.pax;
 	for (i = 0; i < right.length; i++)
-		rimg[i] = encode(right[i], wires);
+		rimg[i] = encode(lval, rval, right[i], wires);
 
 	for (name in wires) {
 		var wire = wires[name];
@@ -358,7 +363,7 @@ function addpair(left, right)
 	});
 }
 
-function encode(tree, wires, rt)
+function encode(lval, rval, tree, wires, rt)
 {
 	var node = tree.node;
 	var code = node.code;
@@ -368,8 +373,11 @@ function encode(tree, wires, rt)
 	var imgpax = [];
 	var i;
 
-	for (i = 0; i < pax.length; i++)
-		imgpax[i] = encode(pax[i], wires, rt);
+	for (i = 0; i < pax.length; i++) {
+		var sub = pax[i];
+
+		imgpax[i] = encode(lval, rval, sub, wires, rt);
+	}
 
 	pax = imgpax;
 	tree = {
@@ -410,7 +418,7 @@ function encode(tree, wires, rt)
 		else
 			twin.active = active;
 	} else {
-		var effect = mkeffect(code, true);
+		var effect = mkeffect(lval, rval, code, true);
 
 		if (rt)
 			tree.data = effect.call(inenv);
@@ -424,7 +432,7 @@ function encode(tree, wires, rt)
 function init()
 {
 	var wires = {};
-	var effect = mkeffect(inverb);
+	var effect = mkeffect(null, null, inverb);
 	var i;
 
 	effect.call(inenv);
@@ -434,8 +442,8 @@ function init()
 		var left = eqn.left;
 		var right = eqn.right;
 
-		left = encode(left, wires, true);
-		right = encode(right, wires, true);
+		left = encode(null, null, left, wires, true);
+		right = encode(null, null, right, wires, true);
 		addpair(left, right);
 	}
 }
