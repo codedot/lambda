@@ -901,11 +901,15 @@ function alpha(obj, bv)
 	} else if ("abst" == node) {
 		var id = obj.var;
 		var wire = mkwire();
+		var old = bv[id];
 		var body;
 
 		bv[id] = wire;
 		body = alpha(obj.body, bv);
 		delete bv[id];
+
+		if (old)
+			bv[id] = old;
 
 		obj = {
 			node: "abst",
