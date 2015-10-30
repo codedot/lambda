@@ -63,12 +63,13 @@ function eriwer(agent, wire)
 
 function determ(amb, agent)
 {
+	var queue = [];
 	var wire = amb;
 	var twin = amb.twin;
 	var main = amb.main;
 	var aux = amb.aux;
 
-	addpair(main, agent);
+	addpair(queue, main, agent);
 
 	wire.type = wiretype;
 	delete wire.main;
@@ -76,7 +77,9 @@ function determ(amb, agent)
 	twin.type = wiretype;
 	delete twin.main;
 	delete twin.aux;
-	addpair(wire, aux);
+	addpair(queue, wire, aux);
+
+	flush(queue);
 }
 
 function mreted(agent, amb)
@@ -135,7 +138,7 @@ function clone(img, context)
 		copy.twin = twin;
 		twin.twin = copy;
 
-		addpair(active, twin);
+		addpair(context.queue, active, twin);
 
 		return copy;
 	} else {
@@ -189,6 +192,7 @@ function apply(left, right, code, rl)
 
 	function interact(lagent, ragent)
 	{
+		var queue = [];
 		var wcopy, lpax, rpax, lval, rval, context;
 
 		if (rl) {
@@ -207,6 +211,7 @@ function apply(left, right, code, rl)
 		rpax = ragent.pax;
 
 		context = {
+			queue: queue,
 			wlist: wcopy,
 			lval: lval,
 			rval: rval
@@ -217,7 +222,7 @@ function apply(left, right, code, rl)
 			var active = lpax[i];
 			var copy = clone(img, context);
 
-			addpair(copy, active);
+			addpair(queue, copy, active);
 		}
 
 		for (i = 0; i < rimg.length; i++) {
@@ -225,8 +230,10 @@ function apply(left, right, code, rl)
 			var active = rpax[i];
 			var copy = clone(img, context);
 
-			addpair(copy, active);
+			addpair(queue, copy, active);
 		}
+
+		flush(queue);
 	}
 
 	interact.human = human;
@@ -355,9 +362,14 @@ function reduce()
 		traverse(pair);
 }
 
-function addpair(left, right)
+function flush(queue)
 {
-	inqueue.push({
+	inqueue = inqueue.concat(queue);
+}
+
+function addpair(queue, left, right)
+{
+	queue.push({
 		left: left,
 		right: right
 	});
@@ -414,7 +426,7 @@ function encode(lval, rval, tree, wires, rt)
 		delete tree.pax;
 
 		if (rt)
-			addpair(active, twin);
+			addpair(rt, active, twin);
 		else
 			twin.active = active;
 	} else {
@@ -432,6 +444,7 @@ function encode(lval, rval, tree, wires, rt)
 function init()
 {
 	var wires = {};
+	var queue = [];
 	var effect = mkeffect(null, null, inverb);
 	var i;
 
@@ -442,10 +455,12 @@ function init()
 		var left = eqn.left;
 		var right = eqn.right;
 
-		left = encode(null, null, left, wires, true);
-		right = encode(null, null, right, wires, true);
-		addpair(left, right);
+		left = encode(null, null, left, wires, queue);
+		right = encode(null, null, right, wires, queue);
+		addpair(queue, left, right);
 	}
+
+	flush(queue);
 }
 
 function prepare(mlc)
