@@ -1627,7 +1627,7 @@ function addtypes(tree)
 		addtypes(pax[i]);
 }
 
-function deadlock(lagent, ragent)
+function norule(lagent, ragent)
 {
 	var ltype = typelist[lagent.type];
 	var rtype = typelist[ragent.type];
@@ -1912,15 +1912,15 @@ function gettable()
 
 			if (!rules) {
 				if ("wire" == left)
-					rules = [rewire];
+					rules = rewire;
 				else if ("wire" == right)
-					rules = [eriwer];
+					rules = eriwer;
 				else if ("amb" == left)
-					rules = [determ];
+					rules = determ;
 				else if ("amb" == right)
-					rules = [mreted];
+					rules = mreted;
 				else
-					rules = [];
+					rules = norule;
 			}
 
 			row[types[right]] = rules;
@@ -1938,8 +1938,7 @@ function traverse(pair)
 {
 	var left = pair.left;
 	var right = pair.right;
-	var row = table[left.type];
-	var rules = row[right.type];
+	var rules = pair.rules;
 	var i;
 
 	for (i = 0; i < rules.length; i++) {
@@ -1950,7 +1949,7 @@ function traverse(pair)
 			return;
 	}
 
-	deadlock(left, right);
+	norule(left, right);
 }
 
 function reduce()
@@ -1963,7 +1962,22 @@ function reduce()
 
 function flush(queue)
 {
-	inqueue = inqueue.concat(queue);
+	var i;
+
+	for (i = 0; i < queue.length; i++) {
+		var pair = queue[i];
+		var left = pair.left;
+		var right = pair.right;
+		var row = table[left.type];
+		var rules = row[right.type];
+
+		pair.rules = rules;
+
+		if (rules.pseudo)
+			rules(left, right);
+		else
+			inqueue.push(pair);
+	}
 }
 
 function addpair(queue, left, right)
@@ -2080,13 +2094,11 @@ function prepare(mlc)
 	ntypes = 2;
 	nwires = 0;
 
-	deadlock.human = "dead>!<lock";
-
-	determ.human = "amb><_";
-	mreted.human = "_><amb";
-
-	rewire.human = "wire><_";
-	eriwer.human = "_><wire";
+	determ.pseudo = true;
+	mreted.pseudo = true;
+	rewire.pseudo = true;
+	eriwer.pseudo = true;
+	norule.pseudo = true;
 
 	wiretype = types["wire"];
 	ambtype = types["amb"];
