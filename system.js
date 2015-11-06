@@ -249,6 +249,7 @@ function apply(left, right, code, rl)
 	}
 
 	interact.human = human;
+	interact.count = 0;
 
 	left = left.pax;
 	for (i = 0; i < left.length; i++)
@@ -359,6 +360,7 @@ function traverse(pair)
 		var queue = rule(left, right);
 
 		if (queue) {
+			++rule.count;
 			flush(queue);
 			return;
 		}
@@ -627,11 +629,52 @@ function debug()
 	return conf;
 }
 
+function getstats()
+{
+	var stats = {};
+	var i;
+
+	for (i = 0; i < table.length; i++) {
+		var row = table[i];
+		var j;
+
+		for (j = 0; j < row.length; j++) {
+			var cell = row[j];
+			var k;
+
+			if (cell.pseudo)
+				continue;
+
+			for (k = 0; k < cell.length; k++) {
+				var rule = cell[k];
+				var count = rule.count;
+				var human = rule.human;
+
+				if (!count)
+					continue;
+
+				human = human.split("><");
+				human = human.sort();
+				human = human.join("><");
+
+				if (stats[human])
+					stats[human] += count;
+				else
+					stats[human] = count;
+			}
+		}
+	}
+
+	return stats;
+}
+
 function run(mlc)
 {
 	prepare(mlc);
 
 	reduce();
+
+	inenv.stats = getstats();
 
 	inenv.term = mlc2in.term;
 

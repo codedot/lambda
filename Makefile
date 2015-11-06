@@ -28,7 +28,7 @@ $(BRFS):
 	npm install brfs
 
 clean:
-	-rm -f agents.js lambda.js *.tmp
+	-rm -f agents.js lambda.js profile.json *.tmp
 	-rm -fr node_modules
 
 .POSIX:

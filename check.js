@@ -15,8 +15,11 @@ if (file) {
 	console.log("$$");
 } else {
 	var output = mlcjs(mlcjs.example);
+	var stats = JSON.stringify(output.stats, null, "\t");
 
 	console.log(output.term);
 	console.info("%s(%s)", output.total, output.beta);
 	console.log(output.nf);
+
+	fs.writeFileSync("profile.json", stats + "\n");
 }
