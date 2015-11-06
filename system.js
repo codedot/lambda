@@ -63,23 +63,26 @@ function eriwer(agent, wire)
 
 function determ(amb, agent)
 {
-	var queue = [];
 	var wire = amb;
 	var twin = amb.twin;
 	var main = amb.main;
 	var aux = amb.aux;
 
-	addpair(queue, main, agent);
-
-	wire.type = wiretype;
 	delete wire.main;
 	delete wire.aux;
-	twin.type = wiretype;
+	wire.type = wiretype;
+
 	delete twin.main;
 	delete twin.aux;
-	addpair(queue, wire, aux);
+	twin.type = wiretype;
 
-	flush(queue);
+	flush([{
+		left: main,
+		right: agent
+	}, {
+		left: aux,
+		right: wire
+	}]);
 }
 
 function mreted(agent, amb)
@@ -138,7 +141,10 @@ function clone(img, context)
 		copy.twin = twin;
 		twin.twin = copy;
 
-		addpair(context.queue, active, twin);
+		context.queue.push({
+			left: active,
+			right: twin
+		});
 
 		return copy;
 	} else {
@@ -204,7 +210,7 @@ function apply(left, right, code, rl)
 		}
 
 		if (!effect.call(inenv, lval, rval))
-			return true;
+			return;
 
 		wcopy = cpwlist(wlist);
 		lpax = lagent.pax;
@@ -222,7 +228,10 @@ function apply(left, right, code, rl)
 			var active = lpax[i];
 			var copy = clone(img, context);
 
-			addpair(queue, copy, active);
+			queue.push({
+				left: active,
+				right: copy
+			});
 		}
 
 		for (i = 0; i < rimg.length; i++) {
@@ -230,10 +239,13 @@ function apply(left, right, code, rl)
 			var active = rpax[i];
 			var copy = clone(img, context);
 
-			addpair(queue, copy, active);
+			queue.push({
+				left: copy,
+				right: active
+			});
 		}
 
-		flush(queue);
+		return queue;
 	}
 
 	interact.human = human;
@@ -344,10 +356,12 @@ function traverse(pair)
 
 	for (i = 0; i < rules.length; i++) {
 		var rule = rules[i];
-		var next = rule(left, right);
+		var queue = rule(left, right);
 
-		if (!next)
+		if (queue) {
+			flush(queue);
 			return;
+		}
 	}
 
 	norule(left, right);
