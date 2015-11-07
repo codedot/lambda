@@ -68,20 +68,17 @@ function determ(amb, agent)
 	var main = amb.main;
 	var aux = amb.aux;
 
+	wire.type = wiretype;
 	delete wire.main;
 	delete wire.aux;
-	wire.type = wiretype;
-
+	twin.type = wiretype;
 	delete twin.main;
 	delete twin.aux;
-	twin.type = wiretype;
+	rewire(wire, aux);
 
 	flush([{
 		left: main,
 		right: agent
-	}, {
-		left: aux,
-		right: wire
 	}]);
 }
 
