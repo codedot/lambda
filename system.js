@@ -404,14 +404,6 @@ function flush(queue)
 	}
 }
 
-function addpair(queue, left, right)
-{
-	queue.push({
-		left: left,
-		right: right
-	});
-}
-
 function encode(lval, rval, tree, wires, rt)
 {
 	var node = tree.node;
@@ -483,7 +475,7 @@ function init()
 {
 	var wires = {};
 	var queue = [];
-	var effect = mkeffect(null, null, inverb);
+	var effect = mkeffect(0, 0, inverb);
 	var i;
 
 	effect.call(inenv);
@@ -493,9 +485,10 @@ function init()
 		var left = eqn.left;
 		var right = eqn.right;
 
-		left = encode(null, null, left, wires, queue);
-		right = encode(null, null, right, wires, queue);
-		addpair(queue, left, right);
+		queue.push({
+			left: encode(0, 0, left, wires, true),
+			right: encode(0, 0, right, wires, true)
+		});
 	}
 
 	flush(queue);
