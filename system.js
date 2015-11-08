@@ -7,6 +7,7 @@ var example = fs.readFileSync("fact.mlc", "utf8");
 var parser = new inet.Parser();
 var inverb, inrules, inconf, inenv, inqueue, nwires, nambs;
 var typelist, types, ntypes, wiretype, ambtype, table;
+var lpaxtype, rpaxtype;
 
 function addtypes(tree)
 {
@@ -126,7 +127,17 @@ function clone(img, context)
 {
 	var type = img.type;
 
-	if (wiretype == type) {
+	if (lpaxtype == type) {
+		var lpax = context.lpax;
+		var id = img.id;
+
+		return lpax[id];
+	} else if (rpaxtype == type) {
+		var rpax = context.rpax;
+		var id = img.id;
+
+		return rpax[id];
+	} else if (wiretype == type) {
 		var wlist = context.wlist;
 		var id = img.id;
 
@@ -173,6 +184,23 @@ function mkeffect(lval, rval, code, expr)
 	return new Function(lval, rval, body);
 }
 
+function prequeue(queue, side, lval, rval, pax, wires)
+{
+	var i;
+
+	for (i = 0; i < pax.length; i++) {
+		var img = encode(lval, rval, pax[i], wires);
+
+		queue.push({
+			left: {
+				type: side,
+				id: i
+			},
+			right: img
+		});
+	}
+}
+
 function apply(left, right, code, rl)
 {
 	var lnode = left.node;
@@ -181,8 +209,7 @@ function apply(left, right, code, rl)
 	var lval = rl ? rnode.code : lnode.code;
 	var rval = rl ? lnode.code : rnode.code;
 	var effect = mkeffect(lval, rval, code);
-	var limg = [];
-	var rimg = [];
+	var img = [];
 	var wires = {};
 	var wlist = [];
 	var alist = [];
@@ -210,47 +237,30 @@ function apply(left, right, code, rl)
 
 		context = {
 			wlist: wcopy,
+			lpax: lpax,
+			rpax: rpax,
 			lval: lval,
 			rval: rval
 		};
 
 		context.alist = cpalist(alist, context);
 
-		for (i = 0; i < limg.length; i++) {
-			var img = limg[i];
-			var active = lpax[i];
-			var copy = clone(img, context);
+		for (i = 0; i < img.length; i++) {
+			var pair = img[i];
+			var left = pair.left;
+			var right = pair.right;
 
 			queue.push({
-				left: active,
-				right: copy
-			});
-		}
-
-		for (i = 0; i < rimg.length; i++) {
-			var img = rimg[i];
-			var active = rpax[i];
-			var copy = clone(img, context);
-
-			queue.push({
-				left: copy,
-				right: active
+				left: clone(left, context),
+				right: clone(right, context)
 			});
 		}
 
 		return queue;
 	}
 
-	interact.human = human;
-	interact.count = 0;
-
-	left = left.pax;
-	for (i = 0; i < left.length; i++)
-		limg[i] = encode(lval, rval, left[i], wires);
-
-	right = right.pax;
-	for (i = 0; i < right.length; i++)
-		rimg[i] = encode(lval, rval, right[i], wires);
+	prequeue(img, lpaxtype, lval, rval, left.pax, wires);
+	prequeue(img, rpaxtype, lval, rval, right.pax, wires);
 
 	for (name in wires) {
 		var wire = wires[name];
@@ -276,6 +286,8 @@ function apply(left, right, code, rl)
 		}
 	}
 
+	interact.human = human;
+	interact.count = 0;
 	return interact;
 }
 
@@ -519,6 +531,8 @@ function prepare(mlc)
 
 	wiretype = types["wire"];
 	ambtype = types["amb"];
+	lpaxtype = -1;
+	rpaxtype = -2;
 
 	table = gettable();
 
