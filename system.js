@@ -95,7 +95,7 @@ function cpwlist(orig)
 	for (i = 0; i < orig.length; i++) {
 		var img = orig[i];
 		var wire = {
-			type: wiretype,
+			type: img.type,
 			twin: img.twin.id
 		};
 
@@ -111,6 +111,17 @@ function cpwlist(orig)
 	return copy;
 }
 
+function cpalist(orig, context)
+{
+	var copy = [];
+	var i;
+
+	for (i = 0; i < orig.length; i++)
+		copy.push(clone(orig[i], context));
+
+	return copy;
+}
+
 function clone(img, context)
 {
 	var type = img.type;
@@ -121,28 +132,11 @@ function clone(img, context)
 
 		return wlist[id];
 	} else if (ambtype == type) {
-		var active = clone(img.twin.active, context);
-		var main = clone(img.main, context);
-		var aux = clone(img.aux, context);
-		var twin = {
-			type: type,
-			main: main,
-			aux: aux
-		};
-		var copy = {
-			type: type,
-			main: main,
-			aux: aux
-		};
+		var copy = context.wlist[img.id];
+		var alist = context.alist;
 
-		copy.twin = twin;
-		twin.twin = copy;
-
-		context.queue.push({
-			left: active,
-			right: twin
-		});
-
+		copy.main = alist[img.main];
+		copy.aux = alist[img.aux];
 		return copy;
 	} else {
 		var lval = context.lval;
@@ -191,6 +185,7 @@ function apply(left, right, code, rl)
 	var rimg = [];
 	var wires = {};
 	var wlist = [];
+	var alist = [];
 	var i, name;
 
 	function interact(lagent, ragent)
@@ -219,6 +214,8 @@ function apply(left, right, code, rl)
 			lval: lval,
 			rval: rval
 		};
+
+		context.alist = cpalist(alist, context);
 
 		for (i = 0; i < limg.length; i++) {
 			var img = limg[i];
@@ -265,6 +262,19 @@ function apply(left, right, code, rl)
 
 		twin.id = wlist.length;
 		wlist.push(twin);
+
+		if (ambtype == wire.type) {
+			var main = wire.main;
+			var aux = wire.aux;
+
+			wire.main = alist.length;
+			twin.main = alist.length;
+			alist.push(main);
+
+			wire.aux = alist.length;
+			twin.aux = alist.length;
+			alist.push(aux);
+		}
 	}
 
 	return interact;
@@ -431,31 +441,32 @@ function encode(lval, rval, tree, wires, rt)
 		if (wire) {
 			wire.twin = tree;
 			tree.twin = wire;
+
+			tree.type = wire.type;
+			tree.main = wire.main;
+			tree.aux = wire.aux;
 		}
 
 		delete tree.pax;
 
 		wires[name] = tree;
 	} else if (ambtype == type) {
-		var active = pax.shift();
+		var wire = pax.shift();
+		var twin = wire.twin;
 		var main = pax.shift();
 		var aux = pax.shift();
-		var twin = {
-			type: type,
-			main: main,
-			aux: aux,
-			twin: tree
-		};
 
-		tree.main = main;
-		tree.aux = aux;
-		tree.twin = twin;
-		delete tree.pax;
+		wire.type = type;
+		wire.main = main;
+		wire.aux = aux;
 
-		if (rt)
-			addpair(rt, active, twin);
-		else
-			twin.active = active;
+		if (twin) {
+			twin.type = type;
+			twin.main = main;
+			twin.aux = aux;
+		}
+
+		return wire;
 	} else {
 		var effect = mkeffect(lval, rval, code, true);
 
