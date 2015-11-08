@@ -1808,7 +1808,6 @@ function apply(left, right, code, rl)
 		rpax = ragent.pax;
 
 		context = {
-			queue: queue,
 			wlist: wcopy,
 			lval: lval,
 			rval: rval
