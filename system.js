@@ -39,27 +39,96 @@ function norule(lagent, ragent)
 	inqueue = [];
 }
 
-function rewire(wire, agent)
+function indwire(wire, agent)
 {
-	var twin = wire.twin;
-	var twin2 = agent.twin;
-	var key;
+	var dst = wire.twin;
+	var twin = agent.twin;
 
-	twin.type = agent.type;
-	twin.pax = agent.pax;
-	twin.main = agent.main;
-	twin.aux = agent.aux;
-	twin.data = agent.data;
-
-	if (twin2) {
-		twin.twin = twin2;
-		twin2.twin = twin;
-	}
+	dst.twin = twin;
+	twin.twin = dst;
 }
 
-function eriwer(agent, wire)
+function inderiw(agent, wire)
 {
-	rewire(wire, agent);
+	indwire(wire, agent);
+}
+
+function indamb(wire, agent)
+{
+	var dst = wire.twin;
+	var twin = agent.twin;
+
+	dst.twin = twin;
+	twin.twin = dst;
+
+	dst.type = ambtype;
+	dst.main = agent.main;
+	dst.aux = agent.aux;
+}
+
+function indbma(agent, wire)
+{
+	indamb(wire, agent);
+}
+
+function indagent(wire, agent)
+{
+	var dst = wire.twin;
+
+	dst.type = agent.type;
+	dst.pax = agent.pax;
+	dst.data = agent.data;
+}
+
+function indtnega(agent, wire)
+{
+	indagent(wire, agent);
+}
+
+function getindir(type)
+{
+	if ("wire" == type)
+		return indwire;
+	else if ("amb" == type)
+		return indamb;
+	else
+		return indagent;
+}
+
+function getridni(type)
+{
+	if ("wire" == type)
+		return inderiw;
+	else if ("amb" == type)
+		return indbma;
+	else
+		return indtnega;
+}
+
+function rewire(wire, agent)
+{
+	var dst = wire.twin;
+	var type = agent.type;
+
+	if (wiretype == type) {
+		var twin = agent.twin;
+
+		dst.twin = twin;
+		twin.twin = dst;
+	} else if (ambtype == type) {
+		var twin = agent.twin;
+
+		dst.twin = twin;
+		twin.twin = dst;
+
+		dst.type = type;
+		dst.main = agent.main;
+		dst.aux = agent.aux;
+	} else {
+		dst.type = type;
+		dst.pax = agent.pax;
+		dst.data = agent.data;
+	}
 }
 
 function determ(amb, agent)
@@ -446,9 +515,9 @@ function gettable()
 
 			if (!rules) {
 				if ("wire" == left)
-					rules = rewire;
+					rules = getindir(right);
 				else if ("wire" == right)
-					rules = eriwer;
+					rules = getridni(left);
 				else if ("amb" == left)
 					rules = determ;
 				else if ("amb" == right)
@@ -625,11 +694,15 @@ function prepare(mlc)
 	ntypes = 2;
 	nwires = 0;
 
+	norule.pseudo = true;
 	determ.pseudo = true;
 	mreted.pseudo = true;
-	rewire.pseudo = true;
-	eriwer.pseudo = true;
-	norule.pseudo = true;
+	indwire.pseudo = true;
+	inderiw.pseudo = true;
+	indamb.pseudo = true;
+	indbma.pseudo = true;
+	indagent.pseudo = true;
+	indtnega.pseudo = true;
 
 	wiretype = types["wire"];
 	ambtype = types["amb"];
