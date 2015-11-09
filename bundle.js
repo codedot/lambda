@@ -1834,7 +1834,51 @@ function geneff(effect)
 
 function gentwins(wlist, alist)
 {
-	return "";
+	var head = "";
+	var tail = "";
+	var i;
+
+	if (!wlist.length)
+		return "";
+
+	for (i = 0; i < wlist.length; i++) {
+		var wire = wlist[i];
+		var type = wire.type;
+		var twin = wire.twin.id;
+
+		head = head.concat("\
+	var wire" + i + " = {type: " + type + "};\n");
+
+		tail = tail.concat("\
+	wire" + i + ".twin = wire" + twin + ";\n");
+	}
+
+	for (i = 0; i < alist.length; i++) {
+		var tree = alist[i];
+
+		head = head.concat("\
+	var tree" + i + " = " + genclone(tree) + ";\n");
+	}
+
+	for (i = 0; i < wlist.length; i++) {
+		var wire = wlist[i];
+
+		if (ambtype == wire.type) {
+			var main = wire.main;
+			var aux = wire.aux;
+
+			tail = tail.concat("\
+	wire" + i + ".main = tree" + main + ";\n\
+	wire" + i + ".aux = tree" + aux + ";\n");
+		}
+	}
+
+	return head.concat("\n", tail, "\n");
+}
+
+function genclone(tree)
+{
+	return "void(0)";
 }
 
 function genqueue(img)
@@ -1854,6 +1898,8 @@ function generate(img, wlist, alist, effect, rl)
 	var lpax = left.pax;\n\
 	var rpax = right.pax;\n\n" + gentwins(wlist, alist) + "\
 	return " + genqueue(img) + ";";
+
+	//console.log(">>>\n" + body + "\n<<<");
 
 	function interact(lagent, ragent)
 	{
