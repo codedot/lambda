@@ -227,8 +227,35 @@ function optimize(queue)
 	return needed;
 }
 
+function geneff(effect)
+{
+	effect = "(" + effect.toString() + ")";
+	return effect + ".call(this, lval, rval)";
+}
+
+function gentwins(wlist, alist)
+{
+	return "";
+}
+
+function genqueue(img)
+{
+	return "[]";
+}
+
 function generate(img, wlist, alist, effect, rl)
 {
+	var left = rl ? "right" : "left";
+	var right = rl ? "left" : "right";
+	var body = "\
+	var lval = " + left + ".data;\n\
+	var rval = " + right + ".data;\n\n\
+	if (!(" + geneff(effect) + "))\n\
+		return;\n\n\
+	var lpax = left.pax;\n\
+	var rpax = right.pax;\n\n" + gentwins(wlist, alist) + "\
+	return " + genqueue(img) + ";";
+
 	function interact(lagent, ragent)
 	{
 		var queue = [];
