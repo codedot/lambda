@@ -2011,7 +2011,7 @@ function traverse(pair)
 
 	for (i = 0; i < rules.length; i++) {
 		var rule = rules[i];
-		var queue = rule(left, right);
+		var queue = rule.call(inenv, left, right);
 
 		if (queue) {
 			++rule.count;
