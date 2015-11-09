@@ -284,7 +284,21 @@ function genclone(tree)
 
 function genqueue(img)
 {
-	return "[]";
+	var queue = [];
+	var i;
+
+	for (i = 0; i < img.length; i++) {
+		var pair = img[i];
+		var left = pair.left;
+		var right = pair.right;
+
+		queue.push("{\n\
+		left: " + genclone(left) + ",\n\
+		right: " + genclone(right) + "\n\
+	}");
+	}
+
+	return "[" + queue.join(", ") + "]";
 }
 
 function generate(img, wlist, alist, effect, rl)
