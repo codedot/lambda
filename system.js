@@ -227,20 +227,8 @@ function optimize(queue)
 	return needed;
 }
 
-function apply(left, right, code, rl)
+function generate(img, wlist, alist, effect, rl)
 {
-	var lnode = left.node;
-	var rnode = right.node;
-	var human = lnode.agent + "><" + rnode.agent;
-	var lval = rl ? rnode.code : lnode.code;
-	var rval = rl ? lnode.code : rnode.code;
-	var effect = mkeffect(lval, rval, code);
-	var img = [];
-	var wires = {};
-	var wlist = [];
-	var alist = [];
-	var i, name;
-
 	function interact(lagent, ragent)
 	{
 		var queue = [];
@@ -285,6 +273,23 @@ function apply(left, right, code, rl)
 		return queue;
 	}
 
+	return interact;
+}
+
+function apply(left, right, code, rl)
+{
+	var lnode = left.node;
+	var rnode = right.node;
+	var human = lnode.agent + "><" + rnode.agent;
+	var lval = rl ? rnode.code : lnode.code;
+	var rval = rl ? lnode.code : rnode.code;
+	var effect = mkeffect(lval, rval, code);
+	var img = [];
+	var wires = {};
+	var wlist = [];
+	var alist = [];
+	var i, name, interact;
+
 	prequeue(img, lpaxtype, lval, rval, left.pax, wires);
 	prequeue(img, rpaxtype, lval, rval, right.pax, wires);
 
@@ -317,6 +322,7 @@ function apply(left, right, code, rl)
 		}
 	}
 
+	interact = generate(img, wlist, alist, effect, rl);
 	interact.human = human;
 	interact.count = 0;
 	return interact;
