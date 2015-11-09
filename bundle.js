@@ -1937,53 +1937,7 @@ function generate(img, wlist, alist, effect, rl)
 	var rpax = right.pax;\n\n" + gentwins(wlist, alist) + "\
 	return " + genqueue(img) + ";";
 
-	//console.log(">>>\n" + body + "\n<<<");
-
-	function interact(lagent, ragent)
-	{
-		var queue = [];
-		var wcopy, lpax, rpax, lval, rval, context;
-
-		if (rl) {
-			rval = lagent.data;
-			lval = ragent.data;
-		} else {
-			lval = lagent.data;
-			rval = ragent.data;
-		}
-
-		if (!effect.call(inenv, lval, rval))
-			return;
-
-		wcopy = cpwlist(wlist);
-		lpax = lagent.pax;
-		rpax = ragent.pax;
-
-		context = {
-			wlist: wcopy,
-			lpax: lpax,
-			rpax: rpax,
-			lval: lval,
-			rval: rval
-		};
-
-		context.alist = cpalist(alist, context);
-
-		for (i = 0; i < img.length; i++) {
-			var pair = img[i];
-			var left = pair.left;
-			var right = pair.right;
-
-			queue.push({
-				left: clone(left, context),
-				right: clone(right, context)
-			});
-		}
-
-		return queue;
-	}
-
-	return interact;
+	return new Function("left", "right", body);
 }
 
 function apply(left, right, code, rl)
