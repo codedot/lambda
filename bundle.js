@@ -1876,9 +1876,33 @@ function gentwins(wlist, alist)
 	return head.concat("\n", tail, "\n");
 }
 
-function genclone(tree)
+function genclone(img)
 {
-	return "void(0)";
+	var type = img.type;
+	var imgpax = img.pax;
+	var pax = [];
+	var i;
+
+	if (lpaxtype == type)
+		return "lpax[" + img.id + "]";
+
+	if (rpaxtype == type)
+		return "rpax[" + img.id + "]";
+
+	if (wiretype == type)
+		return "wire" + img.id;
+
+	if (ambtype == type)
+		return "wire" + img.id;
+
+	for (i = 0; i < imgpax.length; i++)
+		pax[i] = genclone(imgpax[i]);
+
+	return "{\n\
+			type: " + type + ",\n\
+			pax: [" + pax.join(", ") + "],\n\
+			data: " + geneff(img.effect) + "\n\
+		}";
 }
 
 function genqueue(img)
