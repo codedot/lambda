@@ -1704,49 +1704,35 @@ function getridni(type)
 		return indtnega;
 }
 
-function rewire(wire, agent)
-{
-	var dst = wire.twin;
-	var type = agent.type;
-
-	if (wiretype == type) {
-		var twin = agent.twin;
-
-		dst.twin = twin;
-		twin.twin = dst;
-	} else if (ambtype == type) {
-		var twin = agent.twin;
-
-		dst.twin = twin;
-		twin.twin = dst;
-
-		dst.type = type;
-		dst.main = agent.main;
-		dst.aux = agent.aux;
-	} else {
-		dst.type = type;
-		dst.pax = agent.pax;
-		dst.data = agent.data;
-	}
-}
-
 function determ(amb, agent)
 {
-	var wire = amb;
-	var twin = amb.twin;
-	var main = amb.main;
+	var dst = amb.twin;
 	var aux = amb.aux;
+	var type = aux.type;
 
-	wire.type = wiretype;
-	delete wire.main;
-	delete wire.aux;
-	twin.type = wiretype;
-	delete twin.main;
-	delete twin.aux;
-	rewire(wire, aux);
+	if (wiretype == type) {
+		var twin = aux.twin;
+
+		dst.twin = twin;
+		twin.twin = dst;
+
+		dst.type = type;
+	} else if (ambtype == type) {
+		var twin = aux.twin;
+
+		dst.twin = twin;
+		twin.twin = dst;
+
+		dst.main = aux.main;
+		dst.aux = aux.aux;
+	} else {
+		dst.type = type;
+		dst.pax = aux.pax;
+		dst.data = aux.data;
+	}
 
 	flush([{
-		left: main,
+		left: amb.main,
 		right: agent
 	}]);
 }
