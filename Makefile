@@ -1,8 +1,10 @@
 BRFS = node_modules/.bin/brfs
 BROWSERIFY = node_modules/.bin/browserify
 JISON = node_modules/.bin/jison
+INETLIB = node_modules/inet-lib/package.json
 
 SRC = \
+	$(INETLIB) \
 	agents.js \
 	encode.js \
 	fact.mlc \
@@ -17,6 +19,9 @@ all: bundle.js
 
 bundle.js: $(BROWSERIFY) $(BRFS) $(SRC)
 	node_modules/.bin/browserify -t brfs -o bundle.js system.js
+
+$(INETLIB):
+	npm install inet-lib
 
 $(JISON):
 	npm install jison
