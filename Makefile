@@ -5,7 +5,6 @@ INETLIB = node_modules/inet-lib/package.json
 
 SRC = \
 	$(INETLIB) \
-	agents.js \
 	encode.js \
 	fact.mlc \
 	lambda.js \
@@ -33,7 +32,7 @@ $(BRFS):
 	npm install brfs
 
 clean:
-	-rm -f agents.js lambda.js profile.json *.tmp
+	-rm -f lambda.js profile.json *.tmp
 	-rm -fr node_modules
 
 .POSIX:
