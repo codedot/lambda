@@ -23,7 +23,7 @@ $(INETLIB):
 	npm install inet-lib
 
 $(JISON):
-	npm install jison
+	npm install jison@0.4.15
 
 $(BROWSERIFY):
 	npm install browserify
