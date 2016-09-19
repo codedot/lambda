@@ -27,6 +27,11 @@ function debug()
 	return inet.debug();
 }
 
+function debug1()
+{
+	return inet.debug1();
+}
+
 function run(mlc)
 {
 	var src = mlc2in(mlc);
@@ -44,6 +49,7 @@ function run(mlc)
 
 run.prepare = prepare;
 run.debug = debug;
+run.debug1 = debug1;
 run.mlc2in = mlc2in;
 run.example = example.replace(/\n*$/, "");
 global.mlcjs = run;

@@ -2196,6 +2196,7 @@ function prepare(src, fmt)
 	};
 	ntypes = 2;
 	nwires = 0;
+	nambs = 0;
 
 	norule.pseudo = true;
 	determ.pseudo = true;
@@ -2316,6 +2317,19 @@ function debug()
 	return conf;
 }
 
+function debug1()
+{
+	var pair = inqueue.shift();
+	var eqn;
+
+	if (pair) {
+		eqn = geteqn(pair);
+		traverse(pair);
+	}
+
+	return eqn;
+}
+
 function getstats()
 {
 	var stats = {};
@@ -2367,6 +2381,7 @@ function run(mlc)
 
 run.prepare = prepare;
 run.debug = debug;
+run.debug1 = debug1;
 module.exports = run;
 
 },{"./compile":3}],5:[function(require,module,exports){
@@ -2400,6 +2415,11 @@ function debug()
 	return inet.debug();
 }
 
+function debug1()
+{
+	return inet.debug1();
+}
+
 function run(mlc)
 {
 	var src = mlc2in(mlc);
@@ -2417,6 +2437,7 @@ function run(mlc)
 
 run.prepare = prepare;
 run.debug = debug;
+run.debug1 = debug1;
 run.mlc2in = mlc2in;
 run.example = example.replace(/\n*$/, "");
 global.mlcjs = run;

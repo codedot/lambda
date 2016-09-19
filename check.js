@@ -5,14 +5,12 @@ var file = process.argv[2];
 
 if (file) {
 	var input = fs.readFileSync(file, "utf8");
-	var conf;
+	var eqn;
 
 	mlcjs.prepare(input);
 
-	while (conf = mlcjs.debug())
-		console.log("$$\n%s", conf);
-
-	console.log("$$");
+	while (eqn = mlcjs.debug1())
+		console.log(eqn);
 } else {
 	var output = mlcjs(mlcjs.example);
 	var stats = JSON.stringify(output.stats, null, "\t");
