@@ -27,6 +27,11 @@ function debug()
 	return inet.debug();
 }
 
+function debug0()
+{
+	return inet.debug0();
+}
+
 function debug1()
 {
 	return inet.debug1();
@@ -49,6 +54,7 @@ function run(mlc)
 
 run.prepare = prepare;
 run.debug = debug;
+run.debug0 = debug0;
 run.debug1 = debug1;
 run.mlc2in = mlc2in;
 run.example = example.replace(/\n*$/, "");

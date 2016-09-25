@@ -1601,7 +1601,7 @@ var compile = require("./compile");
 var parser = new compile.Parser();
 var inverb, inrules, inconf, inenv, inqueue, nwires, nambs;
 var typelist, types, ntypes, wiretype, ambtype, table;
-var lpaxtype, rpaxtype, format;
+var lpaxtype, rpaxtype, format, ndebug;
 
 function addtypes(tree)
 {
@@ -1623,14 +1623,54 @@ function addtypes(tree)
 		addtypes(pax[i]);
 }
 
-function norule(lagent, ragent)
+function norules(lagent, ragent)
 {
-	var ltype = typelist[lagent.type];
-	var rtype = typelist[ragent.type];
-	var pair = ltype + "><" + rtype;
+	var eqn = geteqn({
+		left: lagent,
+		right: ragent
+	});
 
-	console.error("%s: No applicable rule", pair);
-	inqueue = [];
+	throw "NO RULES: " + eqn;
+}
+
+function ischild(wire, agent)
+{
+	var type = agent.type;
+
+	if (wiretype == type) {
+		if (wire === agent)
+			return true;
+	} else if (ambtype == type) {
+		if (ischild(wire, agent.main))
+			return true;
+
+		if (ischild(wire, agent.aux))
+			return true;
+	} else {
+		var pax = agent.pax;
+		var i;
+
+		for (i = 0; i < pax.length; i++)
+			if (ischild(wire, pax[i]))
+				return true;
+	}
+
+	return false;
+}
+
+function detect(wire, agent)
+{
+	if (ndebug)
+		return;
+
+	if (ischild(wire, agent)) {
+		var eqn = geteqn({
+			left: wire,
+			right: agent
+		});
+
+		throw "DEADLOCK: " + eqn;
+	}
 }
 
 function indwire(wire, agent)
@@ -1652,6 +1692,8 @@ function indamb(wire, agent)
 	var dst = wire.twin;
 	var twin = agent.twin;
 
+	detect(dst, agent);
+
 	dst.twin = twin;
 	twin.twin = dst;
 
@@ -1668,6 +1710,8 @@ function indbma(agent, wire)
 function indagent(wire, agent)
 {
 	var dst = wire.twin;
+
+	detect(dst, agent);
 
 	dst.type = agent.type;
 	dst.pax = agent.pax;
@@ -2022,7 +2066,7 @@ function gettable()
 				else if ("amb" == right)
 					rules = mreted;
 				else
-					rules = norule;
+					rules = norules;
 			}
 
 			row[types[right]] = rules;
@@ -2054,7 +2098,7 @@ function traverse(pair)
 		}
 	}
 
-	norule(left, right);
+	norules(left, right);
 }
 
 function reduce()
@@ -2198,7 +2242,7 @@ function prepare(src, fmt)
 	nwires = 0;
 	nambs = 0;
 
-	norule.pseudo = true;
+	norules.pseudo = true;
 	determ.pseudo = true;
 	mreted.pseudo = true;
 	indwire.pseudo = true;
@@ -2317,6 +2361,18 @@ function debug()
 	return conf;
 }
 
+function debug0()
+{
+	var pair = inqueue.shift();
+
+	if (pair) {
+		traverse(pair);
+		return true;
+	}
+
+	return false;
+}
+
 function debug1()
 {
 	var pair = inqueue.shift();
@@ -2369,11 +2425,12 @@ function getstats()
 	return stats;
 }
 
-function run(mlc)
+function run(src)
 {
-	prepare(mlc);
-
+	ndebug = true;
+	prepare(src);
 	reduce();
+	ndebug = false;
 
 	inenv.stats = getstats();
 	return inenv;
@@ -2381,6 +2438,7 @@ function run(mlc)
 
 run.prepare = prepare;
 run.debug = debug;
+run.debug0 = debug0;
 run.debug1 = debug1;
 module.exports = run;
 
@@ -2415,6 +2473,11 @@ function debug()
 	return inet.debug();
 }
 
+function debug0()
+{
+	return inet.debug0();
+}
+
 function debug1()
 {
 	return inet.debug1();
@@ -2437,6 +2500,7 @@ function run(mlc)
 
 run.prepare = prepare;
 run.debug = debug;
+run.debug0 = debug0;
 run.debug1 = debug1;
 run.mlc2in = mlc2in;
 run.example = example.replace(/\n*$/, "");
