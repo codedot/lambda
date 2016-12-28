@@ -228,20 +228,26 @@ function gamma(obj, root)
 	return list;
 }
 
-function alpha(obj, bv)
+function alpha(obj, bv, lvl)
 {
 	var node = obj.node;
 
 	if (!bv)
 		bv = {};
 
+	if (!lvl)
+		lvl = 0;
+
 	if ("atom" == node) {
 		var name = obj.name;
 
 		if (name in bv) {
+			var id = bv[name];
+
 			obj = {
 				node: "atom",
-				name: bv[name],
+				name: id.name,
+				index: lvl - id.lvl,
 				free: false
 			};
 		} else {
@@ -257,8 +263,12 @@ function alpha(obj, bv)
 		var old = bv[id];
 		var body;
 
-		bv[id] = wire;
-		body = alpha(obj.body, bv);
+		++lvl;
+		bv[id] = {
+			name: wire,
+			lvl: lvl
+		};
+		body = alpha(obj.body, bv, lvl);
 		delete bv[id];
 
 		if (old)
@@ -270,8 +280,8 @@ function alpha(obj, bv)
 			body: body
 		};
 	} else if ("appl" == node) {
-		var left = alpha(obj.left, bv);
-		var right = alpha(obj.right, bv);
+		var left = alpha(obj.left, bv, lvl);
+		var right = alpha(obj.right, bv, lvl);
 
 		obj = {
 			node: "appl",
