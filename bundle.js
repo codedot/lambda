@@ -2463,7 +2463,9 @@ var example = "I = x: x;\nK = x, y: x;\nS = x, y, z: x z (y z);\n\nT = K;\nF = x
 
 function format(data)
 {
-	if ("object" == typeof data)
+	if (Array.isArray(data))
+		return data.toString();
+	else if ("object" == typeof data)
 		return obj2mlc(data);
 	else if ("number" == typeof data)
 		return data.toString();

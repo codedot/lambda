@@ -7,7 +7,9 @@ var example = fs.readFileSync("fact.mlc", "utf8");
 
 function format(data)
 {
-	if ("object" == typeof data)
+	if (Array.isArray(data))
+		return data.toString();
+	else if ("object" == typeof data)
 		return obj2mlc(data);
 	else if ("number" == typeof data)
 		return data.toString();
