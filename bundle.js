@@ -2111,12 +2111,21 @@ function traverse(pair)
 	norules(left, right);
 }
 
-function reduce()
+function reduce(max)
 {
-	var pair;
+	var i;
 
-	while (pair = inqueue.shift())
+	if (!max)
+		max = 1e7;
+
+	for (i = 0; i < max; i++) {
+		var pair = inqueue.shift();
+
+		if (!pair)
+			break;
+
 		traverse(pair);
+	}
 }
 
 function flush(queue)
@@ -2436,10 +2445,10 @@ function getstats()
 	return stats;
 }
 
-function run(src)
+function run(src, max)
 {
 	prepare(src);
-	reduce();
+	reduce(max);
 
 	inenv.stats = getstats();
 	return inenv;
