@@ -60,4 +60,5 @@ run.debug0 = debug0;
 run.debug1 = debug1;
 run.mlc2in = mlc2in;
 run.example = example.replace(/\n*$/, "");
-global.mlcjs = run;
+
+module.exports = run;
