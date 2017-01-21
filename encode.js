@@ -1,7 +1,7 @@
-var mlc = require("./lambda");
+var compile = require("./compile");
 var fs = require("fs");
 
-var parser = new mlc.Parser();
+var parser = new compile.Parser();
 var system = fs.readFileSync("template.txt", "utf8");
 var lastwire;
 

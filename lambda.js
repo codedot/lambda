@@ -1,4 +1,6 @@
-var mlcjs = require("./system");
+#!/usr/bin/env node
+
+var lambda = require(".");
 var fs = require("fs");
 
 var file = process.argv[2];
@@ -7,17 +9,17 @@ if (file) {
 	var input = fs.readFileSync(file, "utf8");
 	var eqn;
 
-	mlcjs.prepare(input);
+	lambda.prepare(input);
 
-	while (eqn = mlcjs.debug1())
+	while (eqn = lambda.debug1())
 		console.log(eqn);
 } else {
-	var output = mlcjs(mlcjs.example);
+	var output = lambda(lambda.example);
 	var stats = JSON.stringify(output.stats, null, "\t");
 
 	console.log(output.term);
 	console.info("%s(%s)", output.total, output.beta);
 	console.log(output.nf);
 
-	fs.writeFileSync("profile.json", stats + "\n");
+	fs.writeFileSync("stats.json", stats + "\n");
 }
