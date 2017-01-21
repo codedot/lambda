@@ -1,20 +1,15 @@
-TEST = node lambda
-JISON = node_modules/.bin/jison
-
 all: compile.js
 	npm install
-	$(TEST) debug.mlc >|output.tmp
+	node lambda debug.mlc >|output.tmp
 	tail output.tmp
-	time -p $(TEST)
+	time -p node lambda
 
-compile.js: $(JISON) grammar.jison
-	$(JISON) grammar.jison -o compile.tmp -m js
-	printf '\nmodule.exports = parser;\n' >>compile.tmp
-	mv compile.tmp $@
-
-$(JISON):
+compile.js: grammar.jison
 	npm install jison@0.4.15
+	node_modules/.bin/jison $< -o $@.tmp -m js
+	printf '\nmodule.exports = parser;\n' >>$@.tmp
+	mv $@.tmp $@
 
 clean:
-	-rm -f compile.js stats.json *.tmp
+	-rm -f *.tmp stats.json
 	-rm -fr node_modules
