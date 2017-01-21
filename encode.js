@@ -1,8 +1,9 @@
 var compile = require("./compile");
 var fs = require("fs");
+var path = require("path");
 
 var parser = new compile.Parser();
-var system = fs.readFileSync("template.txt", "utf8");
+var system = fs.readFileSync(path.join(__dirname, "template.txt"), "utf8");
 var lastwire;
 
 function getcap(left, right)

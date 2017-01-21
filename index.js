@@ -1,9 +1,10 @@
 var mlc2in = require("./encode");
 var inet = require("inet-lib");
 var fs = require("fs");
+var path = require("path");
 
 var obj2mlc = mlc2in.obj2mlc;
-var example = fs.readFileSync("fact.mlc", "utf8");
+var example = fs.readFileSync(path.join(__dirname, "fact.mlc"), "utf8");
 
 function format(data)
 {
