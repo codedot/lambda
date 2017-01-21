@@ -1,0 +1,12 @@
+{
+	"description": "Macro Lambda Calculus",
+	"author": "Anton Salikhmetov",
+	"repository": "codedot/lambda",
+	"name": "@alexo/lambda",
+	"bin": "./lambda.js",
+	"version": "0.0.1",
+	"license": "MIT",
+	"dependencies": {
+		"inet-lib": "0.2.0"
+	}
+}

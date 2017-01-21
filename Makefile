@@ -1,14 +1,11 @@
 TEST = node lambda
 JISON = node_modules/.bin/jison
-INETLIB = node_modules/inet-lib/package.json
 
-all: $(INETLIB) compile.js
+all: compile.js
+	npm install
 	$(TEST) debug.mlc >|output.tmp
 	tail output.tmp
 	time -p $(TEST)
-
-$(INETLIB):
-	npm install inet-lib
 
 compile.js: $(JISON) grammar.jison
 	$(JISON) grammar.jison -o compile.tmp -m js
