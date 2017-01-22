@@ -310,6 +310,7 @@ function encode(mlc)
 	var dict = parser.parse(mlc);
 	var macros = dict.macros;
 	var term = dict.term;
+	var fv = getfv(term);
 	var inconfig = "";
 	var eqns, i;
 
@@ -317,6 +318,12 @@ function encode(mlc)
 		var macro = macros[i];
 		var id = macro.id;
 		var def = macro.def;
+
+		if (!fv[id])
+			continue;
+
+		delete fv[id];
+		fv = merge(fv, getfv(def));
 
 		term = {
 			node: "appl",
