@@ -1,14 +1,16 @@
 This package implements the pure untyped lambda calculus using
-interaction nets, providing both CLI and API described below.
+interaction nets, providing both CLI and API.
 
 # CLI
 
 This package provides a `lambda` command with the following interface:
 
 ```
-Usage: lambda [file]
+Usage: lambda [options] <file.mlc>
 
 Options:
+  --debug, -d    Enable step-by-step evaluation              [boolean]
+  --stats, -s    Save statistics to a file                    [string]
   --help, -h     Show help                                   [boolean]
   --version, -v  Show version number                         [boolean]
 
@@ -24,7 +26,7 @@ The last term in the input is the term whose normal form is to be found.
 For developing and testing purposes, the package also exports
 two additional functions `.prepare(term)` and `.debug()`.
 The `.debug()` function applies a single reduction step to
-the interaction net compiled by the previous `.prepare(src, fmt)`
+the interaction net compiled by the previous `.prepare()`
 call and returns a human-readable string representation of
 the current interaction net state.
 
