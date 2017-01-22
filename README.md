@@ -30,6 +30,34 @@ the interaction net compiled by the previous `.prepare()`
 call and returns a human-readable string representation of
 the current interaction net state.
 
+# Grammar
+
+Input consists of an optional list of macro definitions and a term.
+
+```
+%token NAME /* [A-Za-z][A-Za-z0-9]* */
+
+%%
+
+text : defs term
+     ;
+defs : /* empty */
+     | defs NAME '=' term ';'
+     ;
+term : appl
+     | abst
+     ;
+abst : NAME ',' abst
+     | NAME ':' term
+     ;
+appl :      atom
+     | appl atom
+     ;
+atom : '(' term ')'
+     |     NAME
+     ;
+```
+
 # License
 
 Copyright (c) 2017 Anton Salikhmetov
