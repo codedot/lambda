@@ -12,7 +12,7 @@ var opts = {
 	},
 	stats: {
 		alias: "s",
-		desc: "Save statistics to a file",
+		desc: "Write statistics to a file",
 		string: true
 	}
 };
@@ -41,9 +41,12 @@ if (argv.debug) {
 } else {
 	var output = lambda(input);
 	var stats = JSON.stringify(output.stats, null, "\t");
+	var total = output.total;
+	var beta = output.beta;
+	var redtime = output.redtime;
 
 	console.log(output.term);
-	console.info("%s(%s)", output.total, output.beta);
+	console.info("%s(%s), %s ms", total, beta, redtime);
 	console.log(output.nf);
 
 	if (argv.stats)

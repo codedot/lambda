@@ -4,10 +4,10 @@
 	"repository": "codedot/lambda",
 	"name": "@alexo/lambda",
 	"bin": "./lambda.js",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"license": "MIT",
 	"dependencies": {
-		"inet-lib": "0.2.0",
+		"inet-lib": "0.2.1",
 		"yargs": "6.6.0"
 	}
 }

@@ -10,7 +10,7 @@ Usage: lambda [options] <file.mlc>
 
 Options:
   --debug, -d    Enable step-by-step evaluation              [boolean]
-  --stats, -s    Save statistics to a file                    [string]
+  --stats, -s    Write statistics to a file                   [string]
   --help, -h     Show help                                   [boolean]
   --version, -v  Show version number                         [boolean]
 

@@ -1,7 +1,8 @@
 all: compile.js
 	npm install
+	node lambda -h
 	node lambda -d debug.mlc
-	time -p node lambda fact.mlc
+	node lambda fact.mlc
 
 compile.js: grammar.jison
 	npm install jison@0.4.15
