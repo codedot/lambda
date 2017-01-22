@@ -5,6 +5,11 @@ var yargs = require("yargs");
 var fs = require("fs");
 
 var opts = {
+	expr: {
+		alias: "e",
+		desc: "Process the argument as expression",
+		boolean: true
+	},
 	debug: {
 		alias: "d",
 		desc: "Enable step-by-step evaluation",
@@ -18,7 +23,7 @@ var opts = {
 };
 
 var argv = yargs
-	.usage("Usage: $0 [options] <file.mlc>")
+	.usage("Usage: $0 [options] (<file> | -e <expr>)")
 	.options(opts)
 	.demandCommand(1)
 	.help()
@@ -29,7 +34,10 @@ var argv = yargs
 	.wrap(70)
 	.argv;
 
-var input = fs.readFileSync(argv._[0], "utf8");
+var input = argv._[0];
+
+if (!argv.expr)
+	input = fs.readFileSync(input, "utf8");
 
 if (argv.debug) {
 	var eqn;
