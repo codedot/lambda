@@ -9,6 +9,7 @@ This package provides a `lambda` command with the following interface:
 Usage: lambda [options] (<file> | -e <expr>)
 
 Options:
+  --comb, -c     Predefine commonly used combinators         [boolean]
   --term, -t     Output the term being evaluated             [boolean]
   --perf, -p     Print benchmarks                            [boolean]
   --expr, -e     Process the argument as expression          [boolean]

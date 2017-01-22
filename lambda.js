@@ -2,9 +2,15 @@
 
 var lambda = require(".");
 var yargs = require("yargs");
+var path = require("path");
 var fs = require("fs");
 
 var opts = {
+	comb: {
+		alias: "c",
+		desc: "Predefine commonly used combinators",
+		boolean: true
+	},
 	term: {
 		alias: "t",
 		desc: "Output the term being evaluated",
@@ -44,10 +50,14 @@ var argv = yargs
 	.wrap(70)
 	.argv;
 
+var comb = fs.readFileSync(path.join(__dirname, "helper.txt"), "utf8");
 var input = argv._[0];
 
 if (!argv.expr)
 	input = fs.readFileSync(input, "utf8");
+
+if (argv.comb)
+	input = comb.concat(input);
 
 if (argv.debug) {
 	var eqn;
@@ -55,7 +65,7 @@ if (argv.debug) {
 	lambda.prepare(input);
 
 	while (eqn = lambda.debug1())
-		console.log(eqn);
+		console.info(eqn);
 } else {
 	var output = lambda(input);
 	var stats = JSON.stringify(output.stats, null, "\t");

@@ -1,7 +1,7 @@
 all: compile.js
 	npm install
 	node lambda -h
-	node lambda -e "(x, y, z: x z (y z)) hello bye world"
+	node lambda -ce "S hello bye world"
 	node lambda -d debug.mlc
 	node lambda -pt fact.mlc
 
