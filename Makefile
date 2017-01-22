@@ -3,7 +3,7 @@ all: compile.js
 	node lambda -h
 	node lambda -e "(x, y, z: x z (y z)) hello bye world"
 	node lambda -d debug.mlc
-	node lambda fact.mlc
+	node lambda -pt fact.mlc
 
 compile.js: grammar.jison
 	npm install jison@0.4.15

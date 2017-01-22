@@ -5,6 +5,16 @@ var yargs = require("yargs");
 var fs = require("fs");
 
 var opts = {
+	term: {
+		alias: "t",
+		desc: "Output the term being evaluated",
+		boolean: true
+	},
+	perf: {
+		alias: "p",
+		desc: "Print benchmarks",
+		boolean: true
+	},
 	expr: {
 		alias: "e",
 		desc: "Process the argument as expression",
@@ -53,9 +63,13 @@ if (argv.debug) {
 	var beta = output.beta;
 	var redtime = output.redtime;
 
-	console.log(output.term);
-	console.info("%s(%s), %s ms", total, beta, redtime);
-	console.log(output.nf);
+	if (argv.term)
+		console.warn(output.term);
+
+	if (argv.perf)
+		console.warn(`${total}(${beta}), ${redtime} ms`);
+
+	console.info(output.nf);
 
 	if (argv.stats)
 		fs.writeFileSync(argv.stats, stats + "\n");

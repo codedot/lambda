@@ -9,7 +9,9 @@ This package provides a `lambda` command with the following interface:
 Usage: lambda [options] (<file> | -e <expr>)
 
 Options:
-  --expr, -e     Process the argument as a term              [boolean]
+  --term, -t     Output the term being evaluated             [boolean]
+  --perf, -p     Print benchmarks                            [boolean]
+  --expr, -e     Process the argument as expression          [boolean]
   --debug, -d    Enable step-by-step evaluation              [boolean]
   --stats, -s    Write statistics to a file                   [string]
   --help, -h     Show help                                   [boolean]
