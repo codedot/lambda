@@ -7,6 +7,7 @@
 	"version": "0.0.1",
 	"license": "MIT",
 	"dependencies": {
-		"inet-lib": "0.2.0"
+		"inet-lib": "0.2.0",
+		"yargs": "6.6.0"
 	}
 }

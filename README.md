@@ -1,4 +1,32 @@
-Call-by-need Lambda Calculus using Interaction Nets
+This package implements the pure untyped lambda calculus using
+interaction nets, providing both CLI and API described below.
+
+# CLI
+
+This package provides a `lambda` command with the following interface:
+
+```
+Usage: lambda [file]
+
+Options:
+  --help, -h     Show help                                   [boolean]
+  --version, -v  Show version number                         [boolean]
+
+```
+
+# API
+
+`require("@alexo/lambda")` returns a function of a lambda term defined
+in a variant of the lambda calculus called Macro Lambda Calculus (MLC)
+that allows macro definitions in order to input complex expressions.
+The last term in the input is the term whose normal form is to be found.
+
+For developing and testing purposes, the package also exports
+two additional functions `.prepare(term)` and `.debug()`.
+The `.debug()` function applies a single reduction step to
+the interaction net compiled by the previous `.prepare(src, fmt)`
+call and returns a human-readable string representation of
+the current interaction net state.
 
 # License
 
