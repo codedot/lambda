@@ -29,12 +29,12 @@
 	++this.total;
 } \atom_{M};
 
-\copy[\atom_{M}, \atom_{M}] {
+\copy[\atom_{M}, \atom_{this.clone(M)}] {
 	/* Copy an atom. */
 	++this.total;
 } \atom_{M};
 
-\dup[\atom_{M}, \atom_{M}] {
+\dup[\atom_{M}, \atom_{this.clone(M)}] {
 	/* Duplicate an atom. */
 	++this.total;
 } \atom_{M};
@@ -204,6 +204,32 @@ function appl(left)
 	return atom(context, obj);
 }
 
+function clone(obj, root, hole)
+{
+	var copy = {};
+
+	if (!obj)
+		return;
+
+	if (!root) {
+		root = copy;
+		hole = obj.hole;
+	}
+
+	copy.node = obj.node;
+	copy.var = obj.var;
+	copy.name = obj.name;
+	copy.body = clone(obj.body, root, hole);
+	copy.left = clone(obj.left, root, hole);
+	copy.right = clone(obj.right, root, hole);
+
+	if (obj === hole)
+		root.hole = copy;
+
+	return copy;
+}
+
+this.clone = clone;
 this.mkid = mkid;
 this.mkvar = mkvar;
 this.mkhole = mkhole;
