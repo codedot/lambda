@@ -1,3 +1,5 @@
+"use strict";
+
 var mlc2in = require("./encode");
 var inet = require("inet-lib");
 var fs = require("fs");

@@ -1,3 +1,5 @@
+"use strict";
+
 var compile = require("./compile");
 var fs = require("fs");
 var path = require("path");

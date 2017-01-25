@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+"use strict";
+
 var lambda = require(".");
 var yargs = require("yargs");
 var path = require("path");
