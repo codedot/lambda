@@ -144,10 +144,8 @@ function mktwins(left, right)
 	return shared;
 }
 
-function psi(shared)
+function psi(shared, list)
 {
-	const list = [];
-
 	for (const atom in shared) {
 		const twins = shared[atom];
 		const wleft = twins.left;
@@ -163,14 +161,14 @@ function psi(shared)
 
 		list.push(eqn);
 	}
-
-	return list;
 }
 
-function gamma(obj, root)
+function gamma(obj, root, list)
 {
 	const node = obj.node;
-	let list = [];
+
+	if (!list)
+		list = [];
 
 	if ("atom" == node) {
 		let agent = "\\atom_{this.mkid(\"%s\")}";
@@ -186,7 +184,6 @@ function gamma(obj, root)
 		const body = obj.body;
 		const fv = getfv(body);
 		const wire = mkwire();
-		const gbody = gamma(body, wire);
 		let tree = "\\lambda(%s, %s)";
 		let agent;
 
@@ -199,23 +196,24 @@ function gamma(obj, root)
 		tree = tree.replace("%s", wire);
 
 		list.push(root + " = " + tree);
-		list = list.concat(gbody);
+
+		gamma(body, wire, list);
 	} else if ("appl" == node) {
 		const wleft = mkwire();
 		const wright = mkwire();
 		const left = obj.left;
 		const right = obj.right;
 		const shared = mktwins(left, right);
-		const gleft = gamma(left, wleft);
-		const gright = gamma(right, wright);
-		const gshared = psi(shared);
 		let agent = "\\apply(%s, %s)";
 
 		agent = agent.replace("%s", wleft);
 		agent = agent.replace("%s", wright);
 
 		list.push(root + " = " + agent);
-		list = list.concat(gleft, gright, gshared);
+
+		gamma(left, wleft, list);
+		gamma(right, wright, list);
+		psi(shared, list);
 	}
 
 	return list;
