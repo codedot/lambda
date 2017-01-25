@@ -1,19 +1,18 @@
 "use strict";
 
-var compile = require("./compile");
-var fs = require("fs");
-var path = require("path");
+const compile = require("./compile");
+const fs = require("fs");
+const path = require("path");
 
-var parser = new compile.Parser();
-var system = fs.readFileSync(path.join(__dirname, "template.txt"), "utf8");
-var lastwire;
+const parser = new compile.Parser();
+const system = fs.readFileSync(path.join(__dirname, "template.txt"), "utf8");
+let lastwire;
 
 function getcap(left, right)
 {
-	var dict = {};
-	var prop;
+	const dict = {};
 
-	for (prop in left)
+	for (const prop in left)
 		if (prop in right)
 			dict[prop] = left[prop];
 
@@ -22,76 +21,74 @@ function getcap(left, right)
 
 function merge(left, right)
 {
-	var dict = {};
-	var prop;
+	const dict = {};
 
-	for (prop in left)
+	for (const prop in left)
 		dict[prop] = left[prop];
 
-	for (prop in right)
+	for (const prop in right)
 		dict[prop] = right[prop];
 
 	return dict;
 }
 
-function getfv(obj, fv)
+function getfv(obj)
 {
-	var node = obj.node;
+	const node = obj.node;
+	let fv;
 
 	if ("atom" == node) {
-		var fv = {};
+		fv = {};
 
 		if (!obj.free)
 			fv[obj.name] = true;
-
-		return fv;
 	} else if ("abst" == node) {
-		var fv = getfv(obj.body);
+		fv = getfv(obj.body);
 
 		delete fv[obj.var];
-		return fv;
 	} else if ("appl" == node) {
-		var left = getfv(obj.left);
-		var right = getfv(obj.right);
-		var fv = merge(left, right);
+		const left = getfv(obj.left);
+		const right = getfv(obj.right);
 
-		return fv;
+		fv = merge(left, right);
 	}
+
+	return fv;
 }
 
 function obj2mlc(obj)
 {
-	var node = obj.node;
+	const node = obj.node;
 
 	if ("atom" == node)
 		return obj.name;
 
 	if ("abst" == node) {
-		var body = obj2mlc(obj.body);
-		var sep;
+		const body = obj.body;
+		let sep;
 
-		if ("abst" == obj.body.node)
+		if ("abst" == body.node)
 			sep = ", ";
 		else
 			sep = ": ";
 
-		return obj.var + sep + body;
+		return obj.var + sep + obj2mlc(body);
 	}
 
 	if ("appl" == node) {
-		var left = obj2mlc(obj.left);
-		var right = obj2mlc(obj.right);
+		const left = obj.left;
+		const right = obj.right;
+		const rnode = right.node;
+		let lmlc = obj2mlc(left);
+		let rmlc = obj2mlc(right);
 
-		if ("abst" == obj.left.node)
-			left = "(" + left + ")";
+		if ("abst" == left.node)
+			lmlc = "(" + lmlc + ")";
 
-		if ("abst" == obj.right.node)
-			right = "(" + right + ")";
+		if (("abst" == rnode) || ("appl" == rnode))
+			rmlc = "(" + rmlc + ")";
 
-		if ("appl" == obj.right.node)
-			right = "(" + right + ")";
-
-		return left + " " + right;
+		return lmlc + " " + rmlc;
 	}
 
 	return "[ ]";
@@ -105,18 +102,18 @@ function mkwire()
 
 function subst(obj, shared, side)
 {
-	var node = obj.node;
+	const node = obj.node;
 
 	if ("atom" == node) {
-		var name = obj.name;
+		const name = obj.name;
 
 		if (name in shared) {
-			var entry = shared[name];
+			const entry = shared[name];
 
 			obj.name = entry[side];
 		}
 	} else if ("abst" == node) {
-		var body = obj.body;
+		const body = obj.body;
 
 		subst(body, shared, side);
 	} else if ("appl" == node) {
@@ -127,14 +124,13 @@ function subst(obj, shared, side)
 
 function mktwins(left, right)
 {
-	var fvleft = getfv(left);
-	var fvright = getfv(right);
-	var shared = getcap(fvleft, fvright);
-	var atom;
+	const fvleft = getfv(left);
+	const fvright = getfv(right);
+	const shared = getcap(fvleft, fvright);
 
-	for (atom in shared) {
-		var wleft = mkwire();
-		var wright = mkwire();
+	for (const atom in shared) {
+		const wleft = mkwire();
+		const wright = mkwire();
 
 		shared[atom] = {
 			left: wleft,
@@ -150,16 +146,14 @@ function mktwins(left, right)
 
 function psi(shared)
 {
-	var list = [];
-	var template = "%s = \\amb(%s, \\share(%s, %s), %s)";
-	var atom;
+	const list = [];
 
-	for (atom in shared) {
-		var twins = shared[atom];
-		var wleft = twins.left;
-		var wright = twins.right;
-		var wire = mkwire();
-		var eqn = template;
+	for (const atom in shared) {
+		const twins = shared[atom];
+		const wleft = twins.left;
+		const wright = twins.right;
+		const wire = mkwire();
+		let eqn = "%s = \\amb(%s, \\share(%s, %s), %s)";
 
 		eqn = eqn.replace("%s", wleft);
 		eqn = eqn.replace("%s", wright);
@@ -175,26 +169,26 @@ function psi(shared)
 
 function gamma(obj, root)
 {
-	var list = [];
-	var node = obj.node;
-	var eqn = root + " = %s";
+	const node = obj.node;
+	let list = [];
 
 	if ("atom" == node) {
-		var agent = "\\atom_{this.mkid(\"%s\")}";
+		let agent = "\\atom_{this.mkid(\"%s\")}";
 
 		if (obj.free)
 			agent = agent.replace("%s", obj.name);
 		else
 			agent = obj.name;
 
-		eqn = eqn.replace("%s", agent);
-		list.push(eqn);
+		list.push(root + " = " + agent);
 	} else if ("abst" == node) {
-		var tree = "\\lambda(%s, %s)";
-		var body = obj.body;
-		var fv = getfv(body);
-		var id = obj.var;
-		var wire = mkwire();
+		const id = obj.var;
+		const body = obj.body;
+		const fv = getfv(body);
+		const wire = mkwire();
+		const gbody = gamma(body, wire);
+		let tree = "\\lambda(%s, %s)";
+		let agent;
 
 		if (id in fv)
 			agent = id;
@@ -203,28 +197,25 @@ function gamma(obj, root)
 
 		tree = tree.replace("%s", agent);
 		tree = tree.replace("%s", wire);
-		eqn = eqn.replace("%s", tree);
-		list.push(eqn);
 
-		body = gamma(body, wire);
-		list = list.concat(body);
+		list.push(root + " = " + tree);
+		list = list.concat(gbody);
 	} else if ("appl" == node) {
-		var wleft = mkwire();
-		var wright = mkwire();
-		var agent = "\\apply(%s, %s)";
-		var left = obj.left;
-		var right = obj.right;
-		var shared = mktwins(left, right);
+		const wleft = mkwire();
+		const wright = mkwire();
+		const left = obj.left;
+		const right = obj.right;
+		const shared = mktwins(left, right);
+		const gleft = gamma(left, wleft);
+		const gright = gamma(right, wright);
+		const gshared = psi(shared);
+		let agent = "\\apply(%s, %s)";
 
 		agent = agent.replace("%s", wleft);
 		agent = agent.replace("%s", wright);
-		eqn = eqn.replace("%s", agent);
-		list.push(eqn);
 
-		left = gamma(left, wleft);
-		right = gamma(right, wright);
-		shared = psi(shared);
-		list = list.concat(left, right, shared);
+		list.push(root + " = " + agent);
+		list = list.concat(gleft, gright, gshared);
 	}
 
 	return list;
@@ -232,7 +223,7 @@ function gamma(obj, root)
 
 function alpha(obj, bv, lvl)
 {
-	var node = obj.node;
+	const node = obj.node;
 
 	if (!bv)
 		bv = {};
@@ -241,10 +232,10 @@ function alpha(obj, bv, lvl)
 		lvl = 0;
 
 	if ("atom" == node) {
-		var name = obj.name;
+		const name = obj.name;
 
 		if (name in bv) {
-			var id = bv[name];
+			const id = bv[name];
 
 			obj = {
 				node: "atom",
@@ -260,10 +251,10 @@ function alpha(obj, bv, lvl)
 			};
 		}
 	} else if ("abst" == node) {
-		var id = obj.var;
-		var wire = mkwire();
-		var old = bv[id];
-		var body;
+		const id = obj.var;
+		const wire = mkwire();
+		const old = bv[id];
+		let body;
 
 		++lvl;
 		bv[id] = {
@@ -282,8 +273,8 @@ function alpha(obj, bv, lvl)
 			body: body
 		};
 	} else if ("appl" == node) {
-		var left = alpha(obj.left, bv, lvl);
-		var right = alpha(obj.right, bv, lvl);
+		const left = alpha(obj.left, bv, lvl);
+		const right = alpha(obj.right, bv, lvl);
 
 		obj = {
 			node: "appl",
@@ -297,29 +288,28 @@ function alpha(obj, bv, lvl)
 
 function getconf(obj)
 {
-	var conf;
-
 	lastwire = 0;
 
 	obj = alpha(obj);
-	conf = gamma(obj, "root");
-	conf.push("\\read_{this.mkhole()}(\\print) = root");
-	return conf;
+	obj = gamma(obj, "root");
+	obj.push("\\read_{this.mkhole()}(\\print) = root");
+
+	return obj;
 }
 
 function encode(mlc)
 {
-	var dict = parser.parse(mlc);
-	var macros = dict.macros;
-	var term = dict.term;
-	var fv = getfv(term);
-	var inconfig = "";
-	var eqns, i;
+	const dict = parser.parse(mlc);
+	const macros = dict.macros;
+	const mlen = macros.length;
+	let term = dict.term;
+	let fv = getfv(term);
+	let inconfig;
 
-	for (i = 0; i < macros.length; i++) {
-		var macro = macros[i];
-		var id = macro.id;
-		var def = macro.def;
+	for (let i = 0; i < mlen; i++) {
+		const macro = macros[i];
+		const id = macro.id;
+		const def = macro.def;
 
 		if (!fv[id])
 			continue;
@@ -340,12 +330,10 @@ function encode(mlc)
 
 	encode.term = obj2mlc(term);
 
-	eqns = getconf(term);
+	inconfig = getconf(term);
+	inconfig = inconfig.join(";\n") + ";";
 
-	for (i = 0; i < eqns.length; i++)
-		inconfig = inconfig.concat(eqns[i] + ";\n");
-
-	return system.replace("INCONFIG\n", inconfig);
+	return system.replace("INCONFIG", inconfig);
 }
 
 encode.obj2mlc = obj2mlc;
