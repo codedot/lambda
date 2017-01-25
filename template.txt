@@ -137,7 +137,7 @@ INCONFIG
 
 $$
 
-var id = 0;
+let id = 0;
 
 function mkvar(fresh)
 {
@@ -149,8 +149,8 @@ function mkvar(fresh)
 
 function mkid(name)
 {
-	var fv = {};
-	var obj = {
+	const fv = {};
+	const obj = {
 		node: "atom",
 		fv: fv
 	};
@@ -166,7 +166,7 @@ function mkid(name)
 
 function mkhole()
 {
-	var obj = {};
+	const obj = {};
 
 	obj.fv = {};
 	obj.bv = {};
@@ -176,10 +176,10 @@ function mkhole()
 
 function subst(hole, obj)
 {
-	var parent = hole.parent;
-	var body = obj.body;
-	var left = obj.left;
-	var right = obj.right;
+	const parent = hole.parent;
+	const body = obj.body;
+	const left = obj.left;
+	const right = obj.right;
 
 	if (parent)
 		obj.parent = hole.parent;
@@ -198,7 +198,7 @@ function subst(hole, obj)
 
 function eta(obj)
 {
-	var parent, left, right, name;
+	let parent, left, right, name;
 
 	if ("appl" != obj.node)
 		return;
@@ -228,17 +228,16 @@ function eta(obj)
 
 function atom(context, obj, name)
 {
-	var ofv = obj.fv;
-	var cfv = context.fv;
-	var bv = context.bv;
-	var chole = context.hole;
-	var ohole = obj.hole;
-	var key;
+	const ofv = obj.fv;
+	const cfv = context.fv;
+	const bv = context.bv;
+	const chole = context.hole;
+	const ohole = obj.hole;
 
 	if (name)
 		bv[name] = true;
 
-	for (key in ofv)
+	for (const key in ofv)
 		if (!(key in bv))
 			cfv[key] = true;
 
@@ -257,9 +256,9 @@ function atom(context, obj, name)
 
 function abst(context)
 {
-	var hole = mkhole();
-	var name = mkvar();
-	var obj = {
+	const hole = mkhole();
+	const name = mkvar();
+	const obj = {
 		node: "abst",
 		var: name,
 		body: hole,
@@ -273,9 +272,9 @@ function abst(context)
 
 function appl(left)
 {
-	var context = mkhole();
-	var hole = mkhole();
-	var obj = {
+	const context = mkhole();
+	const hole = mkhole();
+	const obj = {
 		node: "appl",
 		left: left,
 		right: hole,
@@ -290,7 +289,7 @@ function appl(left)
 
 function clone(obj, root, hole, parent)
 {
-	var copy = {};
+	const copy = {};
 
 	if (!obj)
 		return;

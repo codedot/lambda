@@ -2,12 +2,12 @@
 
 "use strict";
 
-var lambda = require(".");
-var yargs = require("yargs");
-var path = require("path");
-var fs = require("fs");
+const lambda = require(".");
+const yargs = require("yargs");
+const path = require("path");
+const fs = require("fs");
 
-var opts = {
+const opts = {
 	comb: {
 		alias: "c",
 		desc: "Predefine commonly used combinators",
@@ -40,7 +40,7 @@ var opts = {
 	}
 };
 
-var argv = yargs
+const argv = yargs
 	.usage("Usage: $0 [options] (<file> | -e <expr>)")
 	.options(opts)
 	.demandCommand(1)
@@ -52,8 +52,9 @@ var argv = yargs
 	.wrap(70)
 	.argv;
 
-var comb = fs.readFileSync(path.join(__dirname, "helper.txt"), "utf8");
-var input = argv._[0];
+const comb = fs.readFileSync(path.join(__dirname, "helper.txt"), "utf8");
+
+let input = argv._[0];
 
 if (!argv.expr)
 	input = fs.readFileSync(input, "utf8");
@@ -62,18 +63,18 @@ if (argv.comb)
 	input = comb.concat(input);
 
 if (argv.debug) {
-	var eqn;
+	let eqn;
 
 	lambda.prepare(input);
 
 	while (eqn = lambda.debug1())
 		console.info(eqn);
 } else {
-	var output = lambda(input);
-	var stats = JSON.stringify(output.stats, null, "\t");
-	var total = output.total;
-	var beta = output.beta;
-	var redtime = output.redtime;
+	const output = lambda(input);
+	const stats = JSON.stringify(output.stats, null, "\t");
+	const total = output.total;
+	const beta = output.beta;
+	const redtime = output.redtime;
 
 	if (argv.term)
 		console.warn(output.term);
