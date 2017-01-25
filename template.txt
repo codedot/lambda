@@ -137,6 +137,7 @@ INCONFIG
 
 $$
 
+const gfv = [];
 let id = 0;
 
 function mkvar(fresh)
@@ -152,15 +153,21 @@ function mkid(name)
 	const fv = {};
 	const obj = {
 		node: "atom",
+		name: name,
 		fv: fv
 	};
 
-	if (!name) {
-		name = mkvar(true);
-		fv[name] = true;
+	if (name) {
+		gfv[name] = true;
+		return obj;
 	}
 
+	do {
+		name = mkvar(true);
+	} while (gfv[name]);
+
 	obj.name = name;
+	fv[name] = true;
 	return obj;
 }
 
