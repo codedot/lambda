@@ -224,6 +224,9 @@ function gamma(obj, root)
 function alpha(obj, bv, lvl)
 {
 	const node = obj.node;
+	const aobj = {
+		node: node
+	};
 
 	if (!bv)
 		bv = {};
@@ -233,57 +236,38 @@ function alpha(obj, bv, lvl)
 
 	if ("atom" == node) {
 		const name = obj.name;
+		const id = bv[name];
 
-		if (name in bv) {
-			const id = bv[name];
-
-			obj = {
-				node: "atom",
-				name: id.name,
-				index: lvl - id.lvl,
-				free: false
-			};
+		if (id) {
+			aobj.name = id.name;
+			aobj.index = lvl - id.lvl;
 		} else {
-			obj = {
-				node: "atom",
-				name: name,
-				free: true
-			};
+			aobj.name = name;
+			aobj.free = true;
 		}
 	} else if ("abst" == node) {
 		const id = obj.var;
-		const wire = mkwire();
 		const old = bv[id];
-		let body;
+		const wire = mkwire();
 
-		++lvl;
 		bv[id] = {
 			name: wire,
-			lvl: lvl
+			lvl: ++lvl
 		};
-		body = alpha(obj.body, bv, lvl);
-		delete bv[id];
+
+		aobj.var = wire;
+		aobj.body = alpha(obj.body, bv, lvl);
 
 		if (old)
 			bv[id] = old;
-
-		obj = {
-			node: "abst",
-			var: wire,
-			body: body
-		};
+		else
+			delete bv[id];
 	} else if ("appl" == node) {
-		const left = alpha(obj.left, bv, lvl);
-		const right = alpha(obj.right, bv, lvl);
-
-		obj = {
-			node: "appl",
-			left: left,
-			right: right
-		};
+		aobj.left = alpha(obj.left, bv, lvl);
+		aobj.right = alpha(obj.right, bv, lvl);
 	}
 
-	return obj;
+	return aobj;
 }
 
 function getconf(obj)
