@@ -4,7 +4,6 @@
 
 const lambda = require(".");
 const yargs = require("yargs");
-const path = require("path");
 const fs = require("fs");
 
 const opts = {
@@ -52,15 +51,13 @@ const argv = yargs
 	.wrap(70)
 	.argv;
 
-const comb = fs.readFileSync(path.join(__dirname, "helper.txt"), "utf8");
-
 let input = argv._[0];
 
 if (!argv.expr)
 	input = fs.readFileSync(input, "utf8");
 
 if (argv.comb)
-	input = comb.concat(input);
+	input = lambda.samples.helper.concat(input);
 
 if (argv.debug) {
 	let eqn;

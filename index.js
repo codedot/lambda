@@ -2,12 +2,10 @@
 
 const encode = require("./encoding");
 const compile = require("./compile");
+const samples = require("./samples");
 const inet = require("inet-lib");
-const fs = require("fs");
-const path = require("path");
 
 const parser = new compile.Parser();
-const example = fs.readFileSync(path.join(__dirname, "fact.mlc"), "utf8");
 let expanded;
 
 function obj2mlc(obj)
@@ -112,6 +110,7 @@ run.debug = debug;
 run.debug0 = debug0;
 run.debug1 = debug1;
 run.mlc2in = mlc2in;
-run.example = example.replace(/\n*$/, "");
+run.example = samples.fact.replace(/\n*$/, "");
+run.samples = samples;
 
 module.exports = run;
