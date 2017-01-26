@@ -4,7 +4,7 @@
 	"repository": "codedot/lambda",
 	"name": "@alexo/lambda",
 	"bin": "./lambda.js",
-	"version": "0.0.7",
+	"version": "0.0.8",
 	"license": "MIT",
 	"dependencies": {
 		"inet-lib": "0.2.2",

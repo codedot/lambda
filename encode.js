@@ -1,10 +1,8 @@
 "use strict";
 
-const compile = require("./compile");
 const fs = require("fs");
 const path = require("path");
 
-const parser = new compile.Parser();
 const system = fs.readFileSync(path.join(__dirname, "template.txt"), "utf8");
 let lastwire;
 
@@ -279,9 +277,8 @@ function getconf(obj)
 	return obj;
 }
 
-function encode(mlc)
+function encode(dict)
 {
-	const dict = parser.parse(mlc);
 	const macros = dict.macros;
 	const mlen = macros.length;
 	let term = dict.term;

@@ -1,12 +1,21 @@
 "use strict";
 
-const mlc2in = require("./encode");
+const encode = require("./encode");
+const compile = require("./compile");
 const inet = require("inet-lib");
 const fs = require("fs");
 const path = require("path");
 
-const obj2mlc = mlc2in.obj2mlc;
+const parser = new compile.Parser();
+const obj2mlc = encode.obj2mlc;
 const example = fs.readFileSync(path.join(__dirname, "fact.mlc"), "utf8");
+
+function mlc2in(mlc)
+{
+	const dict = parser.parse(mlc);
+
+	return encode(dict);
+}
 
 function format(data)
 {
@@ -47,7 +56,7 @@ function run(mlc)
 	const src = mlc2in(mlc);
 	const output = inet(src);
 
-	output.term = mlc2in.term;
+	output.term = encode.term;
 
 	if (output.nf)
 		output.nf = obj2mlc(output.nf);
