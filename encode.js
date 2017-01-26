@@ -54,44 +54,6 @@ function getfv(obj)
 	return fv;
 }
 
-function obj2mlc(obj)
-{
-	const node = obj.node;
-
-	if ("atom" == node)
-		return obj.name;
-
-	if ("abst" == node) {
-		const body = obj.body;
-		let sep;
-
-		if ("abst" == body.node)
-			sep = ", ";
-		else
-			sep = ": ";
-
-		return obj.var + sep + obj2mlc(body);
-	}
-
-	if ("appl" == node) {
-		const left = obj.left;
-		const right = obj.right;
-		const rnode = right.node;
-		let lmlc = obj2mlc(left);
-		let rmlc = obj2mlc(right);
-
-		if ("abst" == left.node)
-			lmlc = "(" + lmlc + ")";
-
-		if (("abst" == rnode) || ("appl" == rnode))
-			rmlc = "(" + rmlc + ")";
-
-		return lmlc + " " + rmlc;
-	}
-
-	return "[ ]";
-}
-
 function mkwire()
 {
 	++lastwire;
@@ -307,14 +269,12 @@ function encode(dict)
 		};
 	}
 
-	encode.term = obj2mlc(term);
+	dict.expanded = term;
 
 	inconfig = getconf(term);
 	inconfig = inconfig.join(";\n") + ";";
 
 	return system.replace("INCONFIG", inconfig);
 }
-
-encode.obj2mlc = obj2mlc;
 
 module.exports = encode;

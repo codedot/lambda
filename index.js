@@ -7,14 +7,55 @@ const fs = require("fs");
 const path = require("path");
 
 const parser = new compile.Parser();
-const obj2mlc = encode.obj2mlc;
 const example = fs.readFileSync(path.join(__dirname, "fact.mlc"), "utf8");
+let expanded;
+
+function obj2mlc(obj)
+{
+	const node = obj.node;
+
+	if ("atom" == node)
+		return obj.name;
+
+	if ("abst" == node) {
+		const body = obj.body;
+		let sep;
+
+		if ("abst" == body.node)
+			sep = ", ";
+		else
+			sep = ": ";
+
+		return obj.var + sep + obj2mlc(body);
+	}
+
+	if ("appl" == node) {
+		const left = obj.left;
+		const right = obj.right;
+		const rnode = right.node;
+		let lmlc = obj2mlc(left);
+		let rmlc = obj2mlc(right);
+
+		if ("abst" == left.node)
+			lmlc = "(" + lmlc + ")";
+
+		if (("abst" == rnode) || ("appl" == rnode))
+			rmlc = "(" + rmlc + ")";
+
+		return lmlc + " " + rmlc;
+	}
+
+	return "[ ]";
+}
 
 function mlc2in(mlc)
 {
 	const dict = parser.parse(mlc);
+	const insrc = encode(dict);
 
-	return encode(dict);
+	expanded = dict.expanded;
+
+	return insrc;
 }
 
 function format(data)
@@ -56,7 +97,7 @@ function run(mlc)
 	const src = mlc2in(mlc);
 	const output = inet(src);
 
-	output.term = encode.term;
+	output.term = obj2mlc(expanded);
 
 	if (output.nf)
 		output.nf = obj2mlc(output.nf);
