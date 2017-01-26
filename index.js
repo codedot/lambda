@@ -1,6 +1,6 @@
 "use strict";
 
-const encode = require("./encode");
+const encode = require("./encoding");
 const compile = require("./compile");
 const inet = require("inet-lib");
 const fs = require("fs");
