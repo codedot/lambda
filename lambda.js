@@ -7,11 +7,6 @@ const yargs = require("yargs");
 const fs = require("fs");
 
 const opts = {
-	comb: {
-		alias: "c",
-		desc: "Predefine commonly used combinators",
-		boolean: true
-	},
 	term: {
 		alias: "t",
 		desc: "Output the term being evaluated",
@@ -56,8 +51,7 @@ let input = argv._[0];
 if (!argv.expr)
 	input = fs.readFileSync(input, "utf8");
 
-if (argv.comb)
-	input = lambda.samples.helper.concat(input);
+input = lambda.samples.helper.concat(input);
 
 if (argv.debug) {
 	let eqn;
