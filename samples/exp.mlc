@@ -1,0 +1,5 @@
+I = x: x;
+C2 = f, x: f (f x);
+C10 = f, x: f (f (f (f (f (f (f (f (f (f x)))))))));
+
+C10 C2 C2 I I
