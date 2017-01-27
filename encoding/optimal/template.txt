@@ -1,0 +1,331 @@
+\eval[\fan_{i}(a, b)] {
+	/* Postpone evaluation. */
+	++this.total;
+} \fan_{i}[a, b];
+
+\eval[\scope_{i}(a)] {
+	/* Evaluate delimiter. */
+	++this.total;
+} \scope_{i}[\eval(a)];
+
+\eval[a] {
+	/* Continue evaluation. */
+	++this.total;
+} \wait[\eval(a), \call];
+
+\eval[\atom_{M}] {
+	/* Return an atom. */
+	++this.total;
+} \atom_{M};
+
+\eval[\lambda(a, b)] {
+	/* Evaluate abstraction. */
+	++this.total;
+} \lambda[a, \eval(b)];
+
+\fan_{i}[\scope_{j}(a), \scope_{j}(b)] {
+	/* Duplicate higher delimiter. */
+	if (i < j)
+		++this.total;
+	else
+		return false;
+} \scope_{j}[\fan_{i}(a, b)];
+
+\scope_{i}[\fan_{j + 1}(a, b)] {
+	/* Level up higher or matching fan. */
+	if (i <= j)
+		++this.total;
+	else
+		return false;
+} \fan_{j}[\scope_{i}(a), \scope_{i}(b)];
+
+\scope_{i}[\scope_{j + 1}(a)] {
+	/* Level up higher delimiter. */
+	if (i < j)
+		++this.total;
+	else
+		return false;
+} \scope_{j}[\scope_{i}(a)];
+
+\print {
+	/* Ignore delimiter. */
+	++this.total;
+} \scope_{i}[\print];
+
+\read_{C}[\scope_{i}(a)] {
+	/* Pass through context. */
+	++this.total;
+} \scope_{i}[\read_{C}(a)];
+
+\scope_{i}[a] {
+	/* Annihilate matching delimiters. */
+	if (i == j)
+		++this.total;
+	else
+		return false;
+} \scope_{j}[a];
+
+\scope_{i}[\apply(a, b)] {
+	/* Pass through application. */
+	++this.total;
+} \apply[\scope_{i}(a), \scope_{i}(b)];
+
+\scope_{i}[\lambda(a, b)] {
+	/* Level up delimiter. */
+	++this.total;
+} \lambda[\scope_{i + 1}(a), \scope_{i + 1}(b)];
+
+\erase {
+	/* Erase delimiter. */
+	++this.total;
+} \scope_{i}[\erase];
+
+\scope_{i}[\wait(a, b)] {
+	/* Postpone delimiter. */
+	++this.total;
+} \wait[\scope_{i}(a), b];
+
+\scope_{i}[\atom_{M}] {
+	/* Return an atom. */
+	++this.total;
+} \atom_{M};
+
+\read_{C}[\fan_{i}(a, b)] {
+	/* Duplicate context. */
+	++this.total;
+} \fan_{i}[\read_{C}(a), \read_{this.clone(C)}(b)];
+
+\call {
+	/* Erase late call. */
+	++this.total;
+} \erase;
+
+\fan_{i}[\wait(a, \amb(b, \decide(c, d), d)), \wait(e, b)] {
+	/* Postpone duplication. */
+	++this.total;
+} \wait[\fan_{i}(a, e), c];
+
+\call {
+	/* Continue evaluation. */
+	++this.total;
+} \decide[\call, \erase];
+
+\erase {
+	/* Erase reference. */
+	++this.total;
+} \decide[a, a];
+
+\call {
+	/* Continue evaluation. */
+	++this.total;
+} \hold[a, \eval(a)];
+
+\read_{C}[\wait(a, b)] {
+	/* Postpone readback. */
+	++this.total;
+} \wait[\read_{C}(a), b];
+
+\erase {
+	/* Erase holder. */
+	++this.total;
+} \hold[\erase, \erase];
+
+\erase {
+	/* Erase reference. */
+	++this.total;
+} \wait[\erase, \erase];
+
+\apply[a, \wait(b, \hold(\apply(a, b), \wait(c, d)))] {
+	/* Postpone application. */
+	++this.total;
+} \wait[c, d];
+
+\print {
+	/* Output results of read-back. */
+	this.nf = M;
+	++this.total;
+} \atom_{M};
+
+\read_{C}[a] {
+	/* Read back abstraction. */
+	++this.total;
+} \lambda[\atom_{this.mkid()}, \read_{this.abst(C)}(a)];
+
+\apply[\read_{this.appl(M)}(a), a] {
+	/* Read back application. */
+	++this.total;
+} \atom_{M};
+
+\read_{C}[\atom_{this.atom(C, M)}] {
+	/* Read back an atom. */
+	++this.total;
+} \atom_{M};
+
+\fan_{i}[\atom_{M}, \atom_{M}] {
+	/* Duplicate an atom. */
+	++this.total;
+} \atom_{M};
+
+\apply[a, \scope_{0}(b)] {
+	/* Apply beta reduction. */
+	++this.beta;
+} \lambda[\wait(c, \hold(\scope_{0}(c), a)), b];
+
+\fan_{i}[\apply(a, b), \apply(c, d)] {
+	/* Duplicate application. */
+	++this.total;
+} \apply[\fan_{i}(a, c), \fan_{i}(b, d)];
+
+\fan_{i}[\lambda(a, b), \lambda(c, d)] {
+	/* Level up fan. */
+	++this.total;
+} \lambda[\fan_{i + 1}(a, c), \fan_{i + 1}(b, d)];
+
+\fan_{i}[a, b] {
+	/* Annihilate matching fans. */
+	if (i == j)
+		++this.total;
+	else
+		return false;
+} \fan_{j}[a, b];
+
+\fan_{i}[\fan_{j}(a, b), \fan_{j}(c, d)] {
+	/* Duplicate higher fan. */
+	if (i < j)
+		++this.total;
+	else
+		return false;
+} \fan_{j}[\fan_{i}(a, c), \fan_{i}(b, d)];
+
+\erase {
+	/* Erase an atom. */
+	++this.total;
+} \atom_{M};
+
+\erase {
+	/* Erase application. */
+	++this.total;
+} \apply[\erase, \erase];
+
+\erase {
+	/* Erase abstraction. */
+	++this.total;
+} \lambda[\erase, \erase];
+
+\erase {
+	/* Erase duplicator. */
+	++this.total;
+} \fan_{i}[\erase, \erase];
+
+\erase {
+	/* Finish erasing. */
+	++this.total;
+} \erase;
+
+$$
+
+INCONFIG
+
+$$
+
+var id = 0;
+
+function mkvar(fresh)
+{
+	if (fresh)
+		++id;
+
+	return "v" + id.toFixed(0);
+}
+
+function mkid(name)
+{
+	var obj = {
+		node: "atom",
+		name: name ? name : mkvar(true)
+	};
+
+	return obj;
+}
+
+function mkhole()
+{
+	var obj = {};
+
+	obj.hole = obj;
+	return obj;
+}
+
+function atom(context, obj)
+{
+	var hole = context.hole;
+	var key;
+
+	for (key in obj)
+		hole[key] = obj[key];
+
+	context.hole = obj.hole;
+	return context;
+}
+
+function abst(context)
+{
+	var hole = mkhole();
+	var obj = {
+		node: "abst",
+		var: mkvar(),
+		body: hole,
+		hole: hole
+	};
+
+	return atom(context, obj);
+}
+
+function appl(left)
+{
+	var context = mkhole();
+	var hole = mkhole();
+	var obj = {
+		node: "appl",
+		left: left,
+		right: hole,
+		hole: hole
+	};
+
+	return atom(context, obj);
+}
+
+function clone(obj, root, hole)
+{
+	var copy = {};
+
+	if (!obj)
+		return;
+
+	if (!root) {
+		root = copy;
+		hole = obj.hole;
+	}
+
+	copy.node = obj.node;
+	copy.var = obj.var;
+	copy.name = obj.name;
+	copy.body = clone(obj.body, root, hole);
+	copy.left = clone(obj.left, root, hole);
+	copy.right = clone(obj.right, root, hole);
+
+	if (obj === hole)
+		root.hole = copy;
+
+	return copy;
+}
+
+this.clone = clone;
+this.mkid = mkid;
+this.mkvar = mkvar;
+this.mkhole = mkhole;
+this.abst = abst;
+this.appl = appl;
+this.atom = atom;
+this.beta = 0;
+this.total = 0;

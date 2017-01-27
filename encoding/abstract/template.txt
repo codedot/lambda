@@ -1,0 +1,339 @@
+\apply[a, b] {
+	/* Apply beta reduction. */
+	++this.beta;
+	++this.total;
+} \lambda[\wait(c, \hold(c, a)), b];
+
+\apply[
+	\fan_{[i[0], i[1] + 1]}(a, b),
+	\fan_{[i[0], i[1] + 1]}(c, d)
+] {
+	/* Duplicate application. */
+	++this.total;
+} \fan_{i}[\apply(a, c), \apply(b, d)];
+
+\fan_{i}[\lambda(a, b), \lambda(c, d)] {
+	/* Duplicate abstraction. */
+	++this.total;
+} \lambda[
+	\fan_{[i[0], i[1] + 1]}(a, c),
+	\fan_{[i[0], i[1] + 1]}(b, d)
+];
+
+\fan_{i}[
+	\fan_{[j[0], j[1] + 1]}(a, b),
+	\fan_{[j[0], j[1] + 1]}(c, d)
+] {
+	/* Duplicate different fans. */
+	if ((i[0] != j[0]) && (i[1] < j[1]))
+		++this.total;
+	else
+		return false;
+} \fan_{j}[
+	\fan_{[this.plus(i[0], j[0]), i[1]]}(a, c),
+	\fan_{[this.minus(i[0], j[0]), i[1]]}(b, d)
+];
+
+\fan_{i}[a, b] {
+	/* Annihilate matching fans. */
+	if ((i[0] == j[0]) || (i[1] == j[1]))
+		++this.total;
+	else
+		return false;
+} \fan_{j}[a, b];
+
+\print {
+	/* Continue evaluation. */
+	++this.wait;
+} \wait[\print, \call];
+
+\eval[\fan_{i}(a, b)] {
+	/* Postpone evaluation. */
+	++this.wait;
+} \fan_{i}[a, b];
+
+\eval[a] {
+	/* Continue evaluation. */
+	++this.wait;
+} \wait[\eval(a), \call];
+
+\eval[\atom_{M}] {
+	/* Return an atom. */
+	++this.wait;
+} \atom_{M};
+
+\eval[\lambda(a, b)] {
+	/* Return abstraction. */
+	++this.wait;
+} \lambda[a, b];
+
+\read_{C}[\fan_{i}(a, b)] {
+	/* Duplicate context. */
+	++this.read;
+} \fan_{i}[\read_{C}(a), \read_{this.clone(C)}(b)];
+
+\call {
+	/* Erase late call. */
+	++this.wait;
+} \erase;
+
+\fan_{i}[\wait(a, \amb(b, \decide(c, d), d)), \wait(e, b)] {
+	/* Postpone duplication. */
+	++this.wait;
+} \wait[\fan_{i}(a, e), c];
+
+\call {
+	/* Continue evaluation. */
+	++this.wait;
+} \decide[\call, \erase];
+
+\erase {
+	/* Erase reference. */
+	++this.wait;
+} \decide[a, a];
+
+\call {
+	/* Continue evaluation. */
+	++this.wait;
+} \hold[a, \eval(a)];
+
+\read_{C}[\wait(a, b)] {
+	/* Postpone readback. */
+	++this.wait;
+} \wait[\read_{C}(a), b];
+
+\erase {
+	/* Erase holder. */
+	++this.wait;
+} \hold[\erase, \erase];
+
+\erase {
+	/* Erase reference. */
+	++this.wait;
+} \wait[\erase, \erase];
+
+\apply[a, \wait(b, \hold(\apply(a, b), \wait(c, d)))] {
+	/* Postpone application. */
+	++this.wait;
+} \wait[c, d];
+
+\print {
+	/* Output results of read-back. */
+	this.nf = M;
+	++this.read;
+} \atom_{M};
+
+\read_{C}[a] {
+	/* Read back abstraction. */
+	++this.read;
+} \lambda[\atom_{this.mkid()}, \read_{this.abst(C)}(a)];
+
+\apply[\read_{this.appl(M)}(a), a] {
+	/* Read back application. */
+	++this.read;
+} \atom_{M};
+
+\read_{C}[\atom_{this.atom(C, M)}] {
+	/* Read back an atom. */
+	++this.read;
+} \atom_{M};
+
+\fan_{i}[\atom_{M}, \atom_{M}] {
+	/* Duplicate an atom. */
+	++this.read;
+} \atom_{M};
+
+\erase {
+	/* Erase an atom. */
+	++this.read;
+} \atom_{M};
+
+\erase {
+	/* Erase application. */
+	++this.total;
+} \apply[\erase, \erase];
+
+\erase {
+	/* Erase abstraction. */
+	++this.total;
+} \lambda[\erase, \erase];
+
+\erase {
+	/* Erase duplicator. */
+	++this.total;
+} \fan_{i}[\erase, \erase];
+
+\erase {
+	/* Finish erasing. */
+	++this.total;
+} \erase;
+
+\erase {
+	/* Erase context. */
+	++this.read;
+} \read_{C}[\erase];
+
+$$
+
+INCONFIG
+
+$$
+
+var id = 0;
+var last = 0;
+var table = [];
+
+function mkvar(fresh)
+{
+	if (fresh)
+		++id;
+
+	return "v" + id.toFixed(0);
+}
+
+function mkid(name)
+{
+	var obj = {
+		node: "atom",
+		name: name ? name : mkvar(true)
+	};
+
+	return obj;
+}
+
+function mkhole()
+{
+	var obj = {};
+
+	obj.hole = obj;
+	return obj;
+}
+
+function atom(context, obj)
+{
+	var hole = context.hole;
+	var key;
+
+	for (key in obj)
+		hole[key] = obj[key];
+
+	context.hole = obj.hole;
+	return context;
+}
+
+function abst(context)
+{
+	var hole = mkhole();
+	var obj = {
+		node: "abst",
+		var: mkvar(),
+		body: hole,
+		hole: hole
+	};
+
+	return atom(context, obj);
+}
+
+function appl(left)
+{
+	var context = mkhole();
+	var hole = mkhole();
+	var obj = {
+		node: "appl",
+		left: left,
+		right: hole,
+		hole: hole
+	};
+
+	return atom(context, obj);
+}
+
+function clone(obj, root, hole)
+{
+	var copy = {};
+
+	if (!obj)
+		return;
+
+	if (!root) {
+		root = copy;
+		hole = obj.hole;
+	}
+
+	copy.node = obj.node;
+	copy.var = obj.var;
+	copy.name = obj.name;
+	copy.body = clone(obj.body, root, hole);
+	copy.left = clone(obj.left, root, hole);
+	copy.right = clone(obj.right, root, hole);
+
+	if (obj === hole)
+		root.hole = copy;
+
+	return copy;
+}
+
+function uniq()
+{
+	var fresh = ++last;
+
+	fresh = fresh.toString();
+	fresh = hash(fresh);
+	return [fresh, 1];
+}
+
+function cons(s, a, b)
+{
+	var pair = a + s + b;
+
+	return hash(pair);
+}
+
+function mktable()
+{
+	var c, n, k;
+
+	for (n = 0; n < 256; n++) {
+		c = n;
+
+		for (k = 0; k < 8; k++) {
+			if (c & 1)
+				c = 0xEDB88320 ^ (c >>> 1);
+			else
+				c = c >>> 1;
+		}
+
+		table[n] = c;
+	}
+}
+
+function hash(str)
+{
+	var crc = 0 ^ (-1);
+	var n = str.length;
+	var i, b;
+
+	for (i = 0; i < n; i++) {
+		b = str.charCodeAt(i);
+		crc = (crc >>> 8) ^ table[(crc ^ b) & 0xFF];
+	}
+
+	return (crc ^ (-1)) >>> 0;
+}
+
+mktable();
+
+this.plus = cons.bind(this, "+");
+this.minus = cons.bind(this, "-");
+this.uniq = uniq;
+this.clone = clone;
+this.mkid = mkid;
+this.mkvar = mkvar;
+this.mkhole = mkhole;
+this.abst = abst;
+this.appl = appl;
+this.atom = atom;
+this.beta = 0;
+this.total = 0;
+this.wait = 0;
+this.read = 0;
