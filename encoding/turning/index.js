@@ -1,3 +1,5 @@
+"use strict";
+
 var mlc = require("./lambda");
 var fs = require("fs");
 
