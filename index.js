@@ -1,6 +1,6 @@
 "use strict";
 
-const encode = require("./encoding");
+const encoding = require("./encoding");
 const compile = require("./compile");
 const samples = require("./samples");
 const inet = require("inet-lib");
@@ -49,7 +49,7 @@ function obj2mlc(obj)
 function mlc2in(mlc)
 {
 	const dict = parser.parse(mlc);
-	const insrc = encode(dict);
+	const insrc = encoding.normal(dict);
 
 	expanded = dict.expanded;
 
