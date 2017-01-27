@@ -19,6 +19,40 @@ Options:
 
 ```
 
+# Combinators
+
+The command-line interface predefines commonly used combinators:
+
+```
+I = x: x;
+K = x, y: x;
+S = x, y, z: x z (y z);
+T = K;
+F = K I;
+AND = p, q: p q F;
+OR = p, q: p T q;
+NOT = p: (a, b: p b a);
+C0 = f, x: x;
+C1 = f, x: f x;
+C2 = f, x: f (f x);
+C3 = f, x: f (f (f x));
+C4 = f, x: f (f (f (f x)));
+C5 = f, x: f (f (f (f (f x))));
+C6 = f, x: f (f (f (f (f (f x)))));
+C7 = f, x: f (f (f (f (f (f (f x))))));
+C8 = f, x: f (f (f (f (f (f (f (f x)))))));
+C9 = f, x: f (f (f (f (f (f (f (f (f x))))))));
+C10 = f, x: f (f (f (f (f (f (f (f (f (f x)))))))));
+SUCC = n: (f, x: f (n f x));
+PLUS = m, n: (f, x: m f (n f x));
+MULT = m, n: (f: m (n f));
+EXP = m, n: n m;
+PRED = n: (f, x: n (g, h: h (g f)) (K x) I);
+MINUS = m, n: n PRED m;
+ZERO = n: n (K F) T;
+Y = (a: a a) (self, f: f (self self f));
+```
+
 # API
 
 `require("@alexo/lambda")` returns a function of a lambda term defined
