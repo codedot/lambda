@@ -7,6 +7,11 @@ const yargs = require("yargs");
 const fs = require("fs");
 
 const opts = {
+	inet: {
+		alias: "i",
+		desc: "Show interaction net",
+		boolean: true
+	},
 	term: {
 		alias: "t",
 		desc: "Output the term being evaluated",
@@ -60,6 +65,10 @@ if (argv.debug) {
 
 	while (eqn = lambda.debug1())
 		console.info(eqn);
+} else if (argv.inet) {
+	const inet = lambda.mlc2in(input);
+
+	process.stdout.write(inet);
 } else {
 	const output = lambda(input);
 	const stats = JSON.stringify(output.stats, null, "\t");
