@@ -7,6 +7,11 @@ const yargs = require("yargs");
 const fs = require("fs");
 
 const opts = {
+	algo: {
+		alias: "a",
+		desc: "Choose an algorithm",
+		string: true
+	},
 	inet: {
 		alias: "i",
 		desc: "Show interaction net",
@@ -61,16 +66,16 @@ input = lambda.samples.helper.concat(input);
 if (argv.debug) {
 	let eqn;
 
-	lambda.prepare(input);
+	lambda.prepare(input, argv.algo);
 
 	while (eqn = lambda.debug1())
 		console.info(eqn);
 } else if (argv.inet) {
-	const inet = lambda.mlc2in(input);
+	const inet = lambda.mlc2in(input, argv.algo);
 
 	process.stdout.write(inet);
 } else {
-	const output = lambda(input);
+	const output = lambda(input, argv.algo);
 	const stats = JSON.stringify(output.stats, null, "\t");
 	const total = output.total;
 	const beta = output.beta;

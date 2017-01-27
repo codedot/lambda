@@ -46,12 +46,17 @@ function obj2mlc(obj)
 	return "[ ]";
 }
 
-function mlc2in(mlc)
+function mlc2in(mlc, algo)
 {
-	const dict = parser.parse(mlc);
-	const insrc = encoding.normal(dict);
+	let insrc;
 
-	expanded = dict.expanded;
+	algo = encoding[algo];
+	if (!algo)
+		algo = encoding.normal;
+
+	mlc = parser.parse(mlc);
+	insrc = algo(mlc);
+	expanded = mlc.expanded;
 
 	return insrc;
 }
@@ -68,9 +73,9 @@ function format(data)
 		return data;
 }
 
-function prepare(mlc)
+function prepare(mlc, algo)
 {
-	const src = mlc2in(mlc);
+	const src = mlc2in(mlc, algo);
 
 	inet.prepare(src, format);
 }
@@ -90,9 +95,9 @@ function debug1()
 	return inet.debug1();
 }
 
-function run(mlc)
+function run(mlc, algo)
 {
-	const src = mlc2in(mlc);
+	const src = mlc2in(mlc, algo);
 	const output = inet(src);
 
 	output.term = obj2mlc(expanded);

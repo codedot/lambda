@@ -9,6 +9,7 @@ This package provides a `lambda` command with the following interface:
 Usage: lambda [options] (<file> | -e <expr>)
 
 Options:
+  --algo, -a     Choose an algorithm                          [string]
   --inet, -i     Show interaction net                        [boolean]
   --term, -t     Output the term being evaluated             [boolean]
   --perf, -p     Print benchmarks                            [boolean]
