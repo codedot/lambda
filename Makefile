@@ -4,9 +4,7 @@ all: compile.js
 	node lambda -d samples/debug.mlc
 	node lambda -p samples/fact.mlc -a normal
 	node lambda -p samples/fact.mlc -a closed
-	node lambda -p samples/larger.mlc -a normal
-	node lambda -p samples/larger.mlc -a closed
-	node lambda -p samples/exp.mlc -a closed
+	node lambda -p samples/fact.mlc -a optimal
 
 compile.js: grammar.jison
 	npm install jison@0.4.15
