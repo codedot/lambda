@@ -5,26 +5,26 @@ interaction nets, providing both CLI and API.
 
 The following encodings of the lambda calculus are included:
 
-* `normal`: a domino-effect-based modification of
+* `normal` — a domino-effect-based modification of
 [_Token-Passing Nets: Call-by-Need for Free_][1]
 by François-Régis Sinot, described in [arXiv:1304.2290v8][2],
 this is the default algorithm;
 
-* `closed`: the same approach as `normal` applied to the
-[interaction net implementation of closed reduction][3]
+* `closed` — a version of `normal` based upon
+[_An Interaction Net Implementation of Closed Reduction_][3]
 by Ian Mackie;
 
-* `optimal`: the approach of [10.4204/EPTCS.225.7][4] applied to
-[Lambdascope][5] by Vincent van Oostrom et al;
+* `optimal` — the approach of [10.4204/EPTCS.225.7][4]
+applied to [_Lambdascope_][5] by Vincent van Oostrom et al;
 
-* `abstract`: an experimental modification of
+* `abstract` — an experimental modification of
 Lamping's abstract algorithm,
 described in [arXiv:1701.04691v2][6];
 
-* `turning`: an undocumented non-optimal experimental algorithm.
+* `turning` — an undocumented non-optimal experimental algorithm.
 
-Each version includes the embedded read-back mechanism
-as described in Section 7 of [10.4204/EPTCS.225.7][4].
+All versions include the embedded read-back mechanism described
+in Section 7 of [10.4204/EPTCS.225.7][4].
 
 [1]: http://dx.doi.org/10.1016/j.entcs.2005.09.027
 [2]: https://arxiv.org/abs/1304.2290v8
@@ -35,7 +35,7 @@ as described in Section 7 of [10.4204/EPTCS.225.7][4].
 
 # CLI
 
-This package provides a `lambda` command with the following interface:
+This package provides the `lambda` command with the following interface:
 
 ```
 Usage: lambda [options] (<file> | -e <expr>)
@@ -55,7 +55,7 @@ Options:
 
 # Combinators
 
-The command-line interface predefines commonly used combinators:
+CLI predefines a number of commonly used combinators:
 
 ```
 I = x: x;
@@ -103,7 +103,7 @@ the current interaction net state.
 
 # Grammar
 
-Input consists of an optional list of macro definitions and a term.
+Input consists of an optional list of macro definitions and a term:
 
 ```
 %token NAME /* [A-Za-z][A-Za-z0-9]* */
