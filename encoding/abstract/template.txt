@@ -44,108 +44,108 @@
 
 \print {
 	/* Continue evaluation. */
-	++this.wait;
+	++this.total;
 } \wait[\print, \call];
 
 \eval[\fan_{i}(a, b)] {
 	/* Postpone evaluation. */
-	++this.wait;
+	++this.total;
 } \fan_{i}[a, b];
 
 \eval[a] {
 	/* Continue evaluation. */
-	++this.wait;
+	++this.total;
 } \wait[\eval(a), \call];
 
 \eval[\atom_{M}] {
 	/* Return an atom. */
-	++this.wait;
+	++this.total;
 } \atom_{M};
 
 \eval[\lambda(a, b)] {
 	/* Return abstraction. */
-	++this.wait;
+	++this.total;
 } \lambda[a, b];
 
 \read_{C}[\fan_{i}(a, b)] {
 	/* Duplicate context. */
-	++this.read;
+	++this.total;
 } \fan_{i}[\read_{C}(a), \read_{this.clone(C)}(b)];
 
 \call {
 	/* Erase late call. */
-	++this.wait;
+	++this.total;
 } \erase;
 
 \fan_{i}[\wait(a, \amb(b, \decide(c, d), d)), \wait(e, b)] {
 	/* Postpone duplication. */
-	++this.wait;
+	++this.total;
 } \wait[\fan_{i}(a, e), c];
 
 \call {
 	/* Continue evaluation. */
-	++this.wait;
+	++this.total;
 } \decide[\call, \erase];
 
 \erase {
 	/* Erase reference. */
-	++this.wait;
+	++this.total;
 } \decide[a, a];
 
 \call {
 	/* Continue evaluation. */
-	++this.wait;
+	++this.total;
 } \hold[a, \eval(a)];
 
 \read_{C}[\wait(a, b)] {
 	/* Postpone readback. */
-	++this.wait;
+	++this.total;
 } \wait[\read_{C}(a), b];
 
 \erase {
 	/* Erase holder. */
-	++this.wait;
+	++this.total;
 } \hold[\erase, \erase];
 
 \erase {
 	/* Erase reference. */
-	++this.wait;
+	++this.total;
 } \wait[\erase, \erase];
 
 \apply[a, \wait(b, \hold(\apply(a, b), \wait(c, d)))] {
 	/* Postpone application. */
-	++this.wait;
+	++this.total;
 } \wait[c, d];
 
 \print {
 	/* Output results of read-back. */
 	this.nf = M;
-	++this.read;
+	++this.total;
 } \atom_{M};
 
 \read_{C}[a] {
 	/* Read back abstraction. */
-	++this.read;
+	++this.total;
 } \lambda[\atom_{this.mkid()}, \read_{this.abst(C)}(a)];
 
 \apply[\read_{this.appl(M)}(a), a] {
 	/* Read back application. */
-	++this.read;
+	++this.total;
 } \atom_{M};
 
 \read_{C}[\atom_{this.atom(C, M)}] {
 	/* Read back an atom. */
-	++this.read;
+	++this.total;
 } \atom_{M};
 
 \fan_{i}[\atom_{M}, \atom_{M}] {
 	/* Duplicate an atom. */
-	++this.read;
+	++this.total;
 } \atom_{M};
 
 \erase {
 	/* Erase an atom. */
-	++this.read;
+	++this.total;
 } \atom_{M};
 
 \erase {
@@ -170,7 +170,7 @@
 
 \erase {
 	/* Erase context. */
-	++this.read;
+	++this.total;
 } \read_{C}[\erase];
 
 $$
@@ -235,5 +235,3 @@ this.minus = cons.bind(this, "-");
 this.uniq = uniq;
 this.beta = 0;
 this.total = 0;
-this.wait = 0;
-this.read = 0;

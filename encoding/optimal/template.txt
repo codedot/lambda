@@ -169,6 +169,7 @@
 \apply[a, \scope_{0}(b)] {
 	/* Apply beta reduction. */
 	++this.beta;
+	++this.total;
 } \lambda[\wait(c, \hold(\scope_{0}(c), a)), b];
 
 \fan_{i}[\apply(a, b), \apply(c, d)] {
