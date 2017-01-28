@@ -2,9 +2,11 @@ all: compile.js
 	npm install
 	node lambda -e "S hello bye world"
 	node lambda -d samples/debug.mlc
-	node lambda -p samples/fact.mlc -a normal
+	node lambda -p samples/fact.mlc -a abstract
 	node lambda -p samples/fact.mlc -a closed
+	node lambda -p samples/fact.mlc -a normal
 	node lambda -p samples/fact.mlc -a optimal
+	node lambda -p samples/fact.mlc -a turning
 
 compile.js: grammar.jison
 	npm install jison@0.4.15

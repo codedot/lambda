@@ -10,17 +10,13 @@ const mkwire = generic.mkwire;
 const mktwins = generic.mktwins;
 const getfv = generic.getfv;
 
-function psi(shared)
+function psi(shared, list)
 {
-	var list = [];
-	var template = "%s = \\fanin_{++this.id}(%s, %s)";
-	var atom;
-
-	for (atom in shared) {
-		var twins = shared[atom];
-		var wleft = twins.left;
-		var wright = twins.right;
-		var eqn = template;
+	for (const atom in shared) {
+		const twins = shared[atom];
+		const wleft = twins.left;
+		const wright = twins.right;
+		let eqn = "%s = \\fanin_{++this.id}(%s, %s)";
 
 		eqn = eqn.replace("%s", atom);
 		eqn = eqn.replace("%s", wright);
@@ -28,33 +24,43 @@ function psi(shared)
 
 		list.push(eqn);
 	}
-
-	return list;
 }
 
-function gamma(obj, root)
+function mkscope(n)
 {
-	var list = [];
-	var node = obj.node;
+	let s = "%s";
+
+	for (let i = 0; i < n; i++)
+		s = "\\scope_{0}(" + s + ")";
+
+	return s;
+}
+
+function gamma(obj, root, list)
+{
+	const node = obj.node;
 
 	if ("atom" == node) {
 		if (obj.free) {
-			var agent = "\\atom_{this.mkid(\"%s\")}";
+			let agent = "\\atom_{this.mkid(\"%s\")}";
 
 			agent = agent.replace("%s", obj.name);
+
 			list.push(root + " = " + agent);
 		} else {
-			var agent = "%s";
+			let agent = mkscope(0);
 
 			agent = agent.replace("%s", root);
+
 			list.push(obj.name + " = " + agent);
 		}
 	} else if ("abst" == node) {
-		var tree = "\\lambda(%s, %s)";
-		var body = obj.body;
-		var fv = getfv(body);
-		var id = obj.var;
-		var wire = mkwire();
+		const id = obj.var;
+		const body = obj.body;
+		const fv = getfv(body);
+		const wire = mkwire();
+		let tree = "\\lambda(%s, %s)";
+		let agent;
 
 		if (id in fv)
 			agent = id;
@@ -63,29 +69,27 @@ function gamma(obj, root)
 
 		tree = tree.replace("%s", agent);
 		tree = tree.replace("%s", wire);
+
 		list.push(root + " = " + tree);
 
-		body = gamma(body, wire);
-		list = list.concat(body);
+		gamma(body, wire, list);
 	} else if ("appl" == node) {
-		var wleft = mkwire();
-		var wright = mkwire();
-		var agent = "\\apply(%s, %s)";
-		var left = obj.left;
-		var right = obj.right;
-		var shared = mktwins(left, right);
+		const wleft = mkwire();
+		const wright = mkwire();
+		const left = obj.left;
+		const right = obj.right;
+		const shared = mktwins(left, right);
+		let agent = "\\apply(%s, %s)";
 
 		agent = agent.replace("%s", wright);
 		agent = agent.replace("%s", root);
+
 		list.push(wleft + " = " + agent);
 
-		left = gamma(left, wleft);
-		right = gamma(right, wright);
-		shared = psi(shared);
-		list = list.concat(left, right, shared);
+		gamma(left, wleft, list);
+		gamma(right, wright, list);
+		psi(shared, list);
 	}
-
-	return list;
 }
 
 function encode(term)
