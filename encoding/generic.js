@@ -187,3 +187,4 @@ exports.expand = expand;
 exports.mkwire = mkwire;
 exports.mktwins = mktwins;
 exports.getfv = getfv;
+exports.subst = subst;
