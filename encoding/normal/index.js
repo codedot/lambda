@@ -239,13 +239,12 @@ function getconf(obj)
 	return obj;
 }
 
-function encode(dict)
+function expand(dict)
 {
 	const macros = dict.macros;
 	const mlen = macros.length;
 	let term = dict.term;
 	let fv = getfv(term);
-	let inconfig;
 
 	for (let i = 0; i < mlen; i++) {
 		const macro = macros[i];
@@ -271,6 +270,14 @@ function encode(dict)
 
 	dict.expanded = term;
 
+	return term;
+}
+
+function encode(term)
+{
+	let inconfig;
+
+	term = expand(term);
 	inconfig = getconf(term);
 	inconfig = inconfig.join(";\n") + ";";
 
