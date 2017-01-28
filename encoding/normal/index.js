@@ -127,9 +127,6 @@ function gamma(obj, root, list)
 {
 	const node = obj.node;
 
-	if (!list)
-		list = [];
-
 	if ("atom" == node) {
 		let agent = "\\atom_{this.mkid(\"%s\")}";
 
@@ -175,8 +172,6 @@ function gamma(obj, root, list)
 		gamma(right, wright, list);
 		psi(shared, list);
 	}
-
-	return list;
 }
 
 function alpha(obj, bv, lvl)
@@ -228,17 +223,6 @@ function alpha(obj, bv, lvl)
 	return aobj;
 }
 
-function getconf(obj)
-{
-	lastwire = 0;
-
-	obj = alpha(obj);
-	obj = gamma(obj, "root");
-	obj.push("\\read_{this.mkhole()}(\\print) = root");
-
-	return obj;
-}
-
 function expand(dict)
 {
 	const macros = dict.macros;
@@ -269,16 +253,17 @@ function expand(dict)
 	}
 
 	dict.expanded = term;
-
-	return term;
+	lastwire = 0;
+	return alpha(term);
 }
 
 function encode(term)
 {
-	let inconfig;
+	let inconfig = [
+		"\\read_{this.mkhole()}(\\print) = root"
+	];
 
-	term = expand(term);
-	inconfig = getconf(term);
+	gamma(expand(term), "root", inconfig);
 	inconfig = inconfig.join(";\n") + ";";
 
 	return system.replace("INCONFIG", inconfig);
