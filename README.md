@@ -5,23 +5,22 @@ interaction nets, providing both CLI and API.
 
 The following encodings of the lambda calculus are included:
 
-* `normal` — a domino-effect-based modification of
+* `normal`, a domino-effect-based version of
 [_Token-Passing Nets: Call-by-Need for Free_][1]
-by François-Régis Sinot, described in [arXiv:1304.2290v8][2],
-this is the default algorithm;
+(François-Régis Sinot), described in [arXiv:1304.2290v8][2]
+(this is the default algorithm);
 
-* `closed` — a version of `normal` based upon
+* `closed`, a version of `normal` based on
 [_An Interaction Net Implementation of Closed Reduction_][3]
-by Ian Mackie;
+(Ian Mackie);
 
-* `optimal` — the approach of [10.4204/EPTCS.225.7][4]
-applied to [_Lambdascope_][5] by Vincent van Oostrom et al;
+* `optimal`, the approach of [10.4204/EPTCS.225.7][4]
+applied to [_Lambdascope_][5] (Vincent van Oostrom et al);
 
-* `abstract` — an experimental modification of
-Lamping's abstract algorithm,
-described in [arXiv:1701.04691v2][6];
+* `abstract`, an experimental version of
+Lamping's abstract algorithm, described in [arXiv:1701.04691v2][6];
 
-* `turning` — an undocumented non-optimal experimental algorithm.
+* `turning`, an undocumented non-optimal experimental algorithm.
 
 All versions include the embedded read-back mechanism described
 in Section 7 of [10.4204/EPTCS.225.7][4].
