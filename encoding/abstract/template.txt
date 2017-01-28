@@ -181,12 +181,12 @@ $$
 
 READBACK
 
-var last = 0;
-var table = [];
+const table = [];
+let last = 0;
 
 function uniq()
 {
-	var fresh = ++last;
+	let fresh = ++last;
 
 	fresh = fresh.toString();
 	fresh = hash(fresh);
@@ -195,19 +195,15 @@ function uniq()
 
 function cons(s, a, b)
 {
-	var pair = a + s + b;
-
-	return hash(pair);
+	return hash(a + s + b);
 }
 
 function mktable()
 {
-	var c, n, k;
+	for (let n = 0; n < 256; n++) {
+		let c = n;
 
-	for (n = 0; n < 256; n++) {
-		c = n;
-
-		for (k = 0; k < 8; k++) {
+		for (let k = 0; k < 8; k++) {
 			if (c & 1)
 				c = 0xEDB88320 ^ (c >>> 1);
 			else
@@ -220,12 +216,12 @@ function mktable()
 
 function hash(str)
 {
-	var crc = 0 ^ (-1);
-	var n = str.length;
-	var i, b;
+	const n = str.length;
+	let crc = 0 ^ (-1);
 
-	for (i = 0; i < n; i++) {
-		b = str.charCodeAt(i);
+	for (let i = 0; i < n; i++) {
+		const b = str.charCodeAt(i);
+
 		crc = (crc >>> 8) ^ table[(crc ^ b) & 0xFF];
 	}
 
