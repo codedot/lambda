@@ -48,14 +48,14 @@ function obj2mlc(obj)
 
 function mlc2in(mlc, algo)
 {
+	const encode = encoding[algo ? algo : "normal"];
 	let insrc;
 
-	algo = encoding[algo];
-	if (!algo)
-		algo = encoding.normal;
+	if (!encode)
+		throw `${algo}: Unknown algorithm`;
 
 	mlc = parser.parse(mlc);
-	insrc = algo(mlc);
+	insrc = encode(mlc);
 	expanded = mlc.expanded;
 
 	return insrc;
