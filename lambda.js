@@ -9,17 +9,22 @@ const fs = require("fs");
 const opts = {
 	algo: {
 		alias: "a",
-		desc: "Choose an algorithm",
+		desc: "Select algorithm",
 		string: true
+	},
+	debug: {
+		alias: "d",
+		desc: "Enable step-by-step evaluation",
+		boolean: true
+	},
+	expr: {
+		alias: "e",
+		desc: "Process argument as expression",
+		boolean: true
 	},
 	inet: {
 		alias: "i",
 		desc: "Show interaction net",
-		boolean: true
-	},
-	term: {
-		alias: "t",
-		desc: "Output the term being evaluated",
 		boolean: true
 	},
 	perf: {
@@ -27,20 +32,15 @@ const opts = {
 		desc: "Print benchmarks",
 		boolean: true
 	},
-	expr: {
-		alias: "e",
-		desc: "Process the argument as expression",
-		boolean: true
-	},
-	debug: {
-		alias: "d",
-		desc: "Enable step-by-step evaluation",
-		boolean: true
-	},
 	stats: {
 		alias: "s",
-		desc: "Write statistics to a file",
+		desc: "Write statistics to file",
 		string: true
+	},
+	term: {
+		alias: "t",
+		desc: "Output expanded term",
+		boolean: true
 	}
 };
 

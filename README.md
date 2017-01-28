@@ -9,13 +9,13 @@ This package provides a `lambda` command with the following interface:
 Usage: lambda [options] (<file> | -e <expr>)
 
 Options:
-  --algo, -a     Choose an algorithm                          [string]
-  --inet, -i     Show interaction net                        [boolean]
-  --term, -t     Output the term being evaluated             [boolean]
-  --perf, -p     Print benchmarks                            [boolean]
-  --expr, -e     Process the argument as expression          [boolean]
+  --algo, -a     Select algorithm                             [string]
   --debug, -d    Enable step-by-step evaluation              [boolean]
-  --stats, -s    Write statistics to a file                   [string]
+  --expr, -e     Process argument as expression              [boolean]
+  --inet, -i     Show interaction net                        [boolean]
+  --perf, -p     Print benchmarks                            [boolean]
+  --stats, -s    Write statistics to file                     [string]
+  --term, -t     Output expanded term                        [boolean]
   --help, -h     Show help                                   [boolean]
   --version, -v  Show version number                         [boolean]
 
