@@ -1,0 +1,193 @@
+const gfv = [];
+let id = 0;
+
+function mkvar(fresh)
+{
+	if (fresh)
+		++id;
+
+	return "v" + id.toFixed(0);
+}
+
+function mkid(name)
+{
+	const fv = {};
+	const obj = {
+		node: "atom",
+		name: name,
+		fv: fv
+	};
+
+	if (name) {
+		gfv[name] = true;
+		return obj;
+	}
+
+	do {
+		name = mkvar(true);
+	} while (gfv[name]);
+
+	obj.name = name;
+	fv[name] = true;
+	return obj;
+}
+
+function mkhole()
+{
+	const obj = {};
+
+	obj.fv = {};
+	obj.bv = {};
+	obj.hole = obj;
+	return obj;
+}
+
+function subst(hole, obj)
+{
+	const parent = hole.parent;
+	const body = obj.body;
+	const left = obj.left;
+	const right = obj.right;
+
+	if (parent)
+		obj.parent = hole.parent;
+	else
+		delete obj.parent;
+
+	Object.assign(hole, obj);
+
+	if (body)
+		body.parent = hole;
+	if (left)
+		left.parent = hole;
+	if (right)
+		right.parent = hole;
+}
+
+function eta(obj)
+{
+	let parent, left, right, name;
+
+	if ("appl" != obj.node)
+		return;
+
+	parent = obj.parent;
+	if (!parent)
+		return;
+	if ("abst" != parent.node)
+		return;
+
+	right = obj.right;
+	if ("atom" != right.node)
+		return;
+
+	name = parent.var;
+	if (name != right.name)
+		return;
+
+	left = obj.left;
+	if (left.fv[name])
+		return;
+
+	subst(parent, left);
+
+	eta(parent);
+}
+
+function atom(context, obj, name)
+{
+	const ofv = obj.fv;
+	const cfv = context.fv;
+	const bv = context.bv;
+	const chole = context.hole;
+	const ohole = obj.hole;
+
+	if (name)
+		bv[name] = true;
+
+	for (const key in ofv)
+		if (!(key in bv))
+			cfv[key] = true;
+
+	subst(chole, obj);
+
+	if (ohole) {
+		delete chole.hole;
+		context.hole = ohole;
+	} else {
+		delete context.hole;
+		eta(chole);
+	}
+
+	return context;
+}
+
+function abst(context)
+{
+	const hole = mkhole();
+	const name = mkvar();
+	const obj = {
+		node: "abst",
+		var: name,
+		body: hole,
+		fv: {},
+		hole: hole
+	};
+
+	hole.parent = obj;
+	return atom(context, obj, name);
+}
+
+function appl(left)
+{
+	const context = mkhole();
+	const hole = mkhole();
+	const obj = {
+		node: "appl",
+		left: left,
+		right: hole,
+		fv: Object.assign({}, left.fv),
+		hole: hole
+	};
+
+	left.parent = obj;
+	hole.parent = obj;
+	return atom(context, obj);
+}
+
+function clone(obj, root, hole, parent)
+{
+	const copy = {};
+
+	if (!obj)
+		return;
+
+	if (!root) {
+		root = copy;
+		hole = obj.hole;
+	}
+
+	copy.node = obj.node;
+	copy.var = obj.var;
+	copy.name = obj.name;
+	copy.parent = parent;
+	copy.body = clone(obj.body, root, hole, copy);
+	copy.left = clone(obj.left, root, hole, copy);
+	copy.right = clone(obj.right, root, hole, copy);
+
+	copy.fv = Object.assign({}, obj.fv);
+	copy.bv = Object.assign({}, obj.bv);
+
+	if (obj === hole)
+		root.hole = copy;
+
+	return copy;
+}
+
+this.clone = clone;
+this.mkid = mkid;
+this.mkvar = mkvar;
+this.mkhole = mkhole;
+this.abst = abst;
+this.appl = appl;
+this.atom = atom;

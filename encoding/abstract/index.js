@@ -4,7 +4,8 @@ const generic = require("../generic");
 const fs = require("fs");
 const path = require("path");
 
-const system = fs.readFileSync(path.join(__dirname, "template.txt"), "utf8");
+const template = fs.readFileSync(path.join(__dirname, "template.txt"), "utf8");
+const system = template.replace("READBACK\n", generic.readback);
 const expand = generic.expand;
 const mkwire = generic.mkwire;
 const mktwins = generic.mktwins;

@@ -1,5 +1,9 @@
 "use strict";
 
+const fs = require("fs");
+const path = require("path");
+
+const readback = fs.readFileSync(path.join(__dirname, "readback.txt"), "utf8");
 let lastwire;
 
 function getcap(left, right)
@@ -188,3 +192,4 @@ exports.mkwire = mkwire;
 exports.mktwins = mktwins;
 exports.getfv = getfv;
 exports.subst = subst;
+exports.readback = readback;

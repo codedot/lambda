@@ -179,99 +179,10 @@ INCONFIG
 
 $$
 
-var id = 0;
+READBACK
+
 var last = 0;
 var table = [];
-
-function mkvar(fresh)
-{
-	if (fresh)
-		++id;
-
-	return "v" + id.toFixed(0);
-}
-
-function mkid(name)
-{
-	var obj = {
-		node: "atom",
-		name: name ? name : mkvar(true)
-	};
-
-	return obj;
-}
-
-function mkhole()
-{
-	var obj = {};
-
-	obj.hole = obj;
-	return obj;
-}
-
-function atom(context, obj)
-{
-	var hole = context.hole;
-	var key;
-
-	for (key in obj)
-		hole[key] = obj[key];
-
-	context.hole = obj.hole;
-	return context;
-}
-
-function abst(context)
-{
-	var hole = mkhole();
-	var obj = {
-		node: "abst",
-		var: mkvar(),
-		body: hole,
-		hole: hole
-	};
-
-	return atom(context, obj);
-}
-
-function appl(left)
-{
-	var context = mkhole();
-	var hole = mkhole();
-	var obj = {
-		node: "appl",
-		left: left,
-		right: hole,
-		hole: hole
-	};
-
-	return atom(context, obj);
-}
-
-function clone(obj, root, hole)
-{
-	var copy = {};
-
-	if (!obj)
-		return;
-
-	if (!root) {
-		root = copy;
-		hole = obj.hole;
-	}
-
-	copy.node = obj.node;
-	copy.var = obj.var;
-	copy.name = obj.name;
-	copy.body = clone(obj.body, root, hole);
-	copy.left = clone(obj.left, root, hole);
-	copy.right = clone(obj.right, root, hole);
-
-	if (obj === hole)
-		root.hole = copy;
-
-	return copy;
-}
 
 function uniq()
 {
@@ -326,13 +237,6 @@ mktable();
 this.plus = cons.bind(this, "+");
 this.minus = cons.bind(this, "-");
 this.uniq = uniq;
-this.clone = clone;
-this.mkid = mkid;
-this.mkvar = mkvar;
-this.mkhole = mkhole;
-this.abst = abst;
-this.appl = appl;
-this.atom = atom;
 this.beta = 0;
 this.total = 0;
 this.wait = 0;
