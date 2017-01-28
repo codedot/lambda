@@ -1,6 +1,38 @@
 This package implements the pure untyped lambda calculus using
 interaction nets, providing both CLI and API.
 
+# Algorithms
+
+The following encodings of the lambda calculus are included:
+
+* `normal`: a domino-effect-based modification of
+[_Token-Passing Nets: Call-by-Need for Free_][1]
+by François-Régis Sinot, described in [arXiv:1304.2290v8][2],
+this is the default algorithm;
+
+* `closed`: the same approach as `normal` applied to the
+[interaction net implementation of closed reduction][3]
+by Ian Mackie;
+
+* `optimal`: the approach of [10.4204/EPTCS.225.7][4] applied to
+[Lambdascope][5] by Vincent van Oostrom et al;
+
+* `abstract`: an experimental modification of
+Lamping's abstract algorithm,
+described in [arXiv:1701.04691v2][6];
+
+* `turning`: an undocumented non-optimal experimental algorithm.
+
+Each version includes the embedded read-back mechanism
+as described in Section 7 of [10.4204/EPTCS.225.7][4].
+
+[1]: http://dx.doi.org/10.1016/j.entcs.2005.09.027
+[2]: https://arxiv.org/abs/1304.2290v8
+[3]: http://dx.doi.org/10.1007/978-3-642-24452-0_3
+[4]: http://dx.doi.org/10.4204/EPTCS.225.7
+[5]: http://www.phil.uu.nl/~oostrom/publication/pdf/lambdascope.pdf
+[6]: https://arxiv.org/abs/1701.04691v2
+
 # CLI
 
 This package provides a `lambda` command with the following interface:
