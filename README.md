@@ -1,6 +1,10 @@
 This package implements the pure untyped lambda calculus using
 interaction nets, providing both CLI and API.
 
+Its browserified version is available as an online demo:
+
+[https://codedot.github.io/lambda/](https://codedot.github.io/lambda/)
+
 # Algorithms
 
 The following encodings of the lambda calculus are included:
