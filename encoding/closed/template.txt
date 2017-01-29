@@ -1,3 +1,8 @@
+\read_{C}[a] {
+	/* Unshare variable. */
+	++this.total;
+} \share[\copy(b, \read_{C}(a)), b];
+
 \copy[a, b] {
 	/* Unshare variable. */
 	++this.total;
@@ -87,8 +92,7 @@
 \dup[a, b] {
 	/* Duplicate sharing. */
 	++this.total;
-} \copy[\dup(\amb(c, \share(a, d), d), \amb(e, \share(b, f), f)),
-	\dup(c, e)];
+} \copy[\dup(\amb(c, \share(a, d), d), \amb(e, \share(b, f), f)), \dup(c, e)];
 
 \read_{C}[a] {
 	/* Read back abstraction. */

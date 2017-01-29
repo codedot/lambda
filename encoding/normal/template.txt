@@ -78,8 +78,7 @@
 \dup[a, b] {
 	/* Duplicate sharing. */
 	++this.total;
-} \copy[\dup(\amb(c, \share(a, d), d), \amb(e, \share(b, f), f)),
-	\dup(c, e)];
+} \copy[\dup(\amb(c, \share(a, d), d), \amb(e, \share(b, f), f)), \dup(c, e)];
 
 \dup[\apply(a, b), \apply(c, d)] {
 	/* Duplicate application. */
