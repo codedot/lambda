@@ -233,10 +233,8 @@ They are executed during reduction of&nbsp;the&nbsp;interaction&nbsp;net.
 Implementation is based on Interaction Nets with non-deterministic extension.
 The interaction system behind (agent types and interaction rules) performs
 call-by-need reduction and also has a readback machanism embedded.
-Since
-<a href="https://github.com/codedot/lambda/blob/gh-pages/template.txt">the interaction rules</a>
-are defined using notation similar to Yves Lafont's, it is easy to experiment with
-different&nbsp;evaluation&nbsp;techniques.
+Since the interaction rules are defined using notation similar to Yves Lafont's,
+it is easy to experiment with different&nbsp;evaluation&nbsp;techniques.
 </p>
 
 <p>
@@ -247,15 +245,11 @@ the&nbsp;following&nbsp;steps.
 <ol>
 <li>
 Parse input according to
-<a href="https://github.com/codedot/lambda/blob/gh-pages/lambda.jison">the MLC grammar</a>.
+<a href="https://www.npmjs.com/package/@alexo/lambda">the MLC grammar</a>.
 </li>
 
 <li>
-From the bottom up, abstract each macro's name as a variable in the main term,
-then apply this abstraction to the macro's definition.
-It may sound complicated but
-<a href="https://github.com/codedot/lambda/blob/gh-pages/encode.js#L310">the corresponding source code</a>
-is&nbsp;quite&nbsp;simple.
+From the bottom up, substitute each referenced macro using β-expansion.
 </li>
 
 <li>
@@ -271,7 +265,7 @@ also&nbsp;allows&nbsp;side&nbsp;effects.
 
 <li>
 Parse the produced definition according to
-<a href="https://github.com/euromake/inet/blob/nodejs/grammar.jison">the INC grammar</a>.
+<a href="https://www.npmjs.com/package/inet-lib">the INC grammar</a>.
 </li>
 
 <li>
