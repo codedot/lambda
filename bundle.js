@@ -1449,6 +1449,7 @@ function mlc2in(mlc, algo)
 	mlc = parser.parse(mlc);
 	insrc = encode(mlc);
 	expanded = mlc.expanded;
+	inet.inenv = {};
 
 	return insrc;
 }
@@ -2803,7 +2804,7 @@ function prepare(src, fmt, deadlock)
 	inverb = system.code;
 	inrules = system.rules;
 	inconf = system.conf;
-	inenv = {};
+	inenv = run.inenv;
 	inqueue = [];
 	typelist = [];
 	types = {
@@ -3002,6 +3003,7 @@ function run(src, max)
 	return inenv;
 }
 
+run.inenv = {};
 run.prepare = prepare;
 run.debug = debug;
 run.debug0 = debug0;
