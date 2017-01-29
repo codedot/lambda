@@ -1,3 +1,8 @@
+\print {
+	/* Continue evaluation. */
+	++this.total;
+} \wait[\print, \call];
+
 \eval[\fan_{i}(a, b)] {
 	/* Postpone evaluation. */
 	++this.total;
@@ -21,7 +26,7 @@
 \eval[\lambda(a, b)] {
 	/* Evaluate abstraction. */
 	++this.total;
-} \lambda[a, \eval(b)];
+} \lambda[a, b];
 
 \fan_{i}[\scope_{j}(a), \scope_{j}(b)] {
 	/* Duplicate higher delimiter. */
