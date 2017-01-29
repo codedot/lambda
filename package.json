@@ -1,6 +1,6 @@
 {
 	"dependencies": {
-		"@alexo/lambda": "0.0.9",
+		"@alexo/lambda": "0.1.0",
 		"browserify": "14.0.0",
 		"brfs": "1.4.3"
 	},
