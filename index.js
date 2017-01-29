@@ -2,7 +2,6 @@
 
 const encoding = require("./encoding");
 const compile = require("./compile");
-const samples = require("./samples");
 const inet = require("inet-lib");
 
 const parser = new compile.Parser();
@@ -115,7 +114,5 @@ run.debug = debug;
 run.debug0 = debug0;
 run.debug1 = debug1;
 run.mlc2in = mlc2in;
-run.example = samples.fact.replace(/\n*$/, "");
-run.samples = samples;
 
 module.exports = run;

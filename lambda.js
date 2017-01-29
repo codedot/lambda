@@ -5,6 +5,10 @@
 const lambda = require(".");
 const yargs = require("yargs");
 const fs = require("fs");
+const path = require("path");
+
+const helper = path.join(__dirname, "helper.txt");
+const comb = fs.readFileSync(helper, "utf8");
 
 const opts = {
 	algo: {
@@ -61,7 +65,7 @@ let input = argv._[0];
 if (!argv.expr)
 	input = fs.readFileSync(input, "utf8");
 
-input = lambda.samples.helper.concat(input);
+input = comb.concat(input);
 
 if (argv.debug) {
 	let eqn;
