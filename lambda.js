@@ -91,8 +91,11 @@ if (argv.debug) {
 	if (argv.perf)
 		console.warn(`${total}(${beta}), ${redtime} ms`);
 
-	console.info(output.nf);
-
 	if (argv.stats)
 		fs.writeFileSync(argv.stats, stats + "\n");
+
+	if (output.nf)
+		console.info(output.nf);
+	else
+		process.exit(1);
 }

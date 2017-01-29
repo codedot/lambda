@@ -104,8 +104,6 @@ function run(mlc, algo)
 
 	if (output.nf)
 		output.nf = obj2mlc(output.nf);
-	else
-		output.nf = output.term;
 
 	return output;
 }
