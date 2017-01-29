@@ -1,5 +1,3 @@
-set -C
-
 CELLF="%-14s"
 TERMF="%-9s"
 HEADF="$TERMF$CELLF$CELLF$CELLF$CELLF$CELLF\n"
@@ -31,10 +29,10 @@ compare()
 	printf "\n"
 }
 
-printf $HEADF term abstract closed normal optimal turning
+printf $HEADF SAMPLE ABSTRACT CLOSED NORMAL OPTIMAL TURNING
 
-compare test abstract closed normal optimal turning
-compare exp _abstract closed _normal _optimal _turning
+compare test    abstract closed normal optimal turning
+compare exp     ABSTRACT closed NORMAL OPTIMAL TURNING
 compare asperti abstract closed normal optimal turning
-compare fact abstract closed normal optimal turning
-compare larger abstract closed normal _optimal turning
+compare fact    abstract closed normal optimal turning
+compare larger  abstract closed normal OPTIMAL turning
