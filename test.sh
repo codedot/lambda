@@ -33,17 +33,17 @@ compare()
 
 printf $HEADF SAMPLE ABSTRACT CLOSED NORMAL OPTIMAL TURNING
 
-compare test "v1: v1 (v2: v2 v2) (v3: v3 v3)" \
+compare counter "v1: v1 (v2: v2 v2) (v3: v3 v3)" \
 	abstract closed normal optimal turning
 
-compare exp "v1: v1" \
+compare w2eta "v1, v2: v1 (v1 (v1 (v1 v2)))" \
+	abstract closed normal optimal turning
+
+compare 1022ii "v1: v1" \
 	ABSTRACT closed NORMAL OPTIMAL TURNING
 
-compare asperti "v1, v2: v1 (v1 (v1 (v1 v2)))" \
+compare yfact4 "v1, v2: v1 (v1 (v1 v2))" \
 	abstract closed normal optimal turning
 
-compare fact "v1, v2: v1 (v1 (v1 v2))" \
-	abstract closed normal optimal turning
-
-compare larger "v1, v2: v1 (v1 (v1 (v1 (v1 v2))))" \
+compare yfact5 "v1, v2: v1 (v1 (v1 (v1 (v1 v2))))" \
 	abstract closed normal OPTIMAL turning
