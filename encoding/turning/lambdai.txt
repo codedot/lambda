@@ -1,0 +1,5 @@
+\apply[a, b] {
+	/* Apply beta reduction. */
+	++this.beta;
+	++this.total;
+} \lambda[a, b];

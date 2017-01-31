@@ -40,13 +40,13 @@ compare w2eta "v1, v2: v1 (v1 (v1 (v1 v2)))" \
 	abstract closed normal optimal turning
 
 compare 22210ii "v1: v1" \
-	ABSTRACT closed NORMAL OPTIMAL turning
+	abstract closed NORMAL optimal turning
 
 compare 3222ii "v1: v1" \
-	ABSTRACT closed NORMAL OPTIMAL TURNING
+	abstract closed NORMAL optimal turning
 
 compare 1022ii "v1: v1" \
-	ABSTRACT closed NORMAL OPTIMAL TURNING
+	abstract closed NORMAL optimal TURNING
 
 compare cfact4 "v1, v2: v1 (v1 (v1 v2))" \
 	abstract closed normal optimal turning

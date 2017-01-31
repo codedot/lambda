@@ -4,12 +4,20 @@ const generic = require("../generic");
 const fs = require("fs");
 const path = require("path");
 
+const lambdai = fs.readFileSync(path.join(__dirname, "lambdai.txt"), "utf8");
 const template = fs.readFileSync(path.join(__dirname, "template.txt"), "utf8");
 const system = template.replace("READBACK\n", generic.readback);
 const expand = generic.expand;
 const mkwire = generic.mkwire;
 const mktwins = generic.mktwins;
 const getfv = generic.getfv;
+let lambdak;
+
+function kill()
+{
+	lambdak = true;
+	return "\\erase";
+}
 
 function psi(shared, list)
 {
@@ -66,7 +74,7 @@ function gamma(obj, root, list)
 		if (id in fv)
 			agent = id;
 		else
-			agent = "\\erase";
+			agent = kill();
 
 		tree = tree.replace("%s", agent);
 		tree = tree.replace("%s", wire);
@@ -98,11 +106,16 @@ function encode(term)
 	let inconfig = [
 		"\\eval(\\read_{this.mkhole()}(\\print)) = root"
 	];
+	let inet = system;
 
+	lambdak = false;
 	gamma(expand(term), "root", inconfig);
 	inconfig = inconfig.join(";\n") + ";";
 
-	return system.replace("INCONFIG", inconfig);
+	if (!lambdak)
+		inet = lambdai.concat("\n", inet);
+
+	return inet.replace("INCONFIG", inconfig);
 }
 
 module.exports = encode;

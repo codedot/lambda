@@ -1,0 +1,5 @@
+\apply[\scope_{0}(a), \scope_{0}(b)] {
+	/* Apply beta reduction. */
+	++this.beta;
+	++this.total;
+} \lambda[a, b];
