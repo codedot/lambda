@@ -22,9 +22,7 @@ The following encodings of the lambda calculus are included:
 applied to [_Lambdascope_][5] (Vincent van Oostrom et al);
 
 * `abstract`, an experimental version of
-Lamping's abstract algorithm, described in [arXiv:1701.04691v2][6];
-
-* `turning`, an undocumented non-optimal experimental algorithm.
+Lamping's abstract algorithm, described in [arXiv:1701.04691v2][6].
 
 All versions include the embedded read-back mechanism described
 in Section 7 of [10.4204/EPTCS.225.7][4].
