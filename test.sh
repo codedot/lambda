@@ -1,7 +1,7 @@
-CELLF="%-14s"
+CELLF="%-16s"
 TERMF="%-9s"
 HEADF="$TERMF$CELLF$CELLF$CELLF$CELLF$CELLF\n"
-SED="s/(\(.*\)),.*$/\/\1/"
+SED="s/,.*$//"
 OUT=`mktemp`
 ERR=`mktemp`
 
@@ -47,6 +47,9 @@ compare 3222ii "v1: v1" \
 
 compare 1022ii "v1: v1" \
 	abstract closed NORMAL optimal TURNING
+
+compare 4222ii "v1: v1" \
+	abstract closed NORMAL OPTIMAL TURNING
 
 compare cfact4 "v1, v2: v1 (v1 (v1 v2))" \
 	abstract closed normal optimal turning
