@@ -39,6 +39,12 @@ compare counter "v1: v1 (v2: v2 v2) (v3: v3 v3)" \
 compare w2eta "v1, v2: v1 (v1 (v1 (v1 v2)))" \
 	abstract closed normal optimal turning
 
+compare 22210ii "v1: v1" \
+	ABSTRACT closed NORMAL OPTIMAL turning
+
+compare 3222ii "v1: v1" \
+	ABSTRACT closed NORMAL OPTIMAL TURNING
+
 compare 1022ii "v1: v1" \
 	ABSTRACT closed NORMAL OPTIMAL TURNING
 
