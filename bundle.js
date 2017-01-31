@@ -633,12 +633,20 @@ const generic = require("../generic");
 
 const path = require("path");
 
+const lambdai = "\\apply[a, b] {\n\t/* Apply beta reduction. */\n\t++this.beta;\n\t++this.total;\n} \\lambda[a, b];\n";
 const template = "\\apply[a, b] {\n\t/* Apply beta reduction. */\n\t++this.beta;\n\t++this.total;\n} \\lambda[\\wait(c, \\hold(c, a)), b];\n\n\\apply[\n\t\\fan_{[i[0], i[1] + 1]}(a, b),\n\t\\fan_{[i[0], i[1] + 1]}(c, d)\n] {\n\t/* Duplicate application. */\n\t++this.total;\n} \\fan_{i}[\\apply(a, c), \\apply(b, d)];\n\n\\fan_{i}[\\lambda(a, b), \\lambda(c, d)] {\n\t/* Duplicate abstraction. */\n\t++this.total;\n} \\lambda[\n\t\\fan_{[i[0], i[1] + 1]}(a, c),\n\t\\fan_{[i[0], i[1] + 1]}(b, d)\n];\n\n\\fan_{i}[\n\t\\fan_{[j[0], j[1] + 1]}(a, b),\n\t\\fan_{[j[0], j[1] + 1]}(c, d)\n] {\n\t/* Duplicate different fans. */\n\tif ((i[0] != j[0]) && (i[1] < j[1]))\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\fan_{j}[\n\t\\fan_{[this.plus(i[0], j[0]), i[1]]}(a, c),\n\t\\fan_{[this.minus(i[0], j[0]), i[1]]}(b, d)\n];\n\n\\fan_{i}[a, b] {\n\t/* Annihilate matching fans. */\n\tif ((i[0] == j[0]) || (i[1] == j[1]))\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\fan_{j}[a, b];\n\n\\print {\n\t/* Continue evaluation. */\n\t++this.total;\n} \\wait[\\print, \\call];\n\n\\eval[\\fan_{i}(a, b)] {\n\t/* Postpone evaluation. */\n\t++this.total;\n} \\fan_{i}[a, b];\n\n\\eval[a] {\n\t/* Continue evaluation. */\n\t++this.total;\n} \\wait[\\eval(a), \\call];\n\n\\eval[\\atom_{M}] {\n\t/* Return an atom. */\n\t++this.total;\n} \\atom_{M};\n\n\\eval[\\lambda(a, b)] {\n\t/* Return abstraction. */\n\t++this.total;\n} \\lambda[a, b];\n\n\\read_{C}[\\fan_{i}(a, b)] {\n\t/* Duplicate context. */\n\t++this.total;\n} \\fan_{i}[\\read_{C}(a), \\read_{this.clone(C)}(b)];\n\n\\call {\n\t/* Erase late call. */\n\t++this.total;\n} \\erase;\n\n\\fan_{i}[\\wait(a, \\amb(b, \\decide(c, d), d)), \\wait(e, b)] {\n\t/* Postpone duplication. */\n\t++this.total;\n} \\wait[\\fan_{i}(a, e), c];\n\n\\call {\n\t/* Continue evaluation. */\n\t++this.total;\n} \\decide[\\call, \\erase];\n\n\\erase {\n\t/* Erase reference. */\n\t++this.total;\n} \\decide[a, a];\n\n\\call {\n\t/* Continue evaluation. */\n\t++this.total;\n} \\hold[a, \\eval(a)];\n\n\\read_{C}[\\wait(a, b)] {\n\t/* Postpone readback. */\n\t++this.total;\n} \\wait[\\read_{C}(a), b];\n\n\\erase {\n\t/* Erase holder. */\n\t++this.total;\n} \\hold[\\erase, \\erase];\n\n\\erase {\n\t/* Erase reference. */\n\t++this.total;\n} \\wait[\\erase, \\erase];\n\n\\apply[a, \\wait(b, \\hold(\\apply(a, b), \\wait(c, d)))] {\n\t/* Postpone application. */\n\t++this.total;\n} \\wait[c, d];\n\n\\print {\n\t/* Output results of read-back. */\n\tthis.nf = M;\n\t++this.total;\n} \\atom_{M};\n\n\\read_{C}[a] {\n\t/* Read back abstraction. */\n\t++this.total;\n} \\lambda[\\atom_{this.mkid()}, \\read_{this.abst(C)}(a)];\n\n\\apply[\\read_{this.appl(M)}(a), a] {\n\t/* Read back application. */\n\t++this.total;\n} \\atom_{M};\n\n\\read_{C}[\\atom_{this.atom(C, M)}] {\n\t/* Read back an atom. */\n\t++this.total;\n} \\atom_{M};\n\n\\fan_{i}[\\atom_{M}, \\atom_{M}] {\n\t/* Duplicate an atom. */\n\t++this.total;\n} \\atom_{M};\n\n\\erase {\n\t/* Erase an atom. */\n\t++this.total;\n} \\atom_{M};\n\n\\erase {\n\t/* Erase application. */\n\t++this.total;\n} \\apply[\\erase, \\erase];\n\n\\erase {\n\t/* Erase abstraction. */\n\t++this.total;\n} \\lambda[\\erase, \\erase];\n\n\\erase {\n\t/* Erase duplicator. */\n\t++this.total;\n} \\fan_{i}[\\erase, \\erase];\n\n\\erase {\n\t/* Finish erasing. */\n\t++this.total;\n} \\erase;\n\n\\erase {\n\t/* Erase context. */\n\t++this.total;\n} \\read_{C}[\\erase];\n\n$$\n\nINCONFIG\n\n$$\n\nREADBACK\n\nconst table = [];\nlet last = 0;\n\nfunction uniq()\n{\n\tlet fresh = ++last;\n\n\tfresh = fresh.toString();\n\tfresh = hash(fresh);\n\treturn [fresh, 1];\n}\n\nfunction cons(s, a, b)\n{\n\treturn hash(a + s + b);\n}\n\nfunction mktable()\n{\n\tfor (let n = 0; n < 256; n++) {\n\t\tlet c = n;\n\n\t\tfor (let k = 0; k < 8; k++) {\n\t\t\tif (c & 1)\n\t\t\t\tc = 0xEDB88320 ^ (c >>> 1);\n\t\t\telse\n\t\t\t\tc = c >>> 1;\n\t\t}\n\n\t\ttable[n] = c;\n\t}\n}\n\nfunction hash(str)\n{\n\tconst n = str.length;\n\tlet crc = 0 ^ (-1);\n\n\tfor (let i = 0; i < n; i++) {\n\t\tconst b = str.charCodeAt(i);\n\n\t\tcrc = (crc >>> 8) ^ table[(crc ^ b) & 0xFF];\n\t}\n\n\treturn (crc ^ (-1)) >>> 0;\n}\n\nmktable();\n\nthis.plus = cons.bind(this, \"+\");\nthis.minus = cons.bind(this, \"-\");\nthis.uniq = uniq;\nthis.beta = 0;\nthis.total = 0;\n";
 const system = template.replace("READBACK\n", generic.readback);
 const expand = generic.expand;
 const mkwire = generic.mkwire;
 const mktwins = generic.mktwins;
 const getfv = generic.getfv;
+let lambdak;
+
+function kill()
+{
+	lambdak = true;
+	return "\\erase";
+}
 
 function psi(shared, list)
 {
@@ -695,7 +703,7 @@ function gamma(obj, root, list)
 		if (id in fv)
 			agent = id;
 		else
-			agent = "\\erase";
+			agent = kill();
 
 		tree = tree.replace("%s", agent);
 		tree = tree.replace("%s", wire);
@@ -727,11 +735,16 @@ function encode(term)
 	let inconfig = [
 		"\\eval(\\read_{this.mkhole()}(\\print)) = root"
 	];
+	let inet = system;
 
+	lambdak = false;
 	gamma(expand(term), "root", inconfig);
 	inconfig = inconfig.join(";\n") + ";";
 
-	return system.replace("INCONFIG", inconfig);
+	if (!lambdak)
+		inet = lambdai.concat("\n", inet);
+
+	return inet.replace("INCONFIG", inconfig);
 }
 
 module.exports = encode;
@@ -1177,12 +1190,20 @@ const generic = require("../generic");
 
 const path = require("path");
 
+const lambdai = "\\apply[\\scope_{0}(a), \\scope_{0}(b)] {\n\t/* Apply beta reduction. */\n\t++this.beta;\n\t++this.total;\n} \\lambda[a, b];\n";
 const template = "\\print {\n\t/* Continue evaluation. */\n\t++this.total;\n} \\wait[\\print, \\call];\n\n\\eval[\\fan_{i}(a, b)] {\n\t/* Postpone evaluation. */\n\t++this.total;\n} \\fan_{i}[a, b];\n\n\\eval[\\scope_{i}(a)] {\n\t/* Evaluate delimiter. */\n\t++this.total;\n} \\scope_{i}[\\eval(a)];\n\n\\eval[a] {\n\t/* Continue evaluation. */\n\t++this.total;\n} \\wait[\\eval(a), \\call];\n\n\\eval[\\atom_{M}] {\n\t/* Return an atom. */\n\t++this.total;\n} \\atom_{M};\n\n\\eval[\\lambda(a, b)] {\n\t/* Evaluate abstraction. */\n\t++this.total;\n} \\lambda[a, b];\n\n\\fan_{i}[\\scope_{j}(a), \\scope_{j}(b)] {\n\t/* Duplicate higher delimiter. */\n\tif (i < j)\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\scope_{j}[\\fan_{i}(a, b)];\n\n\\scope_{i}[\\fan_{j + 1}(a, b)] {\n\t/* Level up higher or matching fan. */\n\tif (i <= j)\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\fan_{j}[\\scope_{i}(a), \\scope_{i}(b)];\n\n\\scope_{i}[\\scope_{j + 1}(a)] {\n\t/* Level up higher delimiter. */\n\tif (i < j)\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\scope_{j}[\\scope_{i}(a)];\n\n\\print {\n\t/* Ignore delimiter. */\n\t++this.total;\n} \\scope_{i}[\\print];\n\n\\read_{C}[\\scope_{i}(a)] {\n\t/* Pass through context. */\n\t++this.total;\n} \\scope_{i}[\\read_{C}(a)];\n\n\\scope_{i}[a] {\n\t/* Annihilate matching delimiters. */\n\tif (i == j)\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\scope_{j}[a];\n\n\\scope_{i}[\\apply(a, b)] {\n\t/* Pass through application. */\n\t++this.total;\n} \\apply[\\scope_{i}(a), \\scope_{i}(b)];\n\n\\scope_{i}[\\lambda(a, b)] {\n\t/* Level up delimiter. */\n\t++this.total;\n} \\lambda[\\scope_{i + 1}(a), \\scope_{i + 1}(b)];\n\n\\erase {\n\t/* Erase delimiter. */\n\t++this.total;\n} \\scope_{i}[\\erase];\n\n\\scope_{i}[\\wait(a, b)] {\n\t/* Postpone delimiter. */\n\t++this.total;\n} \\wait[\\scope_{i}(a), b];\n\n\\scope_{i}[\\atom_{M}] {\n\t/* Return an atom. */\n\t++this.total;\n} \\atom_{M};\n\n\\read_{C}[\\fan_{i}(a, b)] {\n\t/* Duplicate context. */\n\t++this.total;\n} \\fan_{i}[\\read_{C}(a), \\read_{this.clone(C)}(b)];\n\n\\call {\n\t/* Erase late call. */\n\t++this.total;\n} \\erase;\n\n\\fan_{i}[\\wait(a, \\amb(b, \\decide(c, d), d)), \\wait(e, b)] {\n\t/* Postpone duplication. */\n\t++this.total;\n} \\wait[\\fan_{i}(a, e), c];\n\n\\call {\n\t/* Continue evaluation. */\n\t++this.total;\n} \\decide[\\call, \\erase];\n\n\\erase {\n\t/* Erase reference. */\n\t++this.total;\n} \\decide[a, a];\n\n\\call {\n\t/* Continue evaluation. */\n\t++this.total;\n} \\hold[a, \\eval(a)];\n\n\\read_{C}[\\wait(a, b)] {\n\t/* Postpone readback. */\n\t++this.total;\n} \\wait[\\read_{C}(a), b];\n\n\\erase {\n\t/* Erase holder. */\n\t++this.total;\n} \\hold[\\erase, \\erase];\n\n\\erase {\n\t/* Erase reference. */\n\t++this.total;\n} \\wait[\\erase, \\erase];\n\n\\apply[a, \\wait(b, \\hold(\\apply(a, b), \\wait(c, d)))] {\n\t/* Postpone application. */\n\t++this.total;\n} \\wait[c, d];\n\n\\print {\n\t/* Output results of read-back. */\n\tthis.nf = M;\n\t++this.total;\n} \\atom_{M};\n\n\\read_{C}[a] {\n\t/* Read back abstraction. */\n\t++this.total;\n} \\lambda[\\atom_{this.mkid()}, \\read_{this.abst(C)}(a)];\n\n\\apply[\\read_{this.appl(M)}(a), a] {\n\t/* Read back application. */\n\t++this.total;\n} \\atom_{M};\n\n\\read_{C}[\\atom_{this.atom(C, M)}] {\n\t/* Read back an atom. */\n\t++this.total;\n} \\atom_{M};\n\n\\fan_{i}[\\atom_{M}, \\atom_{M}] {\n\t/* Duplicate an atom. */\n\t++this.total;\n} \\atom_{M};\n\n\\apply[a, \\scope_{0}(b)] {\n\t/* Apply beta reduction. */\n\t++this.beta;\n\t++this.total;\n} \\lambda[\\wait(c, \\hold(\\scope_{0}(c), a)), b];\n\n\\fan_{i}[\\apply(a, b), \\apply(c, d)] {\n\t/* Duplicate application. */\n\t++this.total;\n} \\apply[\\fan_{i}(a, c), \\fan_{i}(b, d)];\n\n\\fan_{i}[\\lambda(a, b), \\lambda(c, d)] {\n\t/* Level up fan. */\n\t++this.total;\n} \\lambda[\\fan_{i + 1}(a, c), \\fan_{i + 1}(b, d)];\n\n\\fan_{i}[a, b] {\n\t/* Annihilate matching fans. */\n\tif (i == j)\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\fan_{j}[a, b];\n\n\\fan_{i}[\\fan_{j}(a, b), \\fan_{j}(c, d)] {\n\t/* Duplicate higher fan. */\n\tif (i < j)\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\fan_{j}[\\fan_{i}(a, c), \\fan_{i}(b, d)];\n\n\\erase {\n\t/* Erase an atom. */\n\t++this.total;\n} \\atom_{M};\n\n\\erase {\n\t/* Erase application. */\n\t++this.total;\n} \\apply[\\erase, \\erase];\n\n\\erase {\n\t/* Erase abstraction. */\n\t++this.total;\n} \\lambda[\\erase, \\erase];\n\n\\erase {\n\t/* Erase duplicator. */\n\t++this.total;\n} \\fan_{i}[\\erase, \\erase];\n\n\\erase {\n\t/* Finish erasing. */\n\t++this.total;\n} \\erase;\n\n$$\n\nINCONFIG\n\n$$\n\nREADBACK\n\nthis.beta = 0;\nthis.total = 0;\n";
 const system = template.replace("READBACK\n", generic.readback);
 const expand = generic.expand;
 const mkwire = generic.mkwire;
 const mktwins = generic.mktwins;
 const getfv = generic.getfv;
+let lambdak;
+
+function kill()
+{
+	lambdak = true;
+	return "\\erase";
+}
 
 function psi(shared, list)
 {
@@ -1239,7 +1260,7 @@ function gamma(obj, root, list)
 		if (id in fv)
 			agent = id;
 		else
-			agent = "\\erase";
+			agent = kill();
 
 		tree = tree.replace("%s", agent);
 		tree = tree.replace("%s", wire);
@@ -1271,11 +1292,16 @@ function encode(term)
 	let inconfig = [
 		"\\eval(\\read_{this.mkhole()}(\\print)) = root"
 	];
+	let inet = system;
 
+	lambdak = false;
 	gamma(expand(term), "root", inconfig);
 	inconfig = inconfig.join(";\n") + ";";
 
-	return system.replace("INCONFIG", inconfig);
+	if (!lambdak)
+		inet = lambdai.concat("\n", inet);
+
+	return inet.replace("INCONFIG", inconfig);
 }
 
 module.exports = encode;
@@ -1287,12 +1313,20 @@ const generic = require("../generic");
 
 const path = require("path");
 
+const lambdai = "\\apply[a, b] {\n\t/* Apply beta reduction. */\n\t++this.beta;\n\t++this.total;\n} \\lambda[a, b];\n";
 const template = "\\print {\n\t/* Continue evaluation. */\n\t++this.total;\n} \\wait[\\print, \\call];\n\n\\apply[a, \\outapp(\\outapp(b, c), a)] {\n\t/* Turn application. */\n\t++this.total;\n} \\outapp[b, c];\n\n\\fanin_{i}[a, b] {\n\t/* Duplicate application. */\n\t++this.total;\n} \\outapp[\\fanin_{i}(\\apply(c, a), \\apply(d, b)), \\fanin_{i}(c, d)];\n\n\\eval[\\outapp(a, b)] {\n\t/* Postpone evaluation. */\n\t++this.total;\n} \\outapp[a, b];\n\n\\eval[\\fanout_{i}(a, b)] {\n\t/* Postpone evaluation. */\n\t++this.total;\n} \\fanout_{i}[a, b];\n\n\\eval[a] {\n\t/* Continue evaluation. */\n\t++this.total;\n} \\wait[\\eval(a), \\call];\n\n\\eval[\\atom_{M}] {\n\t/* Return an atom. */\n\t++this.total;\n} \\atom_{M};\n\n\\eval[\\lambda(a, b)] {\n\t/* Return abstraction. */\n\t++this.total;\n} \\lambda[a, b];\n\n\\read_{C}[\\fanout_{i}(a, b)] {\n\t/* Duplicate context. */\n\t++this.total;\n} \\fanout_{i}[\\read_{C}(a), \\read_{this.clone(C)}(b)];\n\n\\call {\n\t/* Erase late call. */\n\t++this.total;\n} \\erase;\n\n\\fanin_{i}[\\wait(a, \\amb(b, \\decide(c, d), d)), \\wait(e, b)] {\n\t/* Postpone duplication. */\n\t++this.total;\n} \\wait[\\fanin_{i}(a, e), c];\n\n\\call {\n\t/* Continue evaluation. */\n\t++this.total;\n} \\decide[\\call, \\erase];\n\n\\erase {\n\t/* Erase reference. */\n\t++this.total;\n} \\decide[a, a];\n\n\\call {\n\t/* Continue evaluation. */\n\t++this.total;\n} \\hold[a, \\eval(a)];\n\n\\read_{C}[\\wait(a, b)] {\n\t/* Postpone readback. */\n\t++this.total;\n} \\wait[\\read_{C}(a), b];\n\n\\erase {\n\t/* Erase holder. */\n\t++this.total;\n} \\hold[\\erase, \\erase];\n\n\\erase {\n\t/* Erase reference. */\n\t++this.total;\n} \\wait[\\erase, \\erase];\n\n\\apply[a, \\wait(b, \\hold(\\apply(a, b), \\wait(c, d)))] {\n\t/* Postpone application. */\n\t++this.total;\n} \\wait[c, d];\n\n\\print {\n\t/* Output results of read-back. */\n\tthis.nf = M;\n\t++this.total;\n} \\atom_{M};\n\n\\read_{C}[a] {\n\t/* Read back abstraction. */\n\t++this.total;\n} \\lambda[\\atom_{this.mkid()}, \\read_{this.abst(C)}(a)];\n\n\\apply[\\read_{this.appl(M)}(a), a] {\n\t/* Read back application. */\n\t++this.total;\n} \\atom_{M};\n\n\\read_{C}[\\atom_{this.atom(C, M)}] {\n\t/* Read back an atom. */\n\t++this.total;\n} \\atom_{M};\n\n\\fanin_{i}[\\atom_{M}, \\atom_{M}] {\n\t/* Duplicate an atom. */\n\t++this.total;\n} \\atom_{M};\n\n\\apply[a, b] {\n\t/* Apply beta reduction. */\n\t++this.beta;\n\t++this.total;\n} \\lambda[\\wait(c, \\hold(c, a)), b];\n\n\\apply[a, \\outapp(\\fanout_{i}(b, c), a)] {\n\t/* Turn application. */\n\t++this.total;\n} \\fanout_{i}[b, c];\n\n\\fanin_{i}[\\lambda(a, b), \\lambda(c, d)] {\n\t/* Duplicate abstraction. */\n\t++this.total;\n} \\lambda[\\fanout_{i}(a, c), \\fanin_{i}(b, d)];\n\n\\fanin_{i}[a, b] {\n\t/* Annihilate matching fans. */\n\tif (i == j)\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\fanout_{j}[a, b];\n\n\\fanin_{i}[\\fanout_{j}(a, b), \\fanout_{j}(c, d)] {\n\t/* Duplicate different fans. */\n\tif (i != j)\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\fanout_{j}[\\fanin_{++this.id}(a, c), \\fanin_{++this.id}(b, d)];\n\n\\erase {\n\t/* Erase an atom. */\n\t++this.total;\n} \\atom_{M};\n\n\\erase {\n\t/* Erase application. */\n\t++this.total;\n} \\apply[\\erase, \\erase];\n\n\\erase {\n\t/* Erase abstraction. */\n\t++this.total;\n} \\lambda[\\erase, \\erase];\n\n\\erase {\n\t/* Erase duplicator. */\n\t++this.total;\n} \\fanin_{i}[\\erase, \\erase];\n\n\\erase {\n\t/* Erase duplicator. */\n\t++this.total;\n} \\fanout_{j}[\\erase, \\erase];\n\n\\erase {\n\t/* Finish erasing. */\n\t++this.total;\n} \\erase;\n\n\\erase {\n\t/* Erase context. */\n\t++this.total;\n} \\read_{C}[\\erase];\n\n\\erase {\n\t/* Erase application. */\n\t++this.total;\n} \\outapp[\\erase, \\erase];\n\n$$\n\nINCONFIG\n\n$$\n\nREADBACK\n\nthis.id = 0;\nthis.beta = 0;\nthis.total = 0;\n";
 const system = template.replace("READBACK\n", generic.readback);
 const expand = generic.expand;
 const mkwire = generic.mkwire;
 const mktwins = generic.mktwins;
 const getfv = generic.getfv;
+let lambdak;
+
+function kill()
+{
+	lambdak = true;
+	return "\\erase";
+}
 
 function psi(shared, list)
 {
@@ -1349,7 +1383,7 @@ function gamma(obj, root, list)
 		if (id in fv)
 			agent = id;
 		else
-			agent = "\\erase";
+			agent = kill();
 
 		tree = tree.replace("%s", agent);
 		tree = tree.replace("%s", wire);
@@ -1381,11 +1415,16 @@ function encode(term)
 	let inconfig = [
 		"\\eval(\\read_{this.mkhole()}(\\print)) = root"
 	];
+	let inet = system;
 
+	lambdak = false;
 	gamma(expand(term), "root", inconfig);
 	inconfig = inconfig.join(";\n") + ";";
 
-	return system.replace("INCONFIG", inconfig);
+	if (!lambdak)
+		inet = lambdai.concat("\n", inet);
+
+	return inet.replace("INCONFIG", inconfig);
 }
 
 module.exports = encode;
