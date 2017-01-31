@@ -31,34 +31,34 @@ compare()
 	printf "\n"
 }
 
-printf $HEADF SAMPLE ABSTRACT CLOSED NORMAL OPTIMAL TURNING
+printf $HEADF SAMPLE ABSTRACT CLOSED NORMAL OPTIMAL
 
 compare counter "v1: v1 (v2: v2 v2) (v3: v3 v3)" \
-	abstract closed normal optimal turning
+	abstract closed normal optimal
 
 compare w2eta "v1, v2: v1 (v1 (v1 (v1 v2)))" \
-	abstract closed normal optimal turning
+	abstract closed normal optimal
 
 compare 22210ii "v1: v1" \
-	abstract closed NORMAL optimal turning
+	abstract closed NORMAL optimal
 
 compare 3222ii "v1: v1" \
-	abstract closed NORMAL optimal turning
+	abstract closed NORMAL optimal
 
 compare 1022ii "v1: v1" \
-	abstract closed NORMAL optimal TURNING
+	abstract closed NORMAL optimal
 
 compare 4222ii "v1: v1" \
-	abstract closed NORMAL OPTIMAL TURNING
+	abstract closed NORMAL OPTIMAL
 
 compare cfact4 "v1, v2: v1 (v1 (v1 v2))" \
-	abstract closed normal optimal turning
+	abstract closed normal optimal
 
 compare yfact4 "v1, v2: v1 (v1 (v1 v2))" \
-	abstract closed normal optimal turning
+	abstract closed normal optimal
 
 compare cfact5 "v1, v2: v1 (v1 (v1 (v1 (v1 v2))))" \
-	abstract closed normal optimal turning
+	abstract closed normal optimal
 
 compare yfact5 "v1, v2: v1 (v1 (v1 (v1 (v1 v2))))" \
-	abstract closed normal OPTIMAL turning
+	abstract closed normal OPTIMAL
