@@ -1,4 +1,5 @@
-CELLF="%-16s"
+TERMF="%-9s"
+CELLF="%16s"
 SED="s/,.*$//"
 OUT=`mktemp`
 ERR=`mktemp`
@@ -20,7 +21,7 @@ compare()
 	nf=$2
 	shift 2
 
-	printf $CELLF $term
+	printf $TERMF $term
 
 	for algo; do
 		run $term $algo "$nf"
@@ -29,7 +30,7 @@ compare()
 	printf "\n"
 }
 
-printf "$CELLF$CELLF$CELLF$CELLF$CELLF\n" SAMPLE \
+printf "$TERMF$CELLF$CELLF$CELLF$CELLF\n" SAMPLE \
 	NORMAL CLOSED OPTIMAL ABSTRACT
 
 compare counter "v1: v1 (v2: v2 v2) (v3: v3 v3)" \
