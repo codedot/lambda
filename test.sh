@@ -51,6 +51,9 @@ compare 1022ii "v1: v1" \
 compare 4222ii "v1: v1" \
 	abstract closed NORMAL OPTIMAL
 
+compare 222210ii "v1: v1" \
+	abstract closed NORMAL OPTIMAL
+
 compare cfact4 "v1, v2: v1 (v1 (v1 v2))" \
 	abstract closed normal optimal
 
