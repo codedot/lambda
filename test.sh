@@ -1,6 +1,4 @@
 CELLF="%-16s"
-TERMF="%-9s"
-HEADF="$TERMF$CELLF$CELLF$CELLF$CELLF$CELLF\n"
 SED="s/,.*$//"
 OUT=`mktemp`
 ERR=`mktemp`
@@ -22,7 +20,7 @@ compare()
 	nf=$2
 	shift 2
 
-	printf $TERMF $term
+	printf $CELLF $term
 
 	for algo; do
 		run $term $algo "$nf"
@@ -31,7 +29,8 @@ compare()
 	printf "\n"
 }
 
-printf $HEADF SAMPLE NORMAL CLOSED OPTIMAL ABSTRACT
+printf "$CELLF$CELLF$CELLF$CELLF$CELLF\n" SAMPLE \
+	NORMAL CLOSED OPTIMAL ABSTRACT
 
 compare counter "v1: v1 (v2: v2 v2) (v3: v3 v3)" \
 	normal closed optimal abstract
