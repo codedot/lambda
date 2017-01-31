@@ -1,0 +1,3 @@
+FACT = n: n (p, q: MULT q (p (SUCC q))) (p: C1) C1;
+
+MINUS (C3 C3) (FACT C4)
