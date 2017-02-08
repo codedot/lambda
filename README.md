@@ -1,5 +1,5 @@
 This package implements the pure untyped lambda calculus using
-interaction nets, providing both CLI and API.
+interaction nets, providing CLI and API.
 
 Its browserified version is available as an online demo:
 
@@ -14,7 +14,8 @@ The following encodings of the lambda calculus are included:
 (François-Régis Sinot), described in [arXiv:1304.2290v8][2]
 (this is the default algorithm);
 
-* `closed`, a version of `normal` based on
+* `closed`, a version of `normal` with the approach of
+[arXiv:1304.2290v8][2] applied to
 [_An Interaction Net Implementation of Closed Reduction_][3]
 (Ian Mackie);
 
@@ -39,21 +40,21 @@ in Section 7 of [10.4204/EPTCS.225.7][4].
 The following is output of the `test.sh` script provided in the package:
 
 ```
-SAMPLE             NORMAL          CLOSED         OPTIMAL        ABSTRACT
-counter             54(7)           58(6)          145(4)             N/A
-w2eta             125(20)         137(16)          208(7)           38(7)
-22210ii               N/A       1740(182)        7918(70)         732(70)
-3222ii                N/A       5896(545)      164474(43)        1183(43)
-1022ii                N/A     23026(2085)     2490504(59)        4299(59)
-4222ii                N/A 1442259(131124)             N/A      262402(64)
-222210ii              N/A 6685119(655415)             N/A    2359813(201)
-cfact4         8605(1028)      18606(887)      96676(691)      13985(691)
-yfact4        92395(4833)     53519(1741)     659727(760)      16611(760)
-cfact5      170958(16917)   895848(16170)  5906411(13462)   287527(13462)
-yfact5      783031(43651)  1371216(22267)             N/A   291418(13550)
+SAMPLE            NORMAL         CLOSED        OPTIMAL       ABSTRACT
+counter             54/7           58/6          145/4            N/A
+w2eta             125/20         137/16          208/7           38/7
+22210ii              N/A       1740/182        7918/70         732/70
+3222ii               N/A       5896/545      164474/43        1183/43
+1022ii               N/A     23026/2085     2490504/59        4299/59
+4222ii               N/A 1442259/131124            N/A      262402/64
+222210ii             N/A 6685119/655415            N/A    2359813/201
+cfact4         8605/1028      18606/887      96676/691      13985/691
+yfact4        92395/4833     53519/1741     659727/760      16611/760
+cfact5      170958/16917   895848/16170  5906411/13462   287527/13462
+yfact5      783031/43651  1371216/22267            N/A   291418/13550
 ```
 
-`T(B)` should be read as total of `T` interactions,
+`T/B` should be read as total of `T` interactions,
 of which `B` were β-reductions.
 
 # CLI

@@ -1,6 +1,6 @@
 TERMF="%-9s"
-CELLF="%16s"
-SED="s/,.*$//"
+CELLF="%15s"
+SED="s/(\([0-9]*\)),.*$/\/\1/"
 OUT=`mktemp`
 ERR=`mktemp`
 
