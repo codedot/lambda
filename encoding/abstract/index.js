@@ -6,8 +6,6 @@ const path = require("path");
 
 const lambdai = fs.readFileSync(path.join(__dirname, "lambdai.txt"), "utf8");
 const template = fs.readFileSync(path.join(__dirname, "template.txt"), "utf8");
-const system = template.replace("READBACK\n", generic.readback);
-const expand = generic.expand;
 const mkwire = generic.mkwire;
 const mktwins = generic.mktwins;
 const getfv = generic.getfv;
@@ -101,21 +99,22 @@ function gamma(obj, root, list)
 	}
 }
 
-function encode(term)
+function encode(generic, term)
 {
-	let inconfig = [
+	const inconfig = [
 		"\\eval(\\read_{this.mkhole()}(\\print)) = root"
 	];
-	let inet = system;
+	let inet = template;
 
 	lambdak = false;
-	gamma(expand(term), "root", inconfig);
-	inconfig = inconfig.join(";\n") + ";";
+
+	gamma(term, "root", inconfig);
 
 	if (!lambdak)
 		inet = lambdai.concat("\n", inet);
 
-	return inet.replace("INCONFIG", inconfig);
+	inconfig.inet = inet;
+	return inconfig;
 }
 
 module.exports = encode;
