@@ -1,13 +1,11 @@
 "use strict";
 
-const generic = require("../generic");
 const fs = require("fs");
 const path = require("path");
 
 const template = fs.readFileSync(path.join(__dirname, "template.txt"), "utf8");
-const mkwire = generic.mkwire;
-const mktwins = generic.mktwins;
-const getfv = generic.getfv;
+
+let mkwire, mktwins, getfv;
 
 function psi(shared, list)
 {
@@ -84,6 +82,10 @@ function encode(generic, term)
 	const inconfig = [
 		"\\read_{this.mkhole()}(\\print) = root"
 	];
+
+	mkwire = generic.mkwire;
+	mktwins = generic.mktwins;
+	getfv = generic.getfv;
 
 	gamma(term, "root", inconfig);
 

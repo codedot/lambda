@@ -1,14 +1,13 @@
 "use strict";
 
-const generic = require("../generic");
 const fs = require("fs");
 const path = require("path");
 
 const lambdai = fs.readFileSync(path.join(__dirname, "lambdai.txt"), "utf8");
 const template = fs.readFileSync(path.join(__dirname, "template.txt"), "utf8");
-const mkwire = generic.mkwire;
-const mktwins = generic.mktwins;
-const getfv = generic.getfv;
+
+let mkwire, mktwins, getfv;
+
 let lambdak;
 
 function kill()
@@ -105,6 +104,10 @@ function encode(generic, term)
 		"\\eval(\\read_{this.mkhole()}(\\print)) = root"
 	];
 	let inet = template;
+
+	mkwire = generic.mkwire;
+	mktwins = generic.mktwins;
+	getfv = generic.getfv;
 
 	lambdak = false;
 
