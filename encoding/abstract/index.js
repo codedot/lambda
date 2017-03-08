@@ -92,7 +92,7 @@ function gamma(obj, root, list)
 function encode(generic, term)
 {
 	const inconfig = [
-		"\\eval(\\read_{this.mkhole()}(!print)) = root"
+		"\\read_{this.mkhole()}(!print) = root"
 	];
 
 	mkwire = generic.mkwire;

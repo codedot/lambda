@@ -1,8 +1,3 @@
-\print {
-	/* Continue evaluation. */
-	++this.total;
-} \wait[!print, \call];
-
 \apply[a, \outapp(\outapp(b, c), a)] {
 	/* Turn application. */
 	++this.total;
@@ -13,80 +8,10 @@
 	++this.total;
 } \outapp[\fanin_{i}(\apply(c, a), \apply(d, b)), \fanin_{i}(c, d)];
 
-\eval[\outapp(a, b)] {
-	/* Postpone evaluation. */
-	++this.total;
-} \outapp[a, b];
-
-\eval[\fanout_{i}(a, b)] {
-	/* Postpone evaluation. */
-	++this.total;
-} \fanout_{i}[a, b];
-
-\eval[a] {
-	/* Continue evaluation. */
-	++this.total;
-} \wait[\eval(a), \call];
-
-\eval[\atom_{M}] {
-	/* Return an atom. */
-	++this.total;
-} \atom_{M};
-
-\eval[\lambda(a, b)] {
-	/* Return abstraction. */
-	++this.total;
-} \lambda[a, b];
-
 \read_{C}[\fanout_{i}(a, b)] {
 	/* Duplicate context. */
 	++this.total;
 } \fanout_{i}[\read_{C}(a), \read_{this.clone(C)}(b)];
-
-\call {
-	/* Erase late call. */
-	++this.total;
-} \erase;
-
-\fanin_{i}[\wait(a, \amb(b, \decide(c, d), d)), \wait(e, b)] {
-	/* Postpone duplication. */
-	++this.total;
-} \wait[\fanin_{i}(a, e), c];
-
-\call {
-	/* Continue evaluation. */
-	++this.total;
-} \decide[\call, \erase];
-
-\erase {
-	/* Erase reference. */
-	++this.total;
-} \decide[a, a];
-
-\call {
-	/* Continue evaluation. */
-	++this.total;
-} \hold[a, \eval(a)];
-
-\read_{C}[\wait(a, b)] {
-	/* Postpone readback. */
-	++this.total;
-} \wait[\read_{C}(a), b];
-
-\erase {
-	/* Erase holder. */
-	++this.total;
-} \hold[\erase, \erase];
-
-\erase {
-	/* Erase reference. */
-	++this.total;
-} \wait[\erase, \erase];
-
-\apply[a, \wait(b, \hold(\apply(a, b), \wait(c, d)))] {
-	/* Postpone application. */
-	++this.total;
-} \wait[c, d];
 
 \print {
 	/* Output results of read-back. */

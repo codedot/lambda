@@ -42,80 +42,10 @@
 		return false;
 } \fan_{j}[a, b];
 
-\print {
-	/* Continue evaluation. */
-	++this.total;
-} \wait[!print, \call];
-
-\eval[\fan_{i}(a, b)] {
-	/* Postpone evaluation. */
-	++this.total;
-} \fan_{i}[a, b];
-
-\eval[a] {
-	/* Continue evaluation. */
-	++this.total;
-} \wait[\eval(a), \call];
-
-\eval[\atom_{M}] {
-	/* Return an atom. */
-	++this.total;
-} \atom_{M};
-
-\eval[\lambda(a, b)] {
-	/* Return abstraction. */
-	++this.total;
-} \lambda[a, b];
-
 \read_{C}[\fan_{i}(a, b)] {
 	/* Duplicate context. */
 	++this.total;
 } \fan_{i}[\read_{C}(a), \read_{this.clone(C)}(b)];
-
-\call {
-	/* Erase late call. */
-	++this.total;
-} \erase;
-
-\fan_{i}[\wait(a, \amb(b, \decide(c, d), d)), \wait(e, b)] {
-	/* Postpone duplication. */
-	++this.total;
-} \wait[\fan_{i}(a, e), c];
-
-\call {
-	/* Continue evaluation. */
-	++this.total;
-} \decide[\call, \erase];
-
-\erase {
-	/* Erase reference. */
-	++this.total;
-} \decide[a, a];
-
-\call {
-	/* Continue evaluation. */
-	++this.total;
-} \hold[a, \eval(a)];
-
-\read_{C}[\wait(a, b)] {
-	/* Postpone readback. */
-	++this.total;
-} \wait[\read_{C}(a), b];
-
-\erase {
-	/* Erase holder. */
-	++this.total;
-} \hold[\erase, \erase];
-
-\erase {
-	/* Erase reference. */
-	++this.total;
-} \wait[\erase, \erase];
-
-\apply[a, \wait(b, \hold(\apply(a, b), \wait(c, d)))] {
-	/* Postpone application. */
-	++this.total;
-} \wait[c, d];
 
 \print {
 	/* Output results of read-back. */
