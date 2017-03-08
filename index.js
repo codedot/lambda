@@ -47,7 +47,7 @@ function obj2mlc(obj)
 
 function mlc2in(mlc, algo)
 {
-	const encode = encoding[algo ? algo : "normal"];
+	const encode = encoding[algo ? algo : "closed"];
 	let insrc;
 
 	if (!encode)

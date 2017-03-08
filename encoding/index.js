@@ -28,6 +28,5 @@ function addalgo(name)
 
 addalgo("abstract");
 addalgo("closed");
-addalgo("normal");
 addalgo("optimal");
 addalgo("turning");
