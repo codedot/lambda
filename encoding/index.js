@@ -1,14 +1,16 @@
 "use strict";
 
 const generic = require("./generic");
+const abstract = require("./abstract");
+const closed = require("./closed");
+const optimal = require("./optimal");
+const turning = require("./turning");
 
 const expand = generic.expand;
 const readback = generic.readback;
 
-function addalgo(name)
+function addalgo(name, algo)
 {
-	const algo = require("./" + name);
-
 	function encode(term)
 	{
 		let conf, inet;
@@ -26,7 +28,7 @@ function addalgo(name)
 	exports[name] = encode;
 }
 
-addalgo("abstract");
-addalgo("closed");
-addalgo("optimal");
-addalgo("turning");
+addalgo("abstract", abstract);
+addalgo("closed", closed);
+addalgo("optimal", optimal);
+addalgo("turning", turning);
