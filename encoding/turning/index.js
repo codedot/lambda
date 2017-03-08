@@ -101,7 +101,7 @@ function gamma(obj, root, list)
 function encode(generic, term)
 {
 	const inconfig = [
-		"\\eval(\\read_{this.mkhole()}(\\print)) = root"
+		"\\eval(\\read_{this.mkhole()}(!print)) = root"
 	];
 	let inet = template;
 

@@ -1,7 +1,7 @@
 \print {
 	/* Continue evaluation. */
 	++this.total;
-} \wait[\print, \call];
+} \wait[!print, \call];
 
 \apply[a, \outapp(\outapp(b, c), a)] {
 	/* Turn application. */

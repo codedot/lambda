@@ -1,7 +1,7 @@
 \print {
 	/* Continue evaluation. */
 	++this.total;
-} \wait[\print, \call];
+} \wait[!print, \call];
 
 \eval[\fan_{i}(a, b)] {
 	/* Postpone evaluation. */
@@ -55,7 +55,7 @@
 \print {
 	/* Ignore delimiter. */
 	++this.total;
-} \scope_{i}[\print];
+} \scope_{i}[!print];
 
 \read_{C}[\scope_{i}(a)] {
 	/* Pass through context. */

@@ -45,7 +45,7 @@
 \print {
 	/* Continue evaluation. */
 	++this.total;
-} \wait[\print, \call];
+} \wait[!print, \call];
 
 \eval[\fan_{i}(a, b)] {
 	/* Postpone evaluation. */
