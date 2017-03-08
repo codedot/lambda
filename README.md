@@ -1,34 +1,29 @@
-This package implements the pure untyped lambda calculus using
+This package implements the lambda calculus using
 interaction nets, providing CLI and API.
 
-Its browserified version is available as an online demo:
+Its browserified version is available as [an online demo][1].
 
-[https://codedot.github.io/lambda/](https://codedot.github.io/lambda/)
+[1]: https://codedot.github.io/lambda/
 
 # Algorithms
 
 The following encodings of the lambda calculus are included:
 
-* `normal`, a domino-effect-based version of
-[_Token-Passing Nets: Call-by-Need for Free_][1]
-(François-Régis Sinot), described in [arXiv:1304.2290v8][2]
-(this is the default algorithm);
-
-* `closed`, a version of `normal` with the approach of
-[arXiv:1304.2290v8][2] applied to
+* `closed`, the approach of [arXiv:1304.2290v8][2] applied to
 [_An Interaction Net Implementation of Closed Reduction_][3]
-(Ian Mackie);
+by Ian Mackie, this is the default algorithm;
 
-* `optimal`, the approach of [10.4204/EPTCS.225.7][4]
-applied to [_Lambdascope_][5] (Vincent van Oostrom et al);
+* `optimal`, an implementation of
+[_Lambdascope_][5] by Vincent van Oostrom et al;
 
-* `abstract`, an experimental version of
-Lamping's abstract algorithm, described in [arXiv:1701.04691v2][6].
+* `abstract`, an experimental algorithm described in
+[arXiv:1701.04691v2][6];
+
+* `turning`, an undocumented experimental algorithm.
 
 All versions include the embedded read-back mechanism described
 in Section 7 of [10.4204/EPTCS.225.7][4].
 
-[1]: http://dx.doi.org/10.1016/j.entcs.2005.09.027
 [2]: https://arxiv.org/abs/1304.2290v8
 [3]: http://dx.doi.org/10.1007/978-3-642-24452-0_3
 [4]: http://dx.doi.org/10.4204/EPTCS.225.7
@@ -40,18 +35,18 @@ in Section 7 of [10.4204/EPTCS.225.7][4].
 The following is output of the `test.sh` script provided in the package:
 
 ```
-SAMPLE            NORMAL         CLOSED        OPTIMAL       ABSTRACT
-counter             54/7           58/6          145/4            N/A
-w2eta             125/20         137/16          208/7           38/7
-22210ii              N/A       1740/182        7918/70         732/70
-3222ii               N/A       5896/545      164474/43        1183/43
-1022ii               N/A     23026/2085     2490504/59        4299/59
-4222ii               N/A 1442259/131124            N/A      262402/64
-222210ii             N/A 6685119/655415            N/A    2359813/201
-cfact4         8605/1028      18644/887      96684/691      13999/691
-yfact4        92395/4833     53514/1741     659731/760      16617/760
-cfact5      170958/16917   895910/16170  5906424/13462   287548/13462
-yfact5      783031/43651  1371201/22267            N/A   291438/13550
+SAMPLE            CLOSED        OPTIMAL       ABSTRACT        TURNING
+counter             58/6          143/4            N/A           29/4
+w2eta             137/16          205/7           37/7           48/9
+22210ii         1740/182        7886/70         731/70   260281/40054
+3222ii          5896/545      164197/43        1182/43            N/A
+1022ii        23026/2085     2489461/59        4298/59            N/A
+4222ii    1442259/131124            N/A      262401/64            N/A
+222210ii  6685119/655415            N/A    2359812/201            N/A
+cfact4         15506/887      56890/691       3711/691       4706/691
+yfact4        24150/1741     526971/760       4168/760       5265/760
+cfact5      799868/16170  3074471/13462    69147/13462    87719/13462
+yfact5      857864/22267            N/A    69780/13550    88499/13550
 ```
 
 `T/B` should be read as total of `T` interactions,
