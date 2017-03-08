@@ -3,18 +3,9 @@
 const fs = require("fs");
 const path = require("path");
 
-const lambdai = fs.readFileSync(path.join(__dirname, "lambdai.txt"), "utf8");
 const template = fs.readFileSync(path.join(__dirname, "template.txt"), "utf8");
 
 let mkwire, mktwins, getfv;
-
-let lambdak;
-
-function kill()
-{
-	lambdak = true;
-	return "\\erase";
-}
 
 function psi(shared, list)
 {
@@ -71,7 +62,7 @@ function gamma(obj, root, list)
 		if (id in fv)
 			agent = id;
 		else
-			agent = kill();
+			agent = "\\erase";
 
 		tree = tree.replace("%s", agent);
 		tree = tree.replace("%s", wire);
@@ -103,20 +94,14 @@ function encode(generic, term)
 	const inconfig = [
 		"\\eval(\\read_{this.mkhole()}(!print)) = root"
 	];
-	let inet = template;
 
 	mkwire = generic.mkwire;
 	mktwins = generic.mktwins;
 	getfv = generic.getfv;
 
-	lambdak = false;
-
 	gamma(term, "root", inconfig);
 
-	if (!lambdak)
-		inet = lambdai.concat("\n", inet);
-
-	inconfig.inet = inet;
+	inconfig.inet = template;
 	return inconfig;
 }
 

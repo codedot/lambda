@@ -171,11 +171,11 @@
 	++this.total;
 } \atom_{M};
 
-\apply[a, \scope_{0}(b)] {
+\apply[\scope_{0}(a), \scope_{0}(b)] {
 	/* Apply beta reduction. */
 	++this.beta;
 	++this.total;
-} \lambda[\wait(c, \hold(\scope_{0}(c), a)), b];
+} \lambda[a, b];
 
 \fan_{i}[\apply(a, b), \apply(c, d)] {
 	/* Duplicate application. */

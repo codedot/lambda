@@ -2,7 +2,7 @@
 	/* Apply beta reduction. */
 	++this.beta;
 	++this.total;
-} \lambda[\wait(c, \hold(c, a)), b];
+} \lambda[a, b];
 
 \apply[
 	\fan_{[i[0], i[1] + 1]}(a, b),

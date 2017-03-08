@@ -118,7 +118,7 @@
 	/* Apply beta reduction. */
 	++this.beta;
 	++this.total;
-} \lambda[\wait(c, \hold(c, a)), b];
+} \lambda[a, b];
 
 \apply[a, \outapp(\fanout_{i}(b, c), a)] {
 	/* Turn application. */
