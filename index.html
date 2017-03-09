@@ -19,71 +19,124 @@
 </style>
 
 <script src="https://code.jquery.com/jquery.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/latest/js/bootstrap.js"></script>
 <script src="bundle.js"></script>
 
 <script>
-let input, output, limit, encoding;
+let input, output, limit, encoding, prepared, doc, win;
 
 function run()
 {
-	const max = limit.val();
-	const algo = encoding.val();
-	let mlc = input.val();
+	prepared = false;
 
-	mlc = mlcjs(mlc, algo, max);
-	mlc = [
-		mlc.term,
-		`${mlc.total}(${mlc.beta}), ${mlc.redtime} ms`,
-		mlc.nf
-	];
+	try {
+		const max = limit.val();
+		const algo = encoding.val();
+		const mlc = input.val();
+		const result = mlcjs(mlc, algo, max);
+		const total = result.total;
+		const beta = result.beta;
+		const redtime = result.redtime;
+		const nf = result.nf;
 
-	output.text(mlc.join("\n"));
-	output.show();
+		output.text([
+			result.term,
+			`${total}(${beta}), ${redtime} ms`,
+			nf ? nf : "?"
+		].join("\n\n"));
+	} catch (error) {
+		output.text(error);
+	}
 }
 
 function debug()
 {
-	const algo = encoding.val();
-	let mlc = input.val();
+	try {
+		const algo = encoding.val();
+		const mlc = input.val();
 
-	mlcjs.prepare(mlc, algo);
-	mlc = mlcjs.debug();
-
-	output.text(mlc);
-	output.show();
+		mlcjs.prepare(mlc, algo);
+		prepared = true;
+		output.text("Step-by-step evaluation:");
+		win.scroll();
+	} catch (error) {
+		prepared = false;
+		output.text(error);
+	}
 }
 
 function compile()
 {
-	let mlc = input.val();
+	prepared = false;
 
-	mlc = mlcjs.mlc2in(mlc);
+	try {
+		const algo = encoding.val();
+		const mlc = input.val();
+		const inet = mlcjs.mlc2in(mlc, algo);
 
-	output.text(mlc);
-	output.show();
+		output.text(inet);
+	} catch (error) {
+		output.text(error);
+	}
+}
+
+function more()
+{
+	return doc.height() - win.scrollTop() < 2 * win.height();
+}
+
+function step()
+{
+	if (!prepared)
+		return;
+
+	while (more()) {
+		let eqn;
+
+		try {
+			eqn = mlcjs.debug();
+
+			if (!eqn) {
+				prepared = false;
+				return;
+			}
+		} catch (error) {
+			eqn = error;
+			prepared = false;
+		}
+
+		output.append("\n\n" + eqn);
+	}
 }
 
 function setup()
 {
 	const example = mlcjs.example;
 
+	doc = $(document);
+	win = $(window);
 	input = $("#input");
+	output = $("#output");
+	encoding = $("#encoding");
+	limit = $("#limit");
+
 	input.attr("rows", example.split("\n").length);
 	input.text(example);
-
-	output = $("#output");
-	limit = $("#limit");
-	encoding = $("#encoding");
 
 	mlcjs.algos.forEach(opt => {
 		opt = `<option value="${opt}">${opt}</option>`;
 		encoding.append(opt);
 	});
 
+	limit.val(1e6);
+	limit.attr("min", 0);
+	limit.attr("max", 1e7);
+	limit.attr("step", 1e5);
+
 	$("#run").click(run);
 	$("#debug").click(debug);
 	$("#compile").click(compile);
+
+	win.scroll(step);
 }
 
 $(setup);
@@ -91,25 +144,23 @@ $(setup);
 </head>
 
 <body>
-<div class="container">
+<div class="container-fluid">
 <div class="row">
-<div class="col-md-8 col-md-offset-2">
-<h1>
-Macro Lambda Calculus<br>
+<div class="col-sm-10 col-sm-offset-1">
+<h2>
+Macro Lambda Calculus
 
 <small>
-Browserified version of
 <a href="https://www.npmjs.com/package/@alexo/lambda"><samp>@alexo/lambda</samp></a>
+browserified
 </small>
-</h1>
+</h2>
 
 <div class="form-group">
 <textarea id="input" class="form-control"></textarea>
 </div>
 
-<div class="row text-nowrap">
-<div class="col-xs-7">
-<div class="form-group">
+<div class="form-group form-inline">
 <div class="input-group">
 <div class="input-group-addon">
 <span class="glyphicon glyphicon-cog"></span>
@@ -121,23 +172,23 @@ Browserified version of
 
 <div class="input-group-addon">&le;</div>
 
-<input id="limit" type="number" class="form-control" value="1000000" min="0" max="10000000" step="100000">
+<input id="limit" type="number" class="form-control">
 
 <div class="input-group-addon">&#8904;</div>
-</div>
-</div>
-</div>
 
-<div class="col-xs-5 text-right">
-<div class="form-group">
+<span class="input-group-btn">
 <button id="run" class="btn btn-danger">Run</button>
 <button id="debug" class="btn btn-warning">Debug</button>
 <button id="compile" class="btn btn-success">Compile</button>
-</div>
+</span>
 </div>
 </div>
 
-<pre id="output" hidden></pre>
+<p>
+<samp id="output"></samp>
+</p>
+
+<hr>
 </div>
 </div>
 </div>
