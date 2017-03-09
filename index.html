@@ -1,6 +1,6 @@
 <!doctype html>
 
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <title>MLC</title>
@@ -9,7 +9,12 @@
 
 <style>
 textarea {
+	font-family: monospace;
 	resize: none;
+}
+
+pre {
+	white-space: pre-wrap;
 }
 </style>
 
@@ -117,30 +122,8 @@ $(setup);
 <body>
 <div class="container">
 <div class="page-header">
-<h1>Macro Lambda Calculus
-<small class="text-nowrap">
-Call-by-need Lambda Calculus for Web using Interaction Nets
-</small>
-</h1>
+<h1>Macro Lambda Calculus</h1>
 </div>
-
-<div class="row">
-<div class="col-md-6">
-<h2>Implementation</h2>
-
-<p>
-This is implementation of
-<a href="https://en.wikipedia.org/wiki/Lambda_calculus">Lambda Calculus</a>
-that works in your Web browser.
-Terms are defined in a variant of Lambda Calculus called
-Macro Lambda Calculus (MLC), and their normal form (if any)
-will be printed in MLC, too.
-The language allows macro definitions that make it easier
-to input complex expressions.
-The last term in the input is the term whose normal form
-is to be found.
-Give&nbsp;it&nbsp;a&nbsp;try.
-</p>
 
 <div class="form-group">
 <div class="checkbox">
@@ -224,117 +207,8 @@ They are executed during reduction of&nbsp;the&nbsp;interaction&nbsp;net.
 <label><abbr>Define a lambda term</abbr></label>
 <textarea class="form-control"></textarea>
 </div>
-</div>
-
-<div class="col-md-6">
-<h2>How It Works</h2>
-
-<p>
-Implementation is based on Interaction Nets with non-deterministic extension.
-The interaction system behind (agent types and interaction rules) performs
-call-by-need reduction and also has a readback machanism embedded.
-Since the interaction rules are defined using notation similar to Yves Lafont's,
-it is easy to experiment with different&nbsp;evaluation&nbsp;techniques.
-</p>
-
-<p>
-To find normal form, the algorithm goes through
-the&nbsp;following&nbsp;steps.
-</p>
-
-<ol>
-<li>
-Parse input according to
-<a href="https://www.npmjs.com/package/@alexo/lambda">the MLC grammar</a>.
-</li>
-
-<li>
-From the bottom up, substitute each macro using β-expansion.
-</li>
-
-<li>
-Encode the resulting stand-alone term into an interaction net
-as described in
-<a href="http://arxiv.org/pdf/1304.2290v8.pdf">arXiv:1304.2290v8</a>.
-More specifically, define interaction rules and initial configuration
-in a language called Interaction Nets Compiler (INC).
-Based on Interaction Nets, INC implicitly extends interaction systems
-with non-deterministic agent <var>amb</var> and
-also&nbsp;allows&nbsp;side&nbsp;effects.
-</li>
-
-<li>
-Parse the produced definition according to
-<a href="https://www.npmjs.com/package/inet-lib">the INC grammar</a>.
-</li>
-
-<li>
-Enter the main loop and keep applying interaction rules to all active pairs
-in the net until its normal form has been reached.
-At that point, readback should be finished, its result being
-the normal form of
-the&nbsp;initial&nbsp;lambda&nbsp;term.
-</li>
-</ol>
-
-<p>
-This algorithm was inspired by the work of François-Régis Sinot, namely
-<a href="http://www.sciencedirect.com/science/article/pii/S1571066106000934">Token-Passing Nets: Call-by-Need for Free</a>.
-In particular, the <var>eval</var> and <var>return</var> agents and their
-interaction rules became the basis for
-the&nbsp;embedded&nbsp;readback&nbsp;machanism.
-</p>
-
-<p>
-Software was first adapted for
-<a href="https://nodejs.org/">Node.js</a>
-from the C programming language.
-The JavaScript version uses
-<a href="http://zaach.github.io/jison/">Jison</a>
-to generate parsers from grammar.
-Then, a JavaScript bundle suitable for a Web browser
-is produced by
-<a href="http://browserify.org/">Browserify</a> (with its
-<a href="https://github.com/substack/brfs"><var>brfs</var></a>
-plugin enabled).
-Finally, Twitter's
-<a href="http://getbootstrap.com/">Bootstrap</a>
-gives&nbsp;this&nbsp;page&nbsp;its&nbsp;look.
-</p>
-
-<h2>Feedback</h2>
-
-<p>
-Any feedback is highly appreciated, including comments and
-collaboration in software development.
-It would be great to make this page self-explanatory in an interactive way,
-while making the JavaScript library behind it
-as&nbsp;efficient&nbsp;as&nbsp;possible.
-</p>
-
-<p>
-<a href="https://twitter.com/share" class="twitter-share-button" data-url="https://codedot.github.io/lambda/" data-text="Macro Lambda Calculus: Call-by-need Lambda Calculus for Web using Interaction Nets" data-size="large" data-hashtags="mlcjs">Tweet</a>
-<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-</p>
-</div>
-</div>
 
 <div class="well well-lg">
-<div id="disqus_thread"></div>
-<script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES * * */
-    var disqus_title = 'Macro Lambda Calculus';
-    var disqus_identifier = 'gh-pages';
-    var disqus_shortname = 'mlcjs';
-    
-    /* * * DON'T EDIT BELOW THIS LINE * * */
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
 </div>
 </div>
 
