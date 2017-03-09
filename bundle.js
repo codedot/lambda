@@ -1417,10 +1417,10 @@ function debug1()
 	return inet.debug1();
 }
 
-function run(mlc, algo)
+function run(mlc, algo, max)
 {
 	const src = mlc2in(mlc, algo);
-	const output = inet(src);
+	const output = inet(src, max);
 
 	output.term = obj2mlc(expanded);
 
@@ -1430,6 +1430,7 @@ function run(mlc, algo)
 	return output;
 }
 
+run.algos = Object.keys(encoding);
 run.prepare = prepare;
 run.debug = debug;
 run.debug0 = debug0;

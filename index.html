@@ -10,6 +10,7 @@
 <style>
 #input {
 	font-family: monospace;
+	resize: none;
 }
 
 #output {
@@ -38,6 +39,7 @@ function run()
 	];
 
 	output.text(mlc.join("\n"));
+	output.show();
 }
 
 function debug()
@@ -49,6 +51,7 @@ function debug()
 	mlc = mlcjs.debug();
 
 	output.text(mlc);
+	output.show();
 }
 
 function compile()
@@ -58,20 +61,25 @@ function compile()
 	mlc = mlcjs.mlc2in(mlc);
 
 	output.text(mlc);
+	output.show();
 }
 
 function setup()
 {
 	const example = mlcjs.example;
-	const rows = example.split("\n").length;
 
 	input = $("#input");
-	input.attr("rows", rows);
+	input.attr("rows", example.split("\n").length);
 	input.text(example);
 
 	output = $("#output");
 	limit = $("#limit");
 	encoding = $("#encoding");
+
+	mlcjs.algos.forEach(opt => {
+		opt = `<option value="${opt}">${opt}</option>`;
+		encoding.append(opt);
+	});
 
 	$("#run").click(run);
 	$("#debug").click(debug);
@@ -86,7 +94,6 @@ $(setup);
 <div class="container">
 <div class="row">
 <div class="col-md-8 col-md-offset-2">
-<div class="page-header">
 <h1>
 Macro Lambda Calculus<br>
 
@@ -95,10 +102,8 @@ Browserified version of
 <a href="https://www.npmjs.com/package/@alexo/lambda"><samp>@alexo/lambda</samp></a>
 </small>
 </h1>
-</div>
 
 <div class="form-group">
-<label>Define a lambda term</label>
 <textarea id="input" class="form-control"></textarea>
 </div>
 
@@ -111,15 +116,12 @@ Browserified version of
 </div>
 
 <select id="encoding" class="form-control">
-<option>closed</option>
-<option>optimal</option>
-<option>abstract</option>
-<option>turning</option>
+<option value="" selected>default</option>
 </select>
 
 <div class="input-group-addon">&le;</div>
 
-<input id="limit" type="number" class="form-control" value="100500" min="1" max="999999" step="10000">
+<input id="limit" type="number" class="form-control" value="1000000" min="0" max="10000000" step="100000">
 
 <div class="input-group-addon">&#8904;</div>
 </div>
@@ -135,21 +137,9 @@ Browserified version of
 </div>
 </div>
 
-<pre id="output">Results will be printed here.</pre>
+<pre id="output" hidden></pre>
 </div>
 </div>
 </div>
-
-<a href="https://github.com/codedot/lambda"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
-
-<script>
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-ga('create', 'UA-18359162-4', 'auto');
-ga('send', 'pageview');
-</script>
 </body>
 </html>
