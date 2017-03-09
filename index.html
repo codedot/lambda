@@ -121,9 +121,7 @@ $(setup);
 
 <body>
 <div class="container">
-<div class="page-header">
 <h1>Macro Lambda Calculus</h1>
-</div>
 
 <div class="form-group">
 <div class="checkbox">
@@ -134,76 +132,9 @@ $(setup);
 </div>
 
 <button id="reduce" class="btn btn-danger" disabled>Find normal form</button>
-<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#debug">Step by step</button>
-<button type="button" class="btn btn-success" data-toggle="modal" data-target="#inet">Show interaction net</button>
-
-<div id="debug" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="debugLabel">
-<div class="modal-dialog modal-lg">
-<div class="modal-content">
-<div class="modal-header">
-<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-<h4 class="modal-title" id="debugLabel">Interaction Net Reduction</h4>
-</div>
-
-<div class="modal-body">
-<p>
-Here you can see step-by-step reduction of the interaction net.
-For each step, the current state of the interaction net will be
-printed using format similar to initial configuration
-in&nbsp;the&nbsp;INC&nbsp;programming&nbsp;language.
-</p>
-
-<pre id="config"></pre>
-
-<p id="final">
-The interaction net has reached its normal form.
-No&nbsp;more&nbsp;active&nbsp;pairs&nbsp;left.
-</p>
-</div>
-
-<div class="modal-footer">
-<button id="continue" class="btn btn-warning pull-left">Continue</button>
-<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-</div>
-</div>
-</div>
-</div>
-
-<div id="inet" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="inetLabel">
-<div class="modal-dialog modal-lg">
-<div class="modal-content">
-<div class="modal-header">
-<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-<h4 class="modal-title" id="inetLabel">Generated Interaction Net</h4>
-</div>
-
-<div class="modal-body">
-<p>
-The specified lambda term is automatically encoded into an interaction net.
-Below is the generated source in the INC language that consists of three parts:
-interaction rules, initial configuration,
-and&nbsp;initial&nbsp;side&nbsp;effect.
-</p>
-
-<pre id="incsrc"></pre>
-
-<p>
-You may notice side effects written in JavaScript.
-They are executed during reduction of&nbsp;the&nbsp;interaction&nbsp;net.
-</p>
-</div>
-
-<div class="modal-footer">
-<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-</div>
-</div>
-</div>
-</div>
 
 <p class="help-block">It may take a while... or forever!</p>
-</div>
 
-<div class="form-group">
 <label><abbr>Define a lambda term</abbr></label>
 <textarea class="form-control"></textarea>
 </div>
