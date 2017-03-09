@@ -1,13 +1,11 @@
 I = x: x;
 K = x, y: x;
 S = x, y, z: x z (y z);
-
 T = K;
 F = K I;
 AND = p, q: p q F;
 OR = p, q: p T q;
 NOT = p: (a, b: p b a);
-
 C0 = f, x: x;
 C1 = f, x: f x;
 C2 = f, x: f (f x);
@@ -19,10 +17,8 @@ EXP = m, n: n m;
 PRED = n: (f, x: n (g, h: h (g f)) (K x) I);
 MINUS = m, n: n PRED m;
 ZERO = n: n (K F) T;
-
 Y = (a: a a) (self, f: f (self self f));
 FACT = Y (self, n: (ZERO n) C1 (MULT n (self (PRED n))));
-
 C24 = FACT (PLUS C2 C2);
 C27 = EXP C3 C3;
 MINUS C27 C24

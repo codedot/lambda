@@ -63,14 +63,16 @@ function inet()
 
 function find()
 {
-	var mlc = textarea.val();
+	let mlc = textarea.val();
 
 	mlc = mlcjs(mlc);
+	mlc = [
+		mlc.term,
+		`${mlc.total}(${mlc.beta}), ${mlc.redtime} ms`,
+		mlc.nf
+	];
 
-	console.info("%s(%s)", mlc.total, mlc.beta);
-
-	result.attr("title", mlc.term);
-	result.text(mlc.nf);
+	result.text(mlc.join("\n"));
 }
 
 function allow()
@@ -106,7 +108,7 @@ function setup()
 	config = $("#config");
 	config.hide();
 
-	result = $("abbr");
+	result = $("#result");
 	pre = $("#incsrc");
 	final = $("#final");
 
@@ -121,7 +123,22 @@ $(setup);
 
 <body>
 <div class="container">
-<h1>Macro Lambda Calculus</h1>
+<div class="row">
+<div class="col-md-8 col-md-offset-2">
+<div class="page-header">
+<h1>
+Macro Lambda Calculus<br>
+
+<small>
+Browserified Lambda Calculus Using Interaction Nets
+</small>
+</h1>
+</div>
+
+<div class="form-group">
+<label>Define a lambda term</label>
+<textarea class="form-control"></textarea>
+</div>
 
 <div class="form-group">
 <div class="checkbox">
@@ -134,12 +151,10 @@ $(setup);
 <button id="reduce" class="btn btn-danger" disabled>Find normal form</button>
 
 <p class="help-block">It may take a while... or forever!</p>
-
-<label><abbr>Define a lambda term</abbr></label>
-<textarea class="form-control"></textarea>
 </div>
 
-<div class="well well-lg">
+<pre id="result">Results will be printed here.</pre>
+</div>
 </div>
 </div>
 
