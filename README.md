@@ -64,6 +64,7 @@ Options:
   --debug, -d    Enable step-by-step evaluation              [boolean]
   --expr, -e     Process argument as expression              [boolean]
   --inet, -i     Show interaction net                        [boolean]
+  --limit, -l    Limit number of interactions                 [number]
   --perf, -p     Print benchmarks                            [boolean]
   --stats, -s    Write statistics to file                     [string]
   --term, -t     Output expanded term                        [boolean]

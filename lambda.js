@@ -31,6 +31,11 @@ const opts = {
 		desc: "Show interaction net",
 		boolean: true
 	},
+	limit: {
+		alias: "l",
+		desc: "Limit number of interactions",
+		number: true
+	},
 	perf: {
 		alias: "p",
 		desc: "Print benchmarks",
@@ -79,7 +84,7 @@ if (argv.debug) {
 
 	process.stdout.write(inet);
 } else {
-	const output = lambda(input, argv.algo);
+	const output = lambda(input, argv.algo, argv.limit);
 	const stats = JSON.stringify(output.stats, null, "\t");
 	const total = output.total;
 	const beta = output.beta;
