@@ -8,12 +8,11 @@
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.css" rel="stylesheet">
 
 <style>
-textarea {
+#input {
 	font-family: monospace;
-	resize: none;
 }
 
-pre {
+#output {
 	white-space: pre-wrap;
 }
 </style>
@@ -23,98 +22,60 @@ pre {
 <script src="bundle.js"></script>
 
 <script>
-var textarea, button, result, pre, config, next, final;
+let input, output, limit, encoding;
 
-function reduce()
+function run()
 {
-	var step = config.clone();
-	var output = mlcjs.debug();
+	const max = limit.val();
+	const algo = encoding.val();
+	let mlc = input.val();
 
-	if (output) {
-		step.text(output);
-		step.addClass("tmp");
-		step.insertBefore(config);
-		step.show();
-	} else {
-		next.hide();
-		final.show();
-	}
-}
-
-function debug()
-{
-	var mlc = textarea.val();
-
-	mlcjs.prepare(mlc);
-
-	$(".tmp").remove();
-
-	final.hide();
-	next.show();
-}
-
-function inet()
-{
-	var mlc = textarea.val();
-	var system = mlcjs.mlc2in(mlc);
-
-	pre.text(system);
-}
-
-function find()
-{
-	let mlc = textarea.val();
-
-	mlc = mlcjs(mlc);
+	mlc = mlcjs(mlc, algo, max);
 	mlc = [
 		mlc.term,
 		`${mlc.total}(${mlc.beta}), ${mlc.redtime} ms`,
 		mlc.nf
 	];
 
-	result.text(mlc.join("\n"));
+	output.text(mlc.join("\n"));
 }
 
-function allow()
+function debug()
 {
-	button.attr("disabled", !this.checked);
+	const algo = encoding.val();
+	let mlc = input.val();
+
+	mlcjs.prepare(mlc, algo);
+	mlc = mlcjs.debug();
+
+	output.text(mlc);
+}
+
+function compile()
+{
+	let mlc = input.val();
+
+	mlc = mlcjs.mlc2in(mlc);
+
+	output.text(mlc);
 }
 
 function setup()
 {
-	var example = mlcjs.example;
-	var cols = 0;
-	var i, rows;
+	const example = mlcjs.example;
+	const rows = example.split("\n").length;
 
-	textarea = $("textarea");
+	input = $("#input");
+	input.attr("rows", rows);
+	input.text(example);
 
-	rows = example.split("\n");
-	for (i = 0; i < rows.length; i++)
-		if (cols < rows[i].length)
-			cols = rows[i].length;
+	output = $("#output");
+	limit = $("#limit");
+	encoding = $("#encoding");
 
-	rows = rows.length;
-
-	textarea.attr("rows", rows);
-	textarea.attr("cols", cols);
-	textarea.text(example);
-
-	button = $("#reduce");
-	button.click(find);
-
-	next = $("#continue");
-	next.click(reduce);
-
-	config = $("#config");
-	config.hide();
-
-	result = $("#result");
-	pre = $("#incsrc");
-	final = $("#final");
-
-	$("input").click(allow);
-	$("#inet").on("show.bs.modal", inet);
-	$("#debug").on("show.bs.modal", debug);
+	$("#run").click(run);
+	$("#debug").click(debug);
+	$("#compile").click(compile);
 }
 
 $(setup);
@@ -130,30 +91,51 @@ $(setup);
 Macro Lambda Calculus<br>
 
 <small>
-Browserified Lambda Calculus Using Interaction Nets
+Browserified version of
+<a href="https://www.npmjs.com/package/@alexo/lambda"><samp>@alexo/lambda</samp></a>
 </small>
 </h1>
 </div>
 
 <div class="form-group">
 <label>Define a lambda term</label>
-<textarea class="form-control"></textarea>
+<textarea id="input" class="form-control"></textarea>
 </div>
 
+<div class="row text-nowrap">
+<div class="col-xs-7">
 <div class="form-group">
-<div class="checkbox">
-<label>
-<input type="checkbox"> I understand
-<a href="https://en.wikipedia.org/wiki/Halting_problem">the halting problem</a>.
-</label>
+<div class="input-group">
+<div class="input-group-addon">
+<span class="glyphicon glyphicon-cog"></span>
 </div>
 
-<button id="reduce" class="btn btn-danger" disabled>Find normal form</button>
+<select id="encoding" class="form-control">
+<option>closed</option>
+<option>optimal</option>
+<option>abstract</option>
+<option>turning</option>
+</select>
 
-<p class="help-block">It may take a while... or forever!</p>
+<div class="input-group-addon">&le;</div>
+
+<input id="limit" type="number" class="form-control" value="100500" min="1" max="999999" step="10000">
+
+<div class="input-group-addon">&#8904;</div>
+</div>
+</div>
 </div>
 
-<pre id="result">Results will be printed here.</pre>
+<div class="col-xs-5 text-right">
+<div class="form-group">
+<button id="run" class="btn btn-danger">Run</button>
+<button id="debug" class="btn btn-warning">Debug</button>
+<button id="compile" class="btn btn-success">Compile</button>
+</div>
+</div>
+</div>
+
+<pre id="output">Results will be printed here.</pre>
 </div>
 </div>
 </div>
