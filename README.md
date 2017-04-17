@@ -19,7 +19,7 @@ by Ian Mackie, this is the default algorithm;
 * `abstract`, an experimental algorithm described in
 [arXiv:1701.04691v2][6];
 
-* `turning`, an undocumented experimental algorithm.
+* `hybrid`, an undocumented experimental algorithm.
 
 All versions include the embedded read-back mechanism described
 in Section 7 of [10.4204/EPTCS.225.7][4].
@@ -35,7 +35,7 @@ in Section 7 of [10.4204/EPTCS.225.7][4].
 The following is output of the `test.sh` script provided in the package:
 
 ```
-SAMPLE            CLOSED        OPTIMAL       ABSTRACT        TURNING
+SAMPLE            CLOSED        OPTIMAL       ABSTRACT         HYBRID
 counter             58/6          143/4            N/A           29/4
 w2eta             137/16          205/7           37/7           48/9
 22210ii         1740/182        7886/70         731/70   260281/40054

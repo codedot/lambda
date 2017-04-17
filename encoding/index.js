@@ -3,8 +3,8 @@
 const generic = require("./generic");
 const abstract = require("./abstract");
 const closed = require("./closed");
+const hybrid = require("./hybrid");
 const optimal = require("./optimal");
-const turning = require("./turning");
 
 const expand = generic.expand;
 const readback = generic.readback;
@@ -30,5 +30,5 @@ function addalgo(name, algo)
 
 addalgo("abstract", abstract);
 addalgo("closed", closed);
+addalgo("hybrid", hybrid);
 addalgo("optimal", optimal);
-addalgo("turning", turning);

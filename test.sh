@@ -31,37 +31,37 @@ compare()
 }
 
 printf "$TERMF$CELLF$CELLF$CELLF$CELLF\n" SAMPLE \
-	CLOSED OPTIMAL ABSTRACT TURNING
+	CLOSED OPTIMAL ABSTRACT HYBRID
 
 compare counter "v1: v1 (v2: v2 v2) (v3: v3 v3)" \
-	closed optimal abstract turning
+	closed optimal abstract hybrid
 
 compare w2eta "v1, v2: v1 (v1 (v1 (v1 v2)))" \
-	closed optimal abstract turning
+	closed optimal abstract hybrid
 
 compare 22210ii "v1: v1" \
-	closed optimal abstract turning
+	closed optimal abstract hybrid
 
 compare 3222ii "v1: v1" \
-	closed optimal abstract TURNING
+	closed optimal abstract HYBRID
 
 compare 1022ii "v1: v1" \
-	closed optimal abstract TURNING
+	closed optimal abstract HYBRID
 
 compare 4222ii "v1: v1" \
-	closed OPTIMAL abstract TURNING
+	closed OPTIMAL abstract HYBRID
 
 compare 222210ii "v1: v1" \
-	closed OPTIMAL abstract TURNING
+	closed OPTIMAL abstract HYBRID
 
 compare cfact4 "v1, v2: v1 (v1 (v1 v2))" \
-	closed optimal abstract turning
+	closed optimal abstract hybrid
 
 compare yfact4 "v1, v2: v1 (v1 (v1 v2))" \
-	closed optimal abstract turning
+	closed optimal abstract hybrid
 
 compare cfact5 "v1, v2: v1 (v1 (v1 (v1 (v1 v2))))" \
-	closed optimal abstract turning
+	closed optimal abstract hybrid
 
 compare yfact5 "v1, v2: v1 (v1 (v1 (v1 (v1 v2))))" \
-	closed OPTIMAL abstract turning
+	closed OPTIMAL abstract hybrid
