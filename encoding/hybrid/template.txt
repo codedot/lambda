@@ -1,17 +1,54 @@
-\apply[a, \outapp(\outapp(b, c), a)] {
-	/* Turn application. */
-	++this.total;
-} \outapp[b, c];
-
-\fanin_{i}[a, b] {
+\app[\fan_{i}(a, b), \fan_{i}(c, d)] {
 	/* Duplicate application. */
 	++this.total;
-} \outapp[\fanin_{i}(\apply(c, a), \apply(d, b)), \fanin_{i}(c, d)];
+} \fan_{i}[\app(a, c), \app(b, d)];
 
-\read_{C}[\fanout_{i}(a, b)] {
-	/* Duplicate context. */
+\fan_{i}[\lam(a, b), \lam(c, d)] {
+	/* Duplicate abstraction. */
 	++this.total;
-} \fanout_{i}[\read_{C}(a), \read_{this.clone(C)}(b)];
+} \lam[\fan_{i}(a, c), \fan_{i}(b, d)];
+
+\fan_{i}[a, b] {
+	/* Annihilate matching fans. */
+	if (i == j)
+		++this.total;
+	else
+		return false;
+} \fan_{j}[a, b];
+
+\fan_{i}[\fan_{j}(a, b), \fan_{j}(c, d)] {
+	/* Duplicate different fans. */
+	if (i != j)
+		++this.total;
+	else
+		return false;
+} \fan_{j}[\fan_{i}(a, c), \fan_{i}(b, d)];
+
+\var[\fan_{i}(a, b), \fan_{i}(c, d)] {
+	/* Duplicate variable. */
+	++this.total;
+} \fan_{i}[\var(a, c), \var(b, d)];
+
+\var[\lam(a, b), \lam(c, d)] {
+	/* Duplicate abstraction. */
+	++this.total;
+} \lam[\fan_{++this.id}(a, c), \fan_{this.id}(b, d)];
+
+\app[a, b] {
+	/* Apply beta reduction. */
+	++this.beta;
+	++this.total;
+} \lam[a, b];
+
+\fan_{i}[\atom_{M}, \atom_{M}] {
+	/* Duplicate an atom. */
+	++this.total;
+} \atom_{M};
+
+\var[\atom_{M}, \atom_{M}] {
+	/* Duplicate an atom. */
+	++this.total;
+} \atom_{M};
 
 \print {
 	/* Output results of read-back. */
@@ -22,9 +59,9 @@
 \read_{C}[a] {
 	/* Read back abstraction. */
 	++this.total;
-} \lambda[\atom_{this.mkid()}, \read_{this.abst(C)}(a)];
+} \lam[\atom_{this.mkid()}, \read_{this.abst(C)}(a)];
 
-\apply[\read_{this.appl(M)}(a), a] {
+\app[\read_{this.appl(M)}(a), a] {
 	/* Read back application. */
 	++this.total;
 } \atom_{M};
@@ -33,83 +70,6 @@
 	/* Read back an atom. */
 	++this.total;
 } \atom_{M};
-
-\fanin_{i}[\atom_{M}, \atom_{M}] {
-	/* Duplicate an atom. */
-	++this.total;
-} \atom_{M};
-
-\apply[a, b] {
-	/* Apply beta reduction. */
-	++this.beta;
-	++this.total;
-} \lambda[a, b];
-
-\apply[a, \outapp(\fanout_{i}(b, c), a)] {
-	/* Turn application. */
-	++this.total;
-} \fanout_{i}[b, c];
-
-\fanin_{i}[\lambda(a, b), \lambda(c, d)] {
-	/* Duplicate abstraction. */
-	++this.total;
-} \lambda[\fanout_{i}(a, c), \fanin_{i}(b, d)];
-
-\fanin_{i}[a, b] {
-	/* Annihilate matching fans. */
-	if (i == j)
-		++this.total;
-	else
-		return false;
-} \fanout_{j}[a, b];
-
-\fanin_{i}[\fanout_{j}(a, b), \fanout_{j}(c, d)] {
-	/* Duplicate different fans. */
-	if (i != j)
-		++this.total;
-	else
-		return false;
-} \fanout_{j}[\fanin_{++this.id}(a, c), \fanin_{++this.id}(b, d)];
-
-\erase {
-	/* Erase an atom. */
-	++this.total;
-} \atom_{M};
-
-\erase {
-	/* Erase application. */
-	++this.total;
-} \apply[\erase, \erase];
-
-\erase {
-	/* Erase abstraction. */
-	++this.total;
-} \lambda[\erase, \erase];
-
-\erase {
-	/* Erase duplicator. */
-	++this.total;
-} \fanin_{i}[\erase, \erase];
-
-\erase {
-	/* Erase duplicator. */
-	++this.total;
-} \fanout_{j}[\erase, \erase];
-
-\erase {
-	/* Finish erasing. */
-	++this.total;
-} \erase;
-
-\erase {
-	/* Erase context. */
-	++this.total;
-} \read_{C}[\erase];
-
-\erase {
-	/* Erase application. */
-	++this.total;
-} \outapp[\erase, \erase];
 
 $$
 

@@ -40,7 +40,7 @@ compare w2eta "v1, v2: v1 (v1 (v1 (v1 v2)))" \
 	closed optimal abstract hybrid
 
 compare 22210ii "v1: v1" \
-	closed optimal abstract hybrid
+	closed optimal abstract HYBRID
 
 compare 3222ii "v1: v1" \
 	closed optimal abstract HYBRID
@@ -61,7 +61,7 @@ compare yfact4 "v1, v2: v1 (v1 (v1 v2))" \
 	closed optimal abstract hybrid
 
 compare cfact5 "v1, v2: v1 (v1 (v1 (v1 (v1 v2))))" \
-	closed optimal abstract hybrid
+	closed optimal abstract HYBRID
 
 compare yfact5 "v1, v2: v1 (v1 (v1 (v1 (v1 v2))))" \
-	closed OPTIMAL abstract hybrid
+	closed OPTIMAL abstract HYBRID
