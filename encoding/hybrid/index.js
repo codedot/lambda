@@ -9,12 +9,15 @@ let mkwire, bv;
 
 function rho(id, list)
 {
-	bv[id].forEach(ref => {
-		const wire = mkwire();
+	bv[id].forEach(entry => {
+		const wire = entry.wire;
+		const lvl = entry.index;
+		const next = mkwire();
+		const agent = `\\fan_{${lvl}}(${next}, ${wire})`;
 
-		list.push(`${id} = \\var(${wire}, ${ref})`);
+		list.push(`${id} = ${agent}`);
 
-		id = wire;
+		id = next;
 	});
 
 	list.push(`${id} = \\nil`);
@@ -34,7 +37,10 @@ function gamma(obj, root, list)
 		} else {
 			const id = obj.name;
 
-			bv[id].push(root);
+			bv[id].push({
+				index: obj.index,
+				wire: root
+			});
 		}
 	} else if ("abst" == node) {
 		const id = obj.var;

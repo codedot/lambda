@@ -34,10 +34,10 @@ printf "$TERMF$CELLF$CELLF$CELLF$CELLF\n" SAMPLE \
 	CLOSED OPTIMAL ABSTRACT HYBRID
 
 compare counter "v1: v1 (v2: v2 v2) (v3: v3 v3)" \
-	closed optimal abstract hybrid
+	closed optimal abstract HYBRID
 
 compare w2eta "v1, v2: v1 (v1 (v1 (v1 v2)))" \
-	closed optimal abstract hybrid
+	closed optimal abstract HYBRID
 
 compare 22210ii "v1: v1" \
 	closed optimal abstract HYBRID
@@ -55,10 +55,10 @@ compare 222210ii "v1: v1" \
 	closed OPTIMAL abstract HYBRID
 
 compare cfact4 "v1, v2: v1 (v1 (v1 v2))" \
-	closed optimal abstract hybrid
+	closed optimal abstract HYBRID
 
 compare yfact4 "v1, v2: v1 (v1 (v1 v2))" \
-	closed optimal abstract hybrid
+	closed optimal abstract HYBRID
 
 compare cfact5 "v1, v2: v1 (v1 (v1 (v1 (v1 v2))))" \
 	closed optimal abstract HYBRID

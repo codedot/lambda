@@ -24,16 +24,6 @@
 		return false;
 } \fan_{j}[\fan_{i}(a, c), \fan_{i}(b, d)];
 
-\var[\fan_{i}(a, b), \fan_{i}(c, d)] {
-	/* Duplicate variable. */
-	++this.total;
-} \fan_{i}[\var(a, c), \var(b, d)];
-
-\var[\lam(a, b), \lam(c, d)] {
-	/* Duplicate abstraction. */
-	++this.total;
-} \lam[\fan_{++this.id}(a, c), \fan_{this.id}(b, d)];
-
 \app[a, b] {
 	/* Apply beta reduction. */
 	++this.beta;
@@ -45,10 +35,10 @@
 	++this.total;
 } \atom_{M};
 
-\var[\atom_{M}, \atom_{M}] {
-	/* Duplicate an atom. */
+\read_{C}[\fan_{i}(a, b)] {
+	/* Duplicate context. */
 	++this.total;
-} \atom_{M};
+} \fan_{i}[\read_{C}(a), \read_{this.clone(C)}(b)];
 
 \print {
 	/* Output results of read-back. */
@@ -79,6 +69,5 @@ $$
 
 READBACK
 
-this.id = 0;
 this.beta = 0;
 this.total = 0;
