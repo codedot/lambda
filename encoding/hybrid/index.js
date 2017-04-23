@@ -7,15 +7,16 @@ const template = fs.readFileSync(path.join(__dirname, "template.txt"), "utf8");
 
 let mkwire, bv;
 
-function rho(id, list)
+function rho(id, list, lvl)
 {
 	bv[id].forEach(entry => {
 		const wire = entry.wire;
-		const lvl = entry.index;
+		const delta = entry.lvl - lvl - 1;
 		const next = mkwire();
-		const agent = `\\fan_{${lvl}}(${next}, ${wire})`;
+		const agent = `\\fan_{[${lvl}, ${delta}]}`;
+		const tree = `${agent}(${next}, ${wire})`;
 
-		list.push(`${id} = ${agent}`);
+		list.push(`${id} = ${tree}`);
 
 		id = next;
 	});
@@ -23,7 +24,7 @@ function rho(id, list)
 	list.push(`${id} = \\nil`);
 }
 
-function gamma(obj, root, list)
+function gamma(obj, root, list, lvl)
 {
 	const node = obj.node;
 
@@ -38,7 +39,7 @@ function gamma(obj, root, list)
 			const id = obj.name;
 
 			bv[id].push({
-				index: obj.index,
+				lvl: lvl,
 				wire: root
 			});
 		}
@@ -46,8 +47,9 @@ function gamma(obj, root, list)
 		const id = obj.var;
 		const body = obj.body;
 		const wire = mkwire();
-		let tree = "\\lam(%s, %s)";
+		let tree = "\\lam_{%s}(%s, %s)";
 
+		tree = tree.replace("%s", lvl);
 		tree = tree.replace("%s", id);
 		tree = tree.replace("%s", wire);
 
@@ -55,23 +57,24 @@ function gamma(obj, root, list)
 
 		bv[id] = [];
 
-		gamma(body, wire, list);
+		gamma(body, wire, list, lvl);
 
-		rho(id, list);
+		rho(id, list, lvl);
 	} else if ("appl" == node) {
 		const wleft = mkwire();
 		const wright = mkwire();
 		const left = obj.left;
 		const right = obj.right;
-		let agent = "\\app(%s, %s)";
+		let agent = "\\app_{%s}(%s, %s)";
 
+		agent = agent.replace("%s", lvl);
 		agent = agent.replace("%s", wright);
 		agent = agent.replace("%s", root);
 
 		list.push(wleft + " = " + agent);
 
-		gamma(left, wleft, list);
-		gamma(right, wright, list);
+		gamma(left, wleft, list, lvl);
+		gamma(right, wright, list, lvl + 1);
 	}
 }
 
@@ -84,7 +87,7 @@ function encode(generic, term)
 	mkwire = generic.mkwire;
 
 	bv = {};
-	gamma(term, "root", inconfig);
+	gamma(term, "root", inconfig, 0);
 
 	inconfig.inet = template;
 	return inconfig;
