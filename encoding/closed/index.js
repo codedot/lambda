@@ -11,18 +11,13 @@ function psi(shared, list)
 {
 	for (const atom in shared) {
 		const twins = shared[atom];
-		const wleft = twins.left;
-		const wright = twins.right;
+		const left = twins.left;
+		const right = twins.right;
 		const wire = mkwire();
-		let eqn = "%s = \\amb(%s, \\share(%s, %s), %s)";
+		const agent = `\\share(${atom}, ${wire})`;
+		const amb = `\\amb(${right}, ${agent}, ${wire})`;
 
-		eqn = eqn.replace("%s", wleft);
-		eqn = eqn.replace("%s", wright);
-		eqn = eqn.replace("%s", atom);
-		eqn = eqn.replace("%s", wire);
-		eqn = eqn.replace("%s", wire);
-
-		list.push(eqn);
+		list.push(`${left} = ${amb}`);
 	}
 }
 
@@ -31,19 +26,14 @@ function rho(fv, root, end, list)
 	for (const atom in fv) {
 		const ref = fv[atom].ref;
 		const next = mkwire();
-		let head = "%s = \\bind(%s, %s, %s)";
+		const agent = `\\bind(${next}, ${ref}, ${root})`;
 
-		head = head.replace("%s", atom);
-		head = head.replace("%s", next);
-		head = head.replace("%s", ref);
-		head = head.replace("%s", root);
-
-		list.push(head);
+		list.push(`${atom} = ${agent}`);
 
 		root = next;
 	}
 
-	list.push(root + " = " + end);
+	list.push(`${root} = ${end}`);
 }
 
 function gamma(obj, root, list)
@@ -51,34 +41,28 @@ function gamma(obj, root, list)
 	const node = obj.node;
 
 	if ("atom" == node) {
-		let agent = "\\atom_{this.mkid(\"%s\")}";
+		if (obj.free) {
+			const name = `this.mkid("${obj.name}")`;
+			const agent = `\\atom_{${name}}`;
 
-		if (obj.free)
-			agent = agent.replace("%s", obj.name);
-		else
-			agent = obj.name;
+			list.push(`${root} = ${agent}`);
+		} else {
+			const name = obj.name;
 
-		list.push(root + " = " + agent);
+			list.push(`${root} = ${name}`);
+		}
 	} else if ("abst" == node) {
 		const id = obj.var;
 		const body = obj.body;
 		const fv = getfv(body);
 		const wire = mkwire();
-		let tree = "\\lambda(%s, %s)";
-		let agent;
-
-		if (id in fv)
-			agent = id;
-		else
-			agent = "\\erase";
-
-		tree = tree.replace("%s", agent);
-		tree = tree.replace("%s", wire);
+		const agent = (id in fv) ? id : "\\erase";
+		const tree = `\\lambda(${agent}, ${wire})`;
 
 		delete fv[id];
 
 		for (const atom in fv) {
-			var wref = mkwire();
+			const wref = mkwire();
 
 			fv[atom] = {
 				ref: wref
@@ -88,6 +72,7 @@ function gamma(obj, root, list)
 		subst(body, fv, "ref");
 
 		rho(fv, root, tree, list);
+
 		gamma(body, wire, list);
 	} else if ("appl" == node) {
 		const wleft = mkwire();
@@ -95,15 +80,13 @@ function gamma(obj, root, list)
 		const left = obj.left;
 		const right = obj.right;
 		const shared = mktwins(left, right);
-		let agent = "\\outapp(%s, %s)";
+		const agent = `\\outapp(${wleft}, ${wright})`;
 
-		agent = agent.replace("%s", wleft);
-		agent = agent.replace("%s", wright);
-
-		list.push(root + " = " + agent);
+		list.push(`${root} = ${agent}`);
 
 		gamma(left, wleft, list);
 		gamma(right, wright, list);
+
 		psi(shared, list);
 	}
 }

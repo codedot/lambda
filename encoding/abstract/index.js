@@ -13,22 +13,17 @@ function psi(shared, list)
 		const twins = shared[atom];
 		const wleft = twins.left;
 		const wright = twins.right;
-		let eqn = "%s = \\fan_{this.uniq()}(%s, %s)";
+		const agent = `\\fan_{this.uniq()}`;
+		const tree = `${agent}(${wright}, ${wleft})`;
 
-		eqn = eqn.replace("%s", atom);
-		eqn = eqn.replace("%s", wright);
-		eqn = eqn.replace("%s", wleft);
-
-		list.push(eqn);
+		list.push(`${atom} = ${tree}`);
 	}
 }
 
-function mkscope(n)
+function mkscope(n, s)
 {
-	let s = "%s";
-
 	for (let i = 0; i < n; i++)
-		s = "\\scope_{0}(" + s + ")";
+		s = `\\scope_{0}(${s})`;
 
 	return s;
 }
@@ -39,35 +34,24 @@ function gamma(obj, root, list)
 
 	if ("atom" == node) {
 		if (obj.free) {
-			let agent = "\\atom_{this.mkid(\"%s\")}";
+			const name = `this.mkid("${obj.name}")`;
+			const agent = `\\atom_{${name}}`;
 
-			agent = agent.replace("%s", obj.name);
-
-			list.push(root + " = " + agent);
+			list.push(`${root} = ${agent}`);
 		} else {
-			let agent = mkscope(0);
+			const agent = mkscope(0, root);
 
-			agent = agent.replace("%s", root);
-
-			list.push(obj.name + " = " + agent);
+			list.push(`${obj.name} = ${agent}`);
 		}
 	} else if ("abst" == node) {
 		const id = obj.var;
 		const body = obj.body;
 		const fv = getfv(body);
 		const wire = mkwire();
-		let tree = "\\lambda(%s, %s)";
-		let agent;
+		const agent = (id in fv) ? id : "\\erase";
+		const tree = `\\lambda(${agent}, ${wire})`;
 
-		if (id in fv)
-			agent = id;
-		else
-			agent = "\\erase";
-
-		tree = tree.replace("%s", agent);
-		tree = tree.replace("%s", wire);
-
-		list.push(root + " = " + tree);
+		list.push(`${root} = ${tree}`);
 
 		gamma(body, wire, list);
 	} else if ("appl" == node) {
@@ -76,15 +60,13 @@ function gamma(obj, root, list)
 		const left = obj.left;
 		const right = obj.right;
 		const shared = mktwins(left, right);
-		let agent = "\\apply(%s, %s)";
+		const agent = `\\apply(${wright}, ${root})`;
 
-		agent = agent.replace("%s", wright);
-		agent = agent.replace("%s", root);
-
-		list.push(wleft + " = " + agent);
+		list.push(`${wleft} = ${agent}`);
 
 		gamma(left, wleft, list);
 		gamma(right, wright, list);
+
 		psi(shared, list);
 	}
 }

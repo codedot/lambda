@@ -30,11 +30,10 @@ function gamma(obj, root, list, lvl)
 
 	if ("atom" == node) {
 		if (obj.free) {
-			let agent = "\\atom_{this.mkid(\"%s\")}";
+			const name = `this.mkid("${obj.name}")`;
+			const agent = `\\atom_{${name}}`;
 
-			agent = agent.replace("%s", obj.name);
-
-			list.push(root + " = " + agent);
+			list.push(`${root} = ${agent}`);
 		} else {
 			const id = obj.name;
 
@@ -47,13 +46,10 @@ function gamma(obj, root, list, lvl)
 		const id = obj.var;
 		const body = obj.body;
 		const wire = mkwire();
-		let tree = "\\lam_{%s}(%s, %s)";
+		const agent = `\\lam_{${lvl}}`;
+		const tree = `${agent}(${id}, ${wire})`;
 
-		tree = tree.replace("%s", lvl);
-		tree = tree.replace("%s", id);
-		tree = tree.replace("%s", wire);
-
-		list.push(root + " = " + tree);
+		list.push(`${root} = ${tree}`);
 
 		bv[id] = [];
 
@@ -65,13 +61,10 @@ function gamma(obj, root, list, lvl)
 		const wright = mkwire();
 		const left = obj.left;
 		const right = obj.right;
-		let agent = "\\app_{%s}(%s, %s)";
+		const agent = `\\app_{${lvl}}`;
+		const tree = `${agent}(${wright}, ${root})`;
 
-		agent = agent.replace("%s", lvl);
-		agent = agent.replace("%s", wright);
-		agent = agent.replace("%s", root);
-
-		list.push(wleft + " = " + agent);
+		list.push(`${wleft} = ${tree}`);
 
 		gamma(left, wleft, list, lvl);
 		gamma(right, wright, list, lvl + 1);
