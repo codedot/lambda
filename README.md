@@ -17,9 +17,7 @@ by Ian Mackie, this is the default algorithm;
 [_Lambdascope_][5] by Vincent van Oostrom et al;
 
 * `abstract`, an experimental algorithm described in
-[arXiv:1701.04691v2][6];
-
-* `hybrid`, an undocumented experimental algorithm.
+[arXiv:1701.04691v2][6].
 
 All versions include the embedded read-back mechanism described
 in Section 7 of [10.4204/EPTCS.225.7][4].
@@ -35,18 +33,18 @@ in Section 7 of [10.4204/EPTCS.225.7][4].
 The following is output of the `test.sh` script provided in the package:
 
 ```
-SAMPLE            CLOSED        OPTIMAL       ABSTRACT         HYBRID
-counter             58/6          143/4            N/A           58/4
-w2eta             137/16          205/7           37/7          130/7
-22210ii         1740/182        7886/70         731/70            N/A
-3222ii          5896/545      164197/43        1182/43            N/A
-1022ii        23026/2085     2489461/59        4298/59            N/A
-4222ii    1442259/131124            N/A      262401/64            N/A
-222210ii  6685119/655415            N/A    2359812/201            N/A
-cfact4         15506/887      56890/691       3711/691      77944/691
-yfact4        24150/1741     526971/760       4168/760     349585/760
-cfact5      799868/16170  3074471/13462    69147/13462            N/A
-yfact5      857864/22267            N/A    69780/13550            N/A
+SAMPLE            CLOSED        OPTIMAL       ABSTRACT
+counter             58/6          143/4            N/A
+w2eta             137/16          205/7           37/7
+22210ii         1740/182        7886/70         731/70
+3222ii          5896/545      164197/43        1182/43
+1022ii        23026/2085     2489461/59        4298/59
+4222ii    1442259/131124            N/A      262401/64
+222210ii  6685119/655415            N/A    2359812/201
+cfact4         15506/887      56890/691       3711/691
+yfact4        24150/1741     526971/760       4168/760
+cfact5      799868/16170  3074471/13462    69147/13462
+yfact5      857864/22267            N/A    69780/13550
 ```
 
 `T/B` should be read as total of `T` interactions,
