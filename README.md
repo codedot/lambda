@@ -55,12 +55,12 @@ of which `B` were β-reductions.
 This package provides the `lambda` command with the following interface:
 
 ```
-Usage: lambda [options] (<file> | -e <expr>)
+Usage: lambda [options] (<term> | -f <file>)
 
 Options:
   --algo, -a     Select algorithm         [string]
   --debug, -d    Evaluate step by step   [boolean]
-  --expr, -e     Take expression         [boolean]
+  --file, -f     Read term from file     [boolean]
   --inet, -i     Show interaction net    [boolean]
   --limit, -l    Limit interactions       [number]
   --perf, -p     Print benchmarks        [boolean]

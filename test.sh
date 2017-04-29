@@ -6,7 +6,7 @@ ERR=`mktemp`
 
 run()
 {
-	node lambda -p samples/$1.mlc -a $2 >|$OUT 2>|$ERR
+	node lambda -p -f samples/$1.mlc -a $2 >|$OUT 2>|$ERR
 
 	if [ $? -eq 0 -a "$(cat $OUT)" = "$3" ]; then
 		printf $CELLF "$(sed "$SED" $ERR)"

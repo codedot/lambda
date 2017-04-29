@@ -1,7 +1,7 @@
 all: compile.js
 	npm install
-	node lambda -e "S hello bye world"
-	node lambda -de "x: (x: x) v1 x"
+	node lambda 'S hello bye world'
+	node lambda -d 'x: (x: x) v1 x'
 	sh test.sh
 
 compile.js: grammar.jison

@@ -21,9 +21,9 @@ const opts = {
 		desc: "Evaluate step by step",
 		boolean: true
 	},
-	expr: {
-		alias: "e",
-		desc: "Take expression",
+	file: {
+		alias: "f",
+		desc: "Read term from file",
 		boolean: true
 	},
 	inet: {
@@ -54,7 +54,7 @@ const opts = {
 };
 
 const argv = yargs
-	.usage("Usage: $0 [options] (<file> | -e <expr>)")
+	.usage("Usage: $0 [options] (<term> | -f <file>)")
 	.options(opts)
 	.demandCommand(1)
 	.help()
@@ -67,7 +67,7 @@ const argv = yargs
 
 let input = argv._[0];
 
-if (!argv.expr)
+if (argv.file)
 	input = fs.readFileSync(input, "utf8");
 
 input = comb.concat(input);
