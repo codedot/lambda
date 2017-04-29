@@ -19,7 +19,7 @@ by Ian Mackie, this is the default algorithm;
 * `abstract`, an experimental algorithm described in
 [arXiv:1701.04691v2][6].
 
-All versions include the embedded read-back mechanism described
+The embedded read-back mechanism is described
 in Section 7 of [10.4204/EPTCS.225.7][4].
 
 [2]: https://arxiv.org/abs/1304.2290v8
@@ -35,16 +35,16 @@ The following is output of the `test.sh` script provided in the package:
 ```
 SAMPLE            CLOSED        OPTIMAL       ABSTRACT
 counter             58/6          143/4            N/A
-w2eta             137/16          205/7           37/7
-22210ii         1740/182        7886/70         731/70
-3222ii          5896/545      164197/43        1182/43
-1022ii        23026/2085     2489461/59        4298/59
-4222ii    1442259/131124            N/A      262401/64
-222210ii  6685119/655415            N/A    2359812/201
-cfact4         15506/887      56890/691       3711/691
-yfact4        24150/1741     526971/760       4168/760
-cfact5      799868/16170  3074471/13462    69147/13462
-yfact5      857864/22267            N/A    69780/13550
+w2eta             137/16          205/7            N/A
+22210ii         1740/182        7886/70            N/A
+3222ii          5896/545      164197/43            N/A
+1022ii        23026/2085     2489461/59            N/A
+4222ii    1442259/131124            N/A            N/A
+222210ii  6685119/655415            N/A            N/A
+cfact4         15506/887      56890/691            N/A
+yfact4        24150/1741     526971/760            N/A
+cfact5      799868/16170  3074471/13462            N/A
+yfact5      857864/22267            N/A            N/A
 ```
 
 `T/B` should be read as total of `T` interactions,
@@ -58,16 +58,16 @@ This package provides the `lambda` command with the following interface:
 Usage: lambda [options] (<file> | -e <expr>)
 
 Options:
-  --algo, -a     Select algorithm                             [string]
-  --debug, -d    Enable step-by-step evaluation              [boolean]
-  --expr, -e     Process argument as expression              [boolean]
-  --inet, -i     Show interaction net                        [boolean]
-  --limit, -l    Limit number of interactions                 [number]
-  --perf, -p     Print benchmarks                            [boolean]
-  --stats, -s    Write statistics to file                     [string]
-  --term, -t     Output expanded term                        [boolean]
-  --help, -h     Show help                                   [boolean]
-  --version, -v  Show version number                         [boolean]
+  --algo, -a     Select algorithm         [string]
+  --debug, -d    Evaluate step by step   [boolean]
+  --expr, -e     Take expression         [boolean]
+  --inet, -i     Show interaction net    [boolean]
+  --limit, -l    Limit interactions       [number]
+  --perf, -p     Print benchmarks        [boolean]
+  --stats, -s    Save statistics to file  [string]
+  --term, -t     Output expanded term    [boolean]
+  --help, -h     Show help               [boolean]
+  --version, -v  Show version number     [boolean]
 
 ```
 

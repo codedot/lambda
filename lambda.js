@@ -18,12 +18,12 @@ const opts = {
 	},
 	debug: {
 		alias: "d",
-		desc: "Enable step-by-step evaluation",
+		desc: "Evaluate step by step",
 		boolean: true
 	},
 	expr: {
 		alias: "e",
-		desc: "Process argument as expression",
+		desc: "Take expression",
 		boolean: true
 	},
 	inet: {
@@ -33,7 +33,7 @@ const opts = {
 	},
 	limit: {
 		alias: "l",
-		desc: "Limit number of interactions",
+		desc: "Limit interactions",
 		number: true
 	},
 	perf: {
@@ -43,7 +43,7 @@ const opts = {
 	},
 	stats: {
 		alias: "s",
-		desc: "Write statistics to file",
+		desc: "Save statistics to file",
 		string: true
 	},
 	term: {
@@ -62,7 +62,7 @@ const argv = yargs
 	.version()
 	.alias("version", "v")
 	.strict()
-	.wrap(70)
+	.wrap(50)
 	.argv;
 
 let input = argv._[0];
