@@ -13,7 +13,7 @@ function psi(shared, list)
 		const twins = shared[atom];
 		const wleft = twins.left;
 		const wright = twins.right;
-		const agent = `\\ifan`;
+		const agent = `\\fan_{this.uniq()}`;
 		const tree = `${agent}(${wright}, ${wleft})`;
 
 		list.push(`${atom} = ${tree}`);
@@ -48,8 +48,8 @@ function gamma(obj, root, list)
 		const body = obj.body;
 		const fv = getfv(body);
 		const wire = mkwire();
-		const agent = (id in fv) ? id : "\\nil";
-		const tree = `\\ilam(${agent}, ${wire})`;
+		const agent = (id in fv) ? id : "\\erase";
+		const tree = `\\lambda(${agent}, ${wire})`;
 
 		list.push(`${root} = ${tree}`);
 
@@ -60,7 +60,7 @@ function gamma(obj, root, list)
 		const left = obj.left;
 		const right = obj.right;
 		const shared = mktwins(left, right);
-		const agent = `\\iapp(${wright}, ${root})`;
+		const agent = `\\apply(${wright}, ${root})`;
 
 		list.push(`${wleft} = ${agent}`);
 
@@ -74,7 +74,7 @@ function gamma(obj, root, list)
 function encode(generic, term)
 {
 	const inconfig = [
-		"\\walk(\\read_{this.mkhole()}(!print)) = root"
+		"\\read_{this.mkhole()}(!print) = root"
 	];
 
 	mkwire = generic.mkwire;
