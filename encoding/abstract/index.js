@@ -20,14 +20,6 @@ function psi(shared, list)
 	}
 }
 
-function mkscope(n, s)
-{
-	for (let i = 0; i < n; i++)
-		s = `\\scope_{0}(${s})`;
-
-	return s;
-}
-
 function gamma(obj, root, list)
 {
 	const node = obj.node;
@@ -39,9 +31,9 @@ function gamma(obj, root, list)
 
 			list.push(`${root} = ${agent}`);
 		} else {
-			const agent = mkscope(0, root);
+			const name = obj.name;
 
-			list.push(`${obj.name} = ${agent}`);
+			list.push(`${root} = ${name}`);
 		}
 	} else if ("abst" == node) {
 		const id = obj.var;
