@@ -5,6 +5,7 @@ const compile = require("./compile");
 const inet = require("inet-lib");
 
 const parser = new compile.Parser();
+const defalgo = "abstract";
 let expanded;
 
 function obj2mlc(obj)
@@ -47,7 +48,7 @@ function obj2mlc(obj)
 
 function mlc2in(mlc, algo)
 {
-	const encode = encoding[algo ? algo : "abstract"];
+	const encode = encoding[algo ? algo : defalgo];
 	let insrc;
 
 	if (!encode)
@@ -108,6 +109,7 @@ function run(mlc, algo, max)
 	return output;
 }
 
+run.defalgo = defalgo;
 run.algos = Object.keys(encoding);
 run.prepare = prepare;
 run.debug = debug;
