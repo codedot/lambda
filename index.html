@@ -110,6 +110,7 @@ function step()
 
 function setup()
 {
+	const defalgo = mlcjs.defalgo;
 	const example = mlcjs.example;
 
 	doc = $(document);
@@ -126,6 +127,8 @@ function setup()
 		opt = `<option value="${opt}">${opt}</option>`;
 		encoding.append(opt);
 	});
+
+	$(`option[value='${defalgo}']`).prop("selected", true);
 
 	limit.val(1e6);
 	limit.attr("min", 0);
@@ -167,7 +170,6 @@ browserified
 </div>
 
 <select id="encoding" class="form-control">
-<option value="" selected>default</option>
 </select>
 
 <div class="input-group-addon">&le;</div>
