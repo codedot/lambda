@@ -73,36 +73,6 @@
 	++this.total;
 } \atom_{M};
 
-\erase {
-	/* Erase an atom. */
-	++this.total;
-} \atom_{M};
-
-\erase {
-	/* Erase application. */
-	++this.total;
-} \apply[\erase, \erase];
-
-\erase {
-	/* Erase abstraction. */
-	++this.total;
-} \lambda[\erase, \erase];
-
-\erase {
-	/* Erase duplicator. */
-	++this.total;
-} \fan_{i}[\erase, \erase];
-
-\erase {
-	/* Finish erasing. */
-	++this.total;
-} \erase;
-
-\erase {
-	/* Erase context. */
-	++this.total;
-} \read_{C}[\erase];
-
 $$
 
 INCONFIG

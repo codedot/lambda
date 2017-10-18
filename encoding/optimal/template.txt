@@ -50,11 +50,6 @@
 	++this.total;
 } \lambda[\scope_{i + 1}(a), \scope_{i + 1}(b)];
 
-\erase {
-	/* Erase delimiter. */
-	++this.total;
-} \scope_{i}[\erase];
-
 \scope_{i}[\atom_{M}] {
 	/* Return an atom. */
 	++this.total;
@@ -122,31 +117,6 @@
 	else
 		return false;
 } \fan_{j}[\fan_{i}(a, c), \fan_{i}(b, d)];
-
-\erase {
-	/* Erase an atom. */
-	++this.total;
-} \atom_{M};
-
-\erase {
-	/* Erase application. */
-	++this.total;
-} \apply[\erase, \erase];
-
-\erase {
-	/* Erase abstraction. */
-	++this.total;
-} \lambda[\erase, \erase];
-
-\erase {
-	/* Erase duplicator. */
-	++this.total;
-} \fan_{i}[\erase, \erase];
-
-\erase {
-	/* Finish erasing. */
-	++this.total;
-} \erase;
 
 $$
 
