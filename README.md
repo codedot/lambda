@@ -9,14 +9,16 @@ Its browserified version is available as [an online demo][1].
 
 The following encodings of the lambda calculus are included:
 
+* `abstract`, an experimental algorithm based on
+the ideas from [arXiv:1701.04691v2][6],
+this is the default algorithm;
+
 * `closed`, the approach of [arXiv:1304.2290v8][2] applied to
 [_An Interaction Net Implementation of Closed Reduction_][3]
-by Ian Mackie, this is the default algorithm;
+by Ian Mackie;
 
 * `optimal`, an implementation of
 [_Lambdascope_][5] by Vincent van Oostrom et al;
-
-* `abstract`, an undocumented experimental algorithm.
 
 The embedded read-back mechanism is described
 in Section 7 of [10.4204/EPTCS.225.7][4].
@@ -25,24 +27,25 @@ in Section 7 of [10.4204/EPTCS.225.7][4].
 [3]: http://dx.doi.org/10.1007/978-3-642-24452-0_3
 [4]: http://dx.doi.org/10.4204/EPTCS.225.7
 [5]: http://www.phil.uu.nl/~oostrom/publication/pdf/lambdascope.pdf
+[6]: https://arxiv.org/abs/1701.04691v2
 
 # Benchmarks
 
 The following is output of the `test.sh` script provided in the package:
 
 ```
-SAMPLE            CLOSED        OPTIMAL       ABSTRACT
-counter             58/6          143/4           27/4
-w2eta             137/16          205/7           37/7
-22210ii         1740/182        7886/70         731/70
-3222ii          5896/545      164197/43        1182/43
-1022ii        23026/2085     2489461/59        4298/59
-4222ii    1442259/131124            N/A      262401/64
-222210ii  6685119/655415            N/A    2359812/201
-cfact4         15506/887      56890/691       3711/691
-yfact4        24150/1741     526971/760       4168/760
-cfact5      799868/16170  3074471/13462    69147/13462
-yfact5      857864/22267            N/A    69780/13550
+SAMPLE          ABSTRACT         CLOSED        OPTIMAL
+counter             27/4           58/6          143/4
+w2eta               37/7         137/16          205/7
+22210ii           731/70       1740/182        7886/70
+3222ii           1182/43       5896/545      164197/43
+1022ii           4298/59     23026/2085     2489461/59
+4222ii         262401/64 1442259/131124            N/A
+222210ii     2359812/201 6685119/655415            N/A
+cfact4          3711/691      15506/887      56890/691
+yfact4          4168/760     24150/1741     526971/760
+cfact5       69147/13462   799868/16170  3074471/13462
+yfact5       69780/13550   857864/22267            N/A
 ```
 
 `T/B` should be read as total of `T` interactions,

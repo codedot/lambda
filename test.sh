@@ -31,37 +31,37 @@ compare()
 }
 
 printf "$TERMF$CELLF$CELLF$CELLF\n" SAMPLE \
-	CLOSED OPTIMAL ABSTRACT
+	ABSTRACT CLOSED OPTIMAL
 
 compare counter "v1: v1 (v2: v2 v2) (v3: v3 v3)" \
-	closed optimal abstract
+	abstract closed optimal
 
 compare w2eta "v1, v2: v1 (v1 (v1 (v1 v2)))" \
-	closed optimal abstract
+	abstract closed optimal
 
 compare 22210ii "v1: v1" \
-	closed optimal abstract
+	abstract closed optimal
 
 compare 3222ii "v1: v1" \
-	closed optimal abstract
+	abstract closed optimal
 
 compare 1022ii "v1: v1" \
-	closed optimal abstract
+	abstract closed optimal
 
 compare 4222ii "v1: v1" \
-	closed OPTIMAL abstract
+	abstract closed OPTIMAL
 
 compare 222210ii "v1: v1" \
-	closed OPTIMAL abstract
+	abstract closed OPTIMAL
 
 compare cfact4 "v1, v2: v1 (v1 (v1 v2))" \
-	closed optimal abstract
+	abstract closed optimal
 
 compare yfact4 "v1, v2: v1 (v1 (v1 v2))" \
-	closed optimal abstract
+	abstract closed optimal
 
 compare cfact5 "v1, v2: v1 (v1 (v1 (v1 (v1 v2))))" \
-	closed optimal abstract
+	abstract closed optimal
 
 compare yfact5 "v1, v2: v1 (v1 (v1 (v1 (v1 v2))))" \
-	closed OPTIMAL abstract
+	abstract closed OPTIMAL
