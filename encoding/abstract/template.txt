@@ -4,48 +4,36 @@
 	++this.total;
 } \lambda[a, b];
 
-\apply[
-	\fan_{[i[0], i[1] + 1]}(a, b),
-	\fan_{[i[0], i[1] + 1]}(c, d)
-] {
+\apply[\fanin_{i}(a, b), \fanout_{i}(c, d)] {
 	/* Duplicate application. */
 	++this.total;
-} \fan_{i}[\apply(a, c), \apply(b, d)];
+} \fanout_{i}[\apply(a, c), \apply(b, d)];
 
-\fan_{i}[\lambda(a, b), \lambda(c, d)] {
+\fanin_{i}[\lambda(a, b), \lambda(c, d)] {
 	/* Duplicate abstraction. */
 	++this.total;
-} \lambda[
-	\fan_{[i[0], i[1] + 1]}(a, c),
-	\fan_{[i[0], i[1] + 1]}(b, d)
-];
+} \lambda[\fanout_{i}(a, c), \fanin_{i}(b, d)];
 
-\fan_{i}[
-	\fan_{[j[0], j[1] + 1]}(a, b),
-	\fan_{[j[0], j[1] + 1]}(c, d)
-] {
+\fanin_{i}[\fanout_{this.int1(j, i)}(a, b), \fanout_{this.int2(j, i)}(c, d)] {
 	/* Duplicate different fans. */
-	if ((i[0] != j[0]) && (i[1] < j[1]))
+	if (!this.match(i, j))
 		++this.total;
 	else
 		return false;
-} \fan_{j}[
-	\fan_{[this.plus(i[0], j[0]), i[1]]}(a, c),
-	\fan_{[this.minus(i[0], j[0]), i[1]]}(b, d)
-];
+} \fanout_{j}[\fanin_{this.int1(i, j)}(a, c), \fanin_{this.int2(i, j)}(b, d)];
 
-\fan_{i}[a, b] {
+\fanin_{i}[a, b] {
 	/* Annihilate matching fans. */
-	if ((i[0] == j[0]) || (i[1] == j[1]))
+	if (this.match(i, j))
 		++this.total;
 	else
 		return false;
-} \fan_{j}[a, b];
+} \fanout_{j}[a, b];
 
-\read_{C}[\fan_{i}(a, b)] {
+\read_{C}[\fanout_{i}(a, b)] {
 	/* Duplicate context. */
 	++this.total;
-} \fan_{i}[\read_{C}(a), \read_{this.clone(C)}(b)];
+} \fanout_{i}[\read_{C}(a), \read_{this.clone(C)}(b)];
 
 \print {
 	/* Output results of read-back. */
@@ -68,7 +56,7 @@
 	++this.total;
 } \atom_{M};
 
-\fan_{i}[\atom_{M}, \atom_{M}] {
+\fanin_{i}[\atom_{M}, \atom_{M}] {
 	/* Duplicate an atom. */
 	++this.total;
 } \atom_{M};
@@ -81,57 +69,29 @@ $$
 
 READBACK
 
-const table = [];
-let last = 0;
+const db = {};
+let nonce = 0;
 
-function uniq()
+function decide(i, j)
 {
-	let fresh = ++last;
+	if (db[`${i}-${j}`])
+		return;
 
-	fresh = fresh.toString();
-	fresh = hash(fresh);
-	return [fresh, 1];
+	db[`${i}-${j}`] = ++nonce;
+	db[`${i}+${j}`] = ++nonce;
+	db[`${j}-${i}`] = j;
+	db[`${j}+${i}`] = j;
 }
 
-function cons(s, a, b)
-{
-	return hash(a + s + b);
-}
+this.uniq = () => ++nonce;
+this.int1 = (i, j) => db[`${i}-${j}`];
+this.int2 = (i, j) => db[`${i}+${j}`];
+this.match = (i, j) => {
+	if (i == j)
+		return true;
 
-function mktable()
-{
-	for (let n = 0; n < 256; n++) {
-		let c = n;
-
-		for (let k = 0; k < 8; k++) {
-			if (c & 1)
-				c = 0xEDB88320 ^ (c >>> 1);
-			else
-				c = c >>> 1;
-		}
-
-		table[n] = c;
-	}
-}
-
-function hash(str)
-{
-	const n = str.length;
-	let crc = 0 ^ (-1);
-
-	for (let i = 0; i < n; i++) {
-		const b = str.charCodeAt(i);
-
-		crc = (crc >>> 8) ^ table[(crc ^ b) & 0xFF];
-	}
-
-	return (crc ^ (-1)) >>> 0;
-}
-
-mktable();
-
-this.plus = cons.bind(this, "+");
-this.minus = cons.bind(this, "-");
-this.uniq = uniq;
+	decide(i, j);
+	return false;
+};
 this.beta = 0;
 this.total = 0;

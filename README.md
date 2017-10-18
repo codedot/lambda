@@ -16,8 +16,7 @@ by Ian Mackie, this is the default algorithm;
 * `optimal`, an implementation of
 [_Lambdascope_][5] by Vincent van Oostrom et al;
 
-* `abstract`, an experimental algorithm described in
-[arXiv:1701.04691v2][6].
+* `abstract`, an undocumented experimental algorithm.
 
 The embedded read-back mechanism is described
 in Section 7 of [10.4204/EPTCS.225.7][4].
@@ -26,7 +25,6 @@ in Section 7 of [10.4204/EPTCS.225.7][4].
 [3]: http://dx.doi.org/10.1007/978-3-642-24452-0_3
 [4]: http://dx.doi.org/10.4204/EPTCS.225.7
 [5]: http://www.phil.uu.nl/~oostrom/publication/pdf/lambdascope.pdf
-[6]: https://arxiv.org/abs/1701.04691v2
 
 # Benchmarks
 
@@ -34,7 +32,7 @@ The following is output of the `test.sh` script provided in the package:
 
 ```
 SAMPLE            CLOSED        OPTIMAL       ABSTRACT
-counter             58/6          143/4            N/A
+counter             58/6          143/4           27/4
 w2eta             137/16          205/7           37/7
 22210ii         1740/182        7886/70         731/70
 3222ii          5896/545      164197/43        1182/43

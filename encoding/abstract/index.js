@@ -13,7 +13,7 @@ function psi(shared, list)
 		const twins = shared[atom];
 		const wleft = twins.left;
 		const wright = twins.right;
-		const agent = `\\fan_{this.uniq()}`;
+		const agent = `\\fanin_{this.uniq()}`;
 		const tree = `${agent}(${wright}, ${wleft})`;
 
 		list.push(`${atom} = ${tree}`);
