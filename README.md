@@ -10,7 +10,8 @@ Its browserified version is available as [an online demo][1].
 The following encodings of the lambda calculus are included:
 
 * `abstract`, an impure solution to the problem of matching fans
-in Lamping's abstract algorithm, described in [arXiv:1710.07516][6],
+in [Lamping's abstract algorithm][7],
+described in [arXiv:1710.07516][6],
 this is the default algorithm;
 
 * `closed`, the approach of [arXiv:1304.2290v8][2] applied to
@@ -28,6 +29,7 @@ in Section 7 of [10.4204/EPTCS.225.7][4].
 [4]: http://dx.doi.org/10.4204/EPTCS.225.7
 [5]: http://www.phil.uu.nl/~oostrom/publication/pdf/lambdascope.pdf
 [6]: https://arxiv.org/abs/1710.07516
+[7]: https://doi.org/10.1145/96709.96711
 
 # Benchmarks
 
