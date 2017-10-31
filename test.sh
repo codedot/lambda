@@ -39,20 +39,26 @@ compare counter "v1: v1 (v2: v2 v2) (v3: v3 v3)" \
 compare w2eta "v1, v2: v1 (v1 (v1 (v1 v2)))" \
 	abstract closed optimal
 
-compare 22210ii "v1: v1" \
+compare 1021 "v1: v1" \
 	abstract closed optimal
 
-compare 3222ii "v1: v1" \
+compare 22210i "v1: v1" \
 	abstract closed optimal
 
-compare 1022ii "v1: v1" \
+compare 3222i "v1: v1" \
 	abstract closed optimal
 
-compare 4222ii "v1: v1" \
+compare 1022i "v1: v1" \
+	abstract closed optimal
+
+compare 4222i "v1: v1" \
 	abstract closed OPTIMAL
 
-compare 222210ii "v1: v1" \
+compare 222210i "v1: v1" \
 	abstract closed OPTIMAL
+
+compare 2222101 "v1: v1" \
+	abstract CLOSED OPTIMAL
 
 compare cfact4 "v1, v2: v1 (v1 (v1 v2))" \
 	abstract closed optimal

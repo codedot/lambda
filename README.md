@@ -19,7 +19,7 @@ this is the default algorithm;
 by Ian Mackie;
 
 * `optimal`, an implementation of
-[_Lambdascope_][5] by Vincent van Oostrom et al;
+[_Lambdascope_][5] by Vincent van Oostrom et al.
 
 The embedded read-back mechanism is described
 in Section 7 of [10.4204/EPTCS.225.7][4].
@@ -39,14 +39,16 @@ The following is output of the `test.sh` script provided in the package:
 SAMPLE          ABSTRACT         CLOSED        OPTIMAL
 counter             27/4           58/6          143/4
 w2eta               37/7         137/16          205/7
-22210ii           731/70       1740/182        7886/70
-3222ii           1182/43       5896/545      164197/43
-1022ii           4298/59     23026/2085     2489461/59
-4222ii         262401/64 1442259/131124            N/A
-222210ii     2359812/201 6685119/655415            N/A
-cfact4          3711/691      15506/887      56890/691
+1021              173/45     11747/1058      717218/45
+22210i            728/69       1719/181        7826/69
+3222i            1179/42       5635/544      163882/42
+1022i            4295/58     21997/2084     2488384/58
+4222i          262398/63 1376718/131123            N/A
+222210i      2359809/200 6619578/655414            N/A
+2222101   4719108/590024            N/A            N/A
+cfact4          3715/692      15560/888      56928/692
 yfact4          4168/760     24150/1741     526971/760
-cfact5       69147/13462   799868/16170  3074471/13462
+cfact5       69151/13463   799931/16171  3074509/13463
 yfact5       69780/13550   857864/22267            N/A
 ```
 
