@@ -8,7 +8,6 @@ const fs = require("fs");
 const path = require("path");
 
 const helper = path.join(__dirname, "helper.txt");
-const comb = fs.readFileSync(helper, "utf8");
 
 const opts = {
 	algo: {
@@ -35,6 +34,11 @@ const opts = {
 		alias: "l",
 		desc: "Limit interactions",
 		number: true
+	},
+	macros: {
+		alias: "m",
+		desc: "Read macros from file",
+		string: true
 	},
 	perf: {
 		alias: "p",
@@ -64,6 +68,9 @@ const argv = yargs
 	.strict()
 	.wrap(50)
 	.argv;
+
+const macros = argv.macros ? argv.macros : helper;
+const comb = fs.readFileSync(macros, "utf8");
 
 let input = argv._[0];
 
