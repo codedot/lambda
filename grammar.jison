@@ -5,7 +5,7 @@
 "#".* /* skip comment */
 \s+ /* skip whitespace */
 
-[A-Za-z][A-Za-z0-9]* return "NAME";
+[^#=;,:()\s]+ return "NAME";
 
 "=" return "=";
 ";" return ";";

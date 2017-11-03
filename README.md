@@ -129,7 +129,7 @@ the current interaction net state.
 Input consists of an optional list of macro definitions and a term:
 
 ```
-%token NAME /* [A-Za-z][A-Za-z0-9]* */
+%token NAME
 
 %%
 
