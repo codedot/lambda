@@ -12,6 +12,7 @@
 ":" return ":";
 "(" return "(";
 ")" return ")";
+<<EOF>> return "EOF";
 
 /lex
 
@@ -19,7 +20,7 @@
 
 %%
 
-text : defs term {return {macros: $1, term: $2};}
+text : defs term EOF {return {macros: $1, term: $2};}
      ;
 defs : /* empty */ {$$ = [];}
      | defs NAME '=' term ';' {$1.unshift({id: $2, def: $4}); $$ = $1;}
