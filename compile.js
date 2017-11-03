@@ -580,28 +580,30 @@ options: {},
 performAction: function anonymous(yy,yy_,$avoiding_name_collisions,YY_START) {
 var YYSTATE=YY_START;
 switch($avoiding_name_collisions) {
-case 0:/* skip whitespace */
+case 0:/* skip comment */
 break;
-case 1:return "NAME";
+case 1:/* skip whitespace */
 break;
-case 2:return "=";
+case 2:return "NAME";
 break;
-case 3:return ";";
+case 3:return "=";
 break;
-case 4:return ",";
+case 4:return ";";
 break;
-case 5:return ":";
+case 5:return ",";
 break;
-case 6:return "(";
+case 6:return ":";
 break;
-case 7:return ")";
+case 7:return "(";
 break;
-case 8:return "EOF";
+case 8:return ")";
+break;
+case 9:return "EOF";
 break;
 }
 },
-rules: [/^(?:\s+)/,/^(?:[A-Za-z][A-Za-z0-9]*)/,/^(?:=)/,/^(?:;)/,/^(?:,)/,/^(?::)/,/^(?:\()/,/^(?:\))/,/^(?:$)/],
-conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8],"inclusive":true}}
+rules: [/^(?:#.*)/,/^(?:\s+)/,/^(?:[A-Za-z][A-Za-z0-9]*)/,/^(?:=)/,/^(?:;)/,/^(?:,)/,/^(?::)/,/^(?:\()/,/^(?:\))/,/^(?:$)/],
+conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9],"inclusive":true}}
 });
 return lexer;
 })();
