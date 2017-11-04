@@ -82,33 +82,63 @@ Options:
 CLI predefines a number of commonly used combinators:
 
 ```
+# Common combinators
 I = x: x;
 K = x, y: x;
 S = x, y, z: x z (y z);
+Y = (a: a a) (self, f: f (self self f));
+
+# Booleans
 T = K;
 F = K I;
-AND = p, q: p q F;
-OR = p, q: p T q;
-NOT = p: (a, b: p b a);
-C0 = f, x: x;
-C1 = f, x: f x;
-C2 = f, x: f (f x);
-C3 = f, x: f (f (f x));
-C4 = f, x: f (f (f (f x)));
-C5 = f, x: f (f (f (f (f x))));
-C6 = f, x: f (f (f (f (f (f x)))));
-C7 = f, x: f (f (f (f (f (f (f x))))));
-C8 = f, x: f (f (f (f (f (f (f (f x)))))));
-C9 = f, x: f (f (f (f (f (f (f (f (f x))))))));
-C10 = f, x: f (f (f (f (f (f (f (f (f (f x)))))))));
-SUCC = n: (f, x: f (n f x));
-PLUS = m, n: (f, x: m f (n f x));
-MULT = m, n: (f: m (n f));
-EXP = m, n: n m;
-PRED = n: (f, x: n (g, h: h (g f)) (K x) I);
-MINUS = m, n: n PRED m;
-ZERO = n: n (K F) T;
-Y = (a: a a) (self, f: f (self self f));
+Not = p, a, b: p b a;
+And = p, q: p q F;
+Or = p, q: p T q;
+Xor = p, q: p (Not q) q;
+
+# Pairs/lists
+[] = K T;
+[]? = l: l (h, t: F);
+Cons = h, t, x: x h t;
+Head = l: l T;
+Tail = l: l F;
+
+# Church arithmetic
++1 = n, f, x: f (n f x);
++ = m, n, f, x: m f (n f x);
+* = m, n, f: m (n f);
+^ = m, n: n m;
+-1 = n, f, x: n (g, h: h (g f)) (K x) I;
+- = m, n: n -1 m;
+0? = n: n (K F) T;
+
+# Church numerals
+0 = f, x: x;
+1 = f, x: f x;
+2 = +1 1;
+3 = +1 2;
+4 = ^ 2 2;
+5 = + 2 3;
+6 = * 2 3;
+7 = +1 6;
+8 = ^ 2 3;
+9 = ^ 3 2;
+10 = * 2 5;
+16 = ^ 2 4;
+20 = * 2 10;
+30 = * 3 10;
+32 = ^ 2 5;
+64 = ^ 2 6;
+100 = ^ 10 2;
+128 = ^ 2 7;
+256 = ^ 2 8;
+512 = ^ 2 9;
+1k = ^ 10 3;
+1ki = ^ 2 10;
+1m = ^ 10 6;
+1mi = ^ 2 20;
+1g = ^ 10 9;
+1gi = ^ 2 30;
 ```
 
 # API
