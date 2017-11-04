@@ -68,6 +68,7 @@ Options:
   --file, -f     Read term from file     [boolean]
   --inet, -i     Show interaction net    [boolean]
   --limit, -l    Limit interactions       [number]
+  --macros, -m   Read macros from file    [string]
   --perf, -p     Print benchmarks        [boolean]
   --stats, -s    Save statistics to file  [string]
   --term, -t     Output expanded term    [boolean]
