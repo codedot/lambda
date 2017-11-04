@@ -86,19 +86,19 @@ global.mlcjs = mlcjs;
   }
 */
 var parser = (function(){
-var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[6,14],$V1=[1,8],$V2=[2,11],$V3=[1,10],$V4=[1,11],$V5=[1,8,15],$V6=[1,6,8,14,15],$V7=[1,15];
+var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[7,15],$V1=[1,8],$V2=[2,11],$V3=[1,11],$V4=[1,12],$V5=[6,9,16],$V6=[6,7,9,15,16],$V7=[1,16];
 var parser = {trace: function trace() { },
 yy: {},
-symbols_: {"error":2,"text":3,"defs":4,"term":5,"NAME":6,"=":7,";":8,"appl":9,"abst":10,",":11,":":12,"atom":13,"(":14,")":15,"$accept":0,"$end":1},
-terminals_: {2:"error",6:"NAME",7:"=",8:";",11:",",12:":",14:"(",15:")"},
-productions_: [0,[3,2],[4,0],[4,5],[5,1],[5,1],[10,3],[10,3],[9,1],[9,2],[13,3],[13,1]],
+symbols_: {"error":2,"text":3,"defs":4,"term":5,"EOF":6,"NAME":7,"=":8,";":9,"appl":10,"abst":11,",":12,":":13,"atom":14,"(":15,")":16,"$accept":0,"$end":1},
+terminals_: {2:"error",6:"EOF",7:"NAME",8:"=",9:";",12:",",13:":",15:"(",16:")"},
+productions_: [0,[3,3],[4,0],[4,5],[5,1],[5,1],[11,3],[11,3],[10,1],[10,2],[14,3],[14,1]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
 var $0 = $$.length - 1;
 switch (yystate) {
 case 1:
-return {macros: $$[$0-1], term: $$[$0]};
+return {macros: $$[$0-2], term: $$[$0-1]};
 break;
 case 2:
 this.$ = [];
@@ -120,8 +120,8 @@ this.$ = {node: "atom", name: yytext};
 break;
 }
 },
-table: [o($V0,[2,2],{3:1,4:2}),{1:[3]},{5:3,6:[1,4],9:5,10:6,13:7,14:$V1},{1:[2,1]},o([1,6,14],$V2,{7:[1,9],11:$V3,12:$V4}),o($V5,[2,4],{13:12,6:[1,13],14:$V1}),o($V5,[2,5]),o($V6,[2,8]),{5:14,6:$V7,9:5,10:6,13:7,14:$V1},{5:16,6:$V7,9:5,10:6,13:7,14:$V1},{6:[1,18],10:17},{5:19,6:$V7,9:5,10:6,13:7,14:$V1},o($V6,[2,9]),o($V6,$V2),{15:[1,20]},o($V6,$V2,{11:$V3,12:$V4}),{8:[1,21]},o($V5,[2,6]),{11:$V3,12:$V4},o($V5,[2,7]),o($V6,[2,10]),o($V0,[2,3])],
-defaultActions: {3:[2,1]},
+table: [o($V0,[2,2],{3:1,4:2}),{1:[3]},{5:3,7:[1,4],10:5,11:6,14:7,15:$V1},{6:[1,9]},o([6,7,15],$V2,{8:[1,10],12:$V3,13:$V4}),o($V5,[2,4],{14:13,7:[1,14],15:$V1}),o($V5,[2,5]),o($V6,[2,8]),{5:15,7:$V7,10:5,11:6,14:7,15:$V1},{1:[2,1]},{5:17,7:$V7,10:5,11:6,14:7,15:$V1},{7:[1,19],11:18},{5:20,7:$V7,10:5,11:6,14:7,15:$V1},o($V6,[2,9]),o($V6,$V2),{16:[1,21]},o($V6,$V2,{12:$V3,13:$V4}),{9:[1,22]},o($V5,[2,6]),{12:$V3,13:$V4},o($V5,[2,7]),o($V6,[2,10]),o($V0,[2,3])],
+defaultActions: {9:[2,1]},
 parseError: function parseError(str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -594,26 +594,30 @@ options: {},
 performAction: function anonymous(yy,yy_,$avoiding_name_collisions,YY_START) {
 var YYSTATE=YY_START;
 switch($avoiding_name_collisions) {
-case 0:/* skip whitespace */
+case 0:/* skip comment */
 break;
-case 1:return "NAME";
+case 1:/* skip whitespace */
 break;
-case 2:return "=";
+case 2:return "NAME";
 break;
-case 3:return ";";
+case 3:return "=";
 break;
-case 4:return ",";
+case 4:return ";";
 break;
-case 5:return ":";
+case 5:return ",";
 break;
-case 6:return "(";
+case 6:return ":";
 break;
-case 7:return ")";
+case 7:return "(";
+break;
+case 8:return ")";
+break;
+case 9:return "EOF";
 break;
 }
 },
-rules: [/^(?:\s+)/,/^(?:[A-Za-z][A-Za-z0-9]*)/,/^(?:=)/,/^(?:;)/,/^(?:,)/,/^(?::)/,/^(?:\()/,/^(?:\))/],
-conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7],"inclusive":true}}
+rules: [/^(?:#.*)/,/^(?:\s+)/,/^(?:[^#=;,:()\s]+)/,/^(?:=)/,/^(?:;)/,/^(?:,)/,/^(?::)/,/^(?:\()/,/^(?:\))/,/^(?:$)/],
+conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9],"inclusive":true}}
 });
 return lexer;
 })();
