@@ -3,10 +3,11 @@ CELLF="%15s"
 SED="s/(\([0-9]*\)),.*$/\/\1/"
 OUT=`mktemp`
 ERR=`mktemp`
+LAMBDA="node lambda -m samples/lib.mlc -p"
 
 run()
 {
-	node lambda -p -f $1 -a $2 >|$OUT 2>|$ERR
+	$LAMBDA -f $1 -a $2 >|$OUT 2>|$ERR
 
 	if [ $? -eq 0 -a "$(cat $OUT)" = "$3" ]; then
 		printf $CELLF "$(sed "$SED" $ERR)"
