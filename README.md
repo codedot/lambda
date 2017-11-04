@@ -139,6 +139,10 @@ Tail = l: l F;
 1mi = ^ 2 20;
 1g = ^ 10 9;
 1gi = ^ 2 30;
+
+# Recursive functions
+Fact = n: n (f, i: * (f (+1 i)) i) (K 1) 1;
+Fibo = n: n (f, a, b: f (+ a b) a) F 1 0;
 ```
 
 # API
