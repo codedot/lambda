@@ -10,7 +10,7 @@ F = K I;
 Not = p, a, b: p b a;
 And = p, q: p q F;
 Or = p, q: p T q;
-Xor = p, q: p (Not q) q;
+Xor = p, q: p Not I q;
 
 # Pairs/lists
 [] = K T;
