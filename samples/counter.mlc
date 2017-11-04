@@ -1,1 +1,2 @@
 (f, x: x f f) (x: (y: y y) (y: y x))
+# v1: v1 (v2: v2 v2) (v3: v3 v3)

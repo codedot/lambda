@@ -6,7 +6,7 @@ ERR=`mktemp`
 
 run()
 {
-	node lambda -p -f samples/$1.mlc -a $2 >|$OUT 2>|$ERR
+	node lambda -p -f $1 -a $2 >|$OUT 2>|$ERR
 
 	if [ $? -eq 0 -a "$(cat $OUT)" = "$3" ]; then
 		printf $CELLF "$(sed "$SED" $ERR)"
@@ -18,13 +18,14 @@ run()
 compare()
 {
 	term=$1
-	nf=$2
-	shift 2
+	file=samples/$term.mlc
+	nf="$(sed -n 's/^# *//p' $file)"
+	shift 1
 
 	printf $TERMF $term
 
 	for algo; do
-		run $term $algo "$nf"
+		run $file $algo "$nf"
 	done
 
 	printf "\n"
@@ -33,41 +34,16 @@ compare()
 printf "$TERMF$CELLF$CELLF$CELLF\n" SAMPLE \
 	ABSTRACT CLOSED OPTIMAL
 
-compare counter "v1: v1 (v2: v2 v2) (v3: v3 v3)" \
-	abstract closed optimal
-
-compare w2eta "v1, v2: v1 (v1 (v1 (v1 v2)))" \
-	abstract closed optimal
-
-compare 1021 "v1: v1" \
-	abstract closed optimal
-
-compare 22210i "v1: v1" \
-	abstract closed optimal
-
-compare 3222i "v1: v1" \
-	abstract closed optimal
-
-compare 1022i "v1: v1" \
-	abstract closed optimal
-
-compare 4222i "v1: v1" \
-	abstract closed OPTIMAL
-
-compare 222210i "v1: v1" \
-	abstract closed OPTIMAL
-
-compare 2222101 "v1: v1" \
-	abstract CLOSED OPTIMAL
-
-compare cfact4 "v1, v2: v1 (v1 (v1 v2))" \
-	abstract closed optimal
-
-compare yfact4 "v1, v2: v1 (v1 (v1 v2))" \
-	abstract closed optimal
-
-compare cfact5 "v1, v2: v1 (v1 (v1 (v1 (v1 v2))))" \
-	abstract closed optimal
-
-compare yfact5 "v1, v2: v1 (v1 (v1 (v1 (v1 v2))))" \
-	abstract closed OPTIMAL
+compare counter abstract closed optimal
+compare w2eta   abstract closed optimal
+compare 1021    abstract closed optimal
+compare 22210i  abstract closed optimal
+compare 3222i   abstract closed optimal
+compare 1022i   abstract closed optimal
+compare 4222i   abstract closed OPTIMAL
+compare 222210i abstract closed OPTIMAL
+compare 2222101 abstract CLOSED OPTIMAL
+compare cfact4  abstract closed optimal
+compare yfact4  abstract closed optimal
+compare cfact5  abstract closed optimal
+compare yfact5  abstract closed OPTIMAL

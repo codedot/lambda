@@ -1,3 +1,4 @@
 FACT = n: n (p, q: MULT q (p (SUCC q))) (K C1) C1;
 
 MINUS (C3 C5) (FACT C5)
+# v1, v2: v1 (v1 (v1 (v1 (v1 v2))))
