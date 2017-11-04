@@ -60,7 +60,7 @@ const opts = {
 const argv = yargs
 	.usage("Usage: $0 [options] (<term> | -f <file>)")
 	.options(opts)
-	.demandCommand(1)
+	.demandCommand(1, 1)
 	.help()
 	.alias("help", "h")
 	.version()
