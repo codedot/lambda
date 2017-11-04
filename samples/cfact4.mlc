@@ -1,4 +1,2 @@
-FACT = n: n (p, q: MULT q (p (SUCC q))) (K C1) C1;
-
-MINUS (C3 C3) (FACT C4)
+MINUS (C3 C3) (CFACT C4)
 # v1, v2: v1 (v1 (v1 v2))

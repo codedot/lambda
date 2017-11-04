@@ -25,3 +25,5 @@ PRED = n: (f, x: n (g, h: h (g f)) (K x) I);
 MINUS = m, n: n PRED m;
 ZERO = n: n (K F) T;
 Y = (a: a a) (self, f: f (self self f));
+YFACT = Y (self, n: (ZERO n) C1 (MULT n (self (PRED n))));
+CFACT = n: n (p, q: MULT q (p (SUCC q))) (K C1) C1;

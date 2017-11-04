@@ -1,4 +1,2 @@
-FACT = Y (self, n: (ZERO n) C1 (MULT n (self (PRED n))));
-
-MINUS (C3 C5) (FACT C5)
+MINUS (C3 C5) (YFACT C5)
 # v1, v2: v1 (v1 (v1 (v1 (v1 v2))))
