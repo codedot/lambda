@@ -50,4 +50,5 @@ compare fibo16nt abstract closed optimal
 compare fact100i abstract closed OPTIMAL
 compare cfact5   abstract closed optimal
 compare yfact5   abstract closed OPTIMAL
+compare fibo20i  abstract closed optimal
 compare fact1knt abstract CLOSED OPTIMAL
