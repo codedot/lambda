@@ -43,6 +43,7 @@ compare 1022i    abstract closed OPTIMAL
 compare 4222i    abstract closed OPTIMAL
 compare 222210i  abstract closed OPTIMAL
 compare 2222101  abstract CLOSED OPTIMAL
+compare facty6nt abstract closed optimal
 compare cfact4   abstract closed optimal
 compare yfact4   abstract closed optimal
 compare fibo16nt abstract closed optimal
