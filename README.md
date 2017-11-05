@@ -86,7 +86,7 @@ CLI predefines a number of commonly used combinators:
 I = x: x;
 K = x, y: x;
 S = x, y, z: x z (y z);
-Y = (a: a a) (self, f: f (self self f));
+Y = (a: a a) (a, f: f (a a f));
 
 # Booleans
 T = K;
@@ -141,6 +141,7 @@ Tail = l: l F;
 1gi = ^ 2 30;
 
 # Recursive functions
+FactY = Y (f, n: (0? n) 1 (* (f (-1 n)) n));
 Fact = n: n (f, i: * (f (+1 i)) i) (K 1) 1;
 Fibo = n: n (f, a, b: f (+ a b) a) F 1 0;
 ```
