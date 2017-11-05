@@ -45,11 +45,9 @@ compare 222210i  abstract closed OPTIMAL
 compare 2222101  abstract CLOSED OPTIMAL
 compare facty6nt abstract closed optimal
 compare facty9i  abstract closed optimal
-compare cfact4   abstract closed optimal
-compare yfact4   abstract closed optimal
+compare 33-fact4 abstract closed optimal
 compare fibo16nt abstract closed optimal
 compare fact100i abstract closed OPTIMAL
-compare cfact5   abstract closed optimal
-compare yfact5   abstract closed OPTIMAL
+compare 35-fact5 abstract closed optimal
 compare fibo20i  abstract closed optimal
 compare fact1knt abstract CLOSED OPTIMAL
