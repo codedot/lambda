@@ -1,2 +1,2 @@
-MINUS (C3 C3) (YFACT C4)
+- (^ 3 3) (FactY 4)
 # v1, v2: v1 (v1 (v1 v2))

@@ -3,11 +3,10 @@ CELLF="%15s"
 SED="s/(\([0-9]*\)),.*$/\/\1/"
 OUT=`mktemp`
 ERR=`mktemp`
-LAMBDA="node lambda -m samples/lib.mlc -p"
 
 run()
 {
-	$LAMBDA -f $1 -a $2 >|$OUT 2>|$ERR
+	node lambda -f $1 -a $2 -p >|$OUT 2>|$ERR
 
 	if [ $? -eq 0 -a "$(cat $OUT)" = "$3" ]; then
 		printf $CELLF "$(sed "$SED" $ERR)"
@@ -40,7 +39,7 @@ compare w2eta   abstract closed optimal
 compare 1021    abstract closed optimal
 compare 22210i  abstract closed optimal
 compare 3222i   abstract closed optimal
-compare 1022i   abstract closed optimal
+compare 1022i   abstract closed OPTIMAL
 compare 4222i   abstract closed OPTIMAL
 compare 222210i abstract closed OPTIMAL
 compare 2222101 abstract CLOSED OPTIMAL

@@ -1,2 +1,2 @@
-MINUS (C3 C5) (CFACT C5)
+- (^ 5 3) (Fact 5)
 # v1, v2: v1 (v1 (v1 (v1 (v1 v2))))
