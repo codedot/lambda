@@ -2,10 +2,11 @@
 
 %%
 
+"{"[^}]*"}" /* skip comment */
 "#".* /* skip comment */
 \s+ /* skip whitespace */
 
-[^#=;,:()\s]+ return "NAME";
+[^{}#=;,:()\s]+ return "NAME";
 
 "=" return "=";
 ";" return ";";
