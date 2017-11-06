@@ -6,7 +6,7 @@ function mkvar(fresh)
 	if (fresh)
 		++id;
 
-	return "v" + id.toFixed(0);
+	return JSON.stringify(`v${id}`);
 }
 
 function mkid(name)
@@ -14,11 +14,12 @@ function mkid(name)
 	const fv = {};
 	const obj = {
 		node: "atom",
-		name: name,
 		fv: fv
 	};
 
 	if (name) {
+		name = JSON.stringify(name);
+		obj.name = name;
 		gfv[name] = true;
 		return obj;
 	}

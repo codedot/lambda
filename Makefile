@@ -1,6 +1,6 @@
 all: compile.js
 	npm install
-	node lambda 'S hello bye world'
+	node lambda -t 'S hello bye world'
 	node lambda -d 'x: (x: x) v1 x'
 	sh test.sh
 
