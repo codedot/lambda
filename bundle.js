@@ -86,12 +86,12 @@ global.mlcjs = mlcjs;
   }
 */
 var parser = (function(){
-var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[7,15],$V1=[1,8],$V2=[2,11],$V3=[1,11],$V4=[1,12],$V5=[6,9,16],$V6=[6,7,9,15,16],$V7=[1,16];
+var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[15,17],$V1=[1,9],$V2=[1,7],$V3=[2,11],$V4=[1,12],$V5=[1,13],$V6=[6,9,16],$V7=[6,9,15,16,17];
 var parser = {trace: function trace() { },
 yy: {},
-symbols_: {"error":2,"text":3,"defs":4,"term":5,"EOF":6,"NAME":7,"=":8,";":9,"appl":10,"abst":11,",":12,":":13,"atom":14,"(":15,")":16,"$accept":0,"$end":1},
-terminals_: {2:"error",6:"EOF",7:"NAME",8:"=",9:";",12:",",13:":",15:"(",16:")"},
-productions_: [0,[3,3],[4,0],[4,5],[5,1],[5,1],[11,3],[11,3],[10,1],[10,2],[14,3],[14,1]],
+symbols_: {"error":2,"text":3,"defs":4,"term":5,"EOF":6,"name":7,"=":8,";":9,"appl":10,"abst":11,",":12,":":13,"atom":14,"(":15,")":16,"NAME":17,"$accept":0,"$end":1},
+terminals_: {2:"error",6:"EOF",8:"=",9:";",12:",",13:":",15:"(",16:")",17:"NAME"},
+productions_: [0,[3,3],[4,0],[4,5],[5,1],[5,1],[11,3],[11,3],[10,1],[10,2],[14,3],[14,1],[7,1]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
@@ -116,12 +116,15 @@ case 10:
 this.$ = $$[$0-1];
 break;
 case 11:
-this.$ = {node: "atom", name: yytext};
+this.$ = {node: "atom", name: $$[$0]};
+break;
+case 12:
+this.$ = JSON.stringify($$[$0]);
 break;
 }
 },
-table: [o($V0,[2,2],{3:1,4:2}),{1:[3]},{5:3,7:[1,4],10:5,11:6,14:7,15:$V1},{6:[1,9]},o([6,7,15],$V2,{8:[1,10],12:$V3,13:$V4}),o($V5,[2,4],{14:13,7:[1,14],15:$V1}),o($V5,[2,5]),o($V6,[2,8]),{5:15,7:$V7,10:5,11:6,14:7,15:$V1},{1:[2,1]},{5:17,7:$V7,10:5,11:6,14:7,15:$V1},{7:[1,19],11:18},{5:20,7:$V7,10:5,11:6,14:7,15:$V1},o($V6,[2,9]),o($V6,$V2),{16:[1,21]},o($V6,$V2,{12:$V3,13:$V4}),{9:[1,22]},o($V5,[2,6]),{12:$V3,13:$V4},o($V5,[2,7]),o($V6,[2,10]),o($V0,[2,3])],
-defaultActions: {9:[2,1]},
+table: [o($V0,[2,2],{3:1,4:2}),{1:[3]},{5:3,7:4,10:5,11:6,14:8,15:$V1,17:$V2},{6:[1,10]},o([6,15,17],$V3,{8:[1,11],12:$V4,13:$V5}),o($V6,[2,4],{14:14,7:15,15:$V1,17:$V2}),o($V6,[2,5]),o([6,8,9,12,13,15,16,17],[2,12]),o($V7,[2,8]),{5:16,7:17,10:5,11:6,14:8,15:$V1,17:$V2},{1:[2,1]},{5:18,7:17,10:5,11:6,14:8,15:$V1,17:$V2},{7:20,11:19,17:$V2},{5:21,7:17,10:5,11:6,14:8,15:$V1,17:$V2},o($V7,[2,9]),o($V7,$V3),{16:[1,22]},o($V7,$V3,{12:$V4,13:$V5}),{9:[1,23]},o($V6,[2,6]),{12:$V4,13:$V5},o($V6,[2,7]),o($V7,[2,10]),o($V0,[2,3])],
+defaultActions: {10:[2,1]},
 parseError: function parseError(str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -596,28 +599,30 @@ var YYSTATE=YY_START;
 switch($avoiding_name_collisions) {
 case 0:/* skip comment */
 break;
-case 1:/* skip whitespace */
+case 1:/* skip comment */
 break;
-case 2:return "NAME";
+case 2:/* skip whitespace */
 break;
-case 3:return "=";
+case 3:return "NAME";
 break;
-case 4:return ";";
+case 4:return "=";
 break;
-case 5:return ",";
+case 5:return ";";
 break;
-case 6:return ":";
+case 6:return ",";
 break;
-case 7:return "(";
+case 7:return ":";
 break;
-case 8:return ")";
+case 8:return "(";
 break;
-case 9:return "EOF";
+case 9:return ")";
+break;
+case 10:return "EOF";
 break;
 }
 },
-rules: [/^(?:#.*)/,/^(?:\s+)/,/^(?:[^#=;,:()\s]+)/,/^(?:=)/,/^(?:;)/,/^(?:,)/,/^(?::)/,/^(?:\()/,/^(?:\))/,/^(?:$)/],
-conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9],"inclusive":true}}
+rules: [/^(?:\{[^}]*\})/,/^(?:#.*)/,/^(?:\s+)/,/^(?:[^{}#=;,:()\s]+)/,/^(?:=)/,/^(?:;)/,/^(?:,)/,/^(?::)/,/^(?:\()/,/^(?:\))/,/^(?:$)/],
+conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10],"inclusive":true}}
 });
 return lexer;
 })();
@@ -659,7 +664,7 @@ function gamma(obj, root, list)
 
 	if ("atom" == node) {
 		if (obj.free) {
-			const name = `this.mkid("${obj.name}")`;
+			const name = `this.mkid(${obj.name})`;
 			const agent = `\\atom_{${name}}`;
 
 			list.push(`${root} = ${agent}`);
@@ -759,7 +764,7 @@ function gamma(obj, root, list)
 
 	if ("atom" == node) {
 		if (obj.free) {
-			const name = `this.mkid("${obj.name}")`;
+			const name = `this.mkid(${obj.name})`;
 			const agent = `\\atom_{${name}}`;
 
 			list.push(`${root} = ${agent}`);
@@ -833,7 +838,7 @@ module.exports = encode;
 
 const path = require("path");
 
-const readback = "const gfv = [];\nlet id = 0;\n\nfunction mkvar(fresh)\n{\n\tif (fresh)\n\t\t++id;\n\n\treturn \"v\" + id.toFixed(0);\n}\n\nfunction mkid(name)\n{\n\tconst fv = {};\n\tconst obj = {\n\t\tnode: \"atom\",\n\t\tname: name,\n\t\tfv: fv\n\t};\n\n\tif (name) {\n\t\tgfv[name] = true;\n\t\treturn obj;\n\t}\n\n\tdo {\n\t\tname = mkvar(true);\n\t} while (gfv[name]);\n\n\tobj.name = name;\n\tfv[name] = true;\n\treturn obj;\n}\n\nfunction mkhole()\n{\n\tconst obj = {};\n\n\tobj.fv = {};\n\tobj.bv = {};\n\tobj.hole = obj;\n\treturn obj;\n}\n\nfunction subst(hole, obj)\n{\n\tconst parent = hole.parent;\n\tconst body = obj.body;\n\tconst left = obj.left;\n\tconst right = obj.right;\n\n\tif (parent)\n\t\tobj.parent = hole.parent;\n\telse\n\t\tdelete obj.parent;\n\n\tObject.assign(hole, obj);\n\n\tif (body)\n\t\tbody.parent = hole;\n\tif (left)\n\t\tleft.parent = hole;\n\tif (right)\n\t\tright.parent = hole;\n}\n\nfunction eta(obj)\n{\n\tlet parent, left, right, name;\n\n\tif (\"appl\" != obj.node)\n\t\treturn;\n\n\tparent = obj.parent;\n\tif (!parent)\n\t\treturn;\n\tif (\"abst\" != parent.node)\n\t\treturn;\n\n\tright = obj.right;\n\tif (\"atom\" != right.node)\n\t\treturn;\n\n\tname = parent.var;\n\tif (name != right.name)\n\t\treturn;\n\n\tleft = obj.left;\n\tif (left.fv[name])\n\t\treturn;\n\n\tsubst(parent, left);\n\n\teta(parent);\n}\n\nfunction atom(context, obj, name)\n{\n\tconst ofv = obj.fv;\n\tconst cfv = context.fv;\n\tconst bv = context.bv;\n\tconst chole = context.hole;\n\tconst ohole = obj.hole;\n\n\tif (name)\n\t\tbv[name] = true;\n\n\tfor (const key in ofv)\n\t\tif (!(key in bv))\n\t\t\tcfv[key] = true;\n\n\tsubst(chole, obj);\n\n\tif (ohole) {\n\t\tdelete chole.hole;\n\t\tcontext.hole = ohole;\n\t} else {\n\t\tdelete context.hole;\n\t\teta(chole);\n\t}\n\n\treturn context;\n}\n\nfunction abst(context)\n{\n\tconst hole = mkhole();\n\tconst name = mkvar();\n\tconst obj = {\n\t\tnode: \"abst\",\n\t\tvar: name,\n\t\tbody: hole,\n\t\tfv: {},\n\t\thole: hole\n\t};\n\n\thole.parent = obj;\n\treturn atom(context, obj, name);\n}\n\nfunction appl(left)\n{\n\tconst context = mkhole();\n\tconst hole = mkhole();\n\tconst obj = {\n\t\tnode: \"appl\",\n\t\tleft: left,\n\t\tright: hole,\n\t\tfv: Object.assign({}, left.fv),\n\t\thole: hole\n\t};\n\n\tleft.parent = obj;\n\thole.parent = obj;\n\treturn atom(context, obj);\n}\n\nfunction clone(obj, root, hole, parent)\n{\n\tconst copy = {};\n\n\tif (!obj)\n\t\treturn;\n\n\tif (!root) {\n\t\troot = copy;\n\t\thole = obj.hole;\n\t}\n\n\tcopy.node = obj.node;\n\tcopy.var = obj.var;\n\tcopy.name = obj.name;\n\tcopy.parent = parent;\n\tcopy.body = clone(obj.body, root, hole, copy);\n\tcopy.left = clone(obj.left, root, hole, copy);\n\tcopy.right = clone(obj.right, root, hole, copy);\n\n\tcopy.fv = Object.assign({}, obj.fv);\n\tcopy.bv = Object.assign({}, obj.bv);\n\n\tif (obj === hole)\n\t\troot.hole = copy;\n\n\treturn copy;\n}\n\nthis.clone = clone;\nthis.mkid = mkid;\nthis.mkvar = mkvar;\nthis.mkhole = mkhole;\nthis.abst = abst;\nthis.appl = appl;\nthis.atom = atom;\n";
+const readback = "const gfv = [];\nlet id = 0;\n\nfunction mkvar(fresh)\n{\n\tif (fresh)\n\t\t++id;\n\n\treturn JSON.stringify(`v${id}`);\n}\n\nfunction mkid(name)\n{\n\tconst fv = {};\n\tconst obj = {\n\t\tnode: \"atom\",\n\t\tfv: fv\n\t};\n\n\tif (name) {\n\t\tname = JSON.stringify(name);\n\t\tobj.name = name;\n\t\tgfv[name] = true;\n\t\treturn obj;\n\t}\n\n\tdo {\n\t\tname = mkvar(true);\n\t} while (gfv[name]);\n\n\tobj.name = name;\n\tfv[name] = true;\n\treturn obj;\n}\n\nfunction mkhole()\n{\n\tconst obj = {};\n\n\tobj.fv = {};\n\tobj.bv = {};\n\tobj.hole = obj;\n\treturn obj;\n}\n\nfunction subst(hole, obj)\n{\n\tconst parent = hole.parent;\n\tconst body = obj.body;\n\tconst left = obj.left;\n\tconst right = obj.right;\n\n\tif (parent)\n\t\tobj.parent = hole.parent;\n\telse\n\t\tdelete obj.parent;\n\n\tObject.assign(hole, obj);\n\n\tif (body)\n\t\tbody.parent = hole;\n\tif (left)\n\t\tleft.parent = hole;\n\tif (right)\n\t\tright.parent = hole;\n}\n\nfunction eta(obj)\n{\n\tlet parent, left, right, name;\n\n\tif (\"appl\" != obj.node)\n\t\treturn;\n\n\tparent = obj.parent;\n\tif (!parent)\n\t\treturn;\n\tif (\"abst\" != parent.node)\n\t\treturn;\n\n\tright = obj.right;\n\tif (\"atom\" != right.node)\n\t\treturn;\n\n\tname = parent.var;\n\tif (name != right.name)\n\t\treturn;\n\n\tleft = obj.left;\n\tif (left.fv[name])\n\t\treturn;\n\n\tsubst(parent, left);\n\n\teta(parent);\n}\n\nfunction atom(context, obj, name)\n{\n\tconst ofv = obj.fv;\n\tconst cfv = context.fv;\n\tconst bv = context.bv;\n\tconst chole = context.hole;\n\tconst ohole = obj.hole;\n\n\tif (name)\n\t\tbv[name] = true;\n\n\tfor (const key in ofv)\n\t\tif (!(key in bv))\n\t\t\tcfv[key] = true;\n\n\tsubst(chole, obj);\n\n\tif (ohole) {\n\t\tdelete chole.hole;\n\t\tcontext.hole = ohole;\n\t} else {\n\t\tdelete context.hole;\n\t\teta(chole);\n\t}\n\n\treturn context;\n}\n\nfunction abst(context)\n{\n\tconst hole = mkhole();\n\tconst name = mkvar();\n\tconst obj = {\n\t\tnode: \"abst\",\n\t\tvar: name,\n\t\tbody: hole,\n\t\tfv: {},\n\t\thole: hole\n\t};\n\n\thole.parent = obj;\n\treturn atom(context, obj, name);\n}\n\nfunction appl(left)\n{\n\tconst context = mkhole();\n\tconst hole = mkhole();\n\tconst obj = {\n\t\tnode: \"appl\",\n\t\tleft: left,\n\t\tright: hole,\n\t\tfv: Object.assign({}, left.fv),\n\t\thole: hole\n\t};\n\n\tleft.parent = obj;\n\thole.parent = obj;\n\treturn atom(context, obj);\n}\n\nfunction clone(obj, root, hole, parent)\n{\n\tconst copy = {};\n\n\tif (!obj)\n\t\treturn;\n\n\tif (!root) {\n\t\troot = copy;\n\t\thole = obj.hole;\n\t}\n\n\tcopy.node = obj.node;\n\tcopy.var = obj.var;\n\tcopy.name = obj.name;\n\tcopy.parent = parent;\n\tcopy.body = clone(obj.body, root, hole, copy);\n\tcopy.left = clone(obj.left, root, hole, copy);\n\tcopy.right = clone(obj.right, root, hole, copy);\n\n\tcopy.fv = Object.assign({}, obj.fv);\n\tcopy.bv = Object.assign({}, obj.bv);\n\n\tif (obj === hole)\n\t\troot.hole = copy;\n\n\treturn copy;\n}\n\nthis.clone = clone;\nthis.mkid = mkid;\nthis.mkvar = mkvar;\nthis.mkhole = mkhole;\nthis.abst = abst;\nthis.appl = appl;\nthis.atom = atom;\n";
 let lastwire;
 
 function getcap(left, right)
@@ -1095,7 +1100,7 @@ function gamma(obj, root, list)
 
 	if ("atom" == node) {
 		if (obj.free) {
-			const name = `this.mkid("${obj.name}")`;
+			const name = `this.mkid(${obj.name})`;
 			const agent = `\\atom_{${name}}`;
 
 			list.push(`${root} = ${agent}`);
@@ -1166,9 +1171,10 @@ function obj2mlc(obj)
 	const node = obj.node;
 
 	if ("atom" == node)
-		return obj.name;
+		return JSON.parse(obj.name);
 
 	if ("abst" == node) {
+		const id = JSON.parse(obj.var);
 		const body = obj.body;
 		let sep;
 
@@ -1177,7 +1183,7 @@ function obj2mlc(obj)
 		else
 			sep = ": ";
 
-		return obj.var + sep + obj2mlc(body);
+		return id + sep + obj2mlc(body);
 	}
 
 	if ("appl" == node) {
