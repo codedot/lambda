@@ -69,6 +69,7 @@ Usage: lambda [options] (<term> | -f <file>)
 Options:
   --algo, -a     Select algorithm         [string]
   --debug, -d    Evaluate step by step   [boolean]
+  --exec, -e     Process m4(1) macros    [boolean]
   --file, -f     Read term from file     [boolean]
   --inet, -i     Show interaction net    [boolean]
   --limit, -l    Limit interactions       [number]

@@ -20,6 +20,11 @@ const opts = {
 		desc: "Evaluate step by step",
 		boolean: true
 	},
+	exec: {
+		alias: "e",
+		desc: "Process m4(1) macros",
+		boolean: true
+	},
 	file: {
 		alias: "f",
 		desc: "Read term from file",
@@ -78,6 +83,15 @@ if (argv.file)
 	input = fs.readFileSync(input, "utf8");
 
 input = comb.concat(input);
+
+if (argv.exec) {
+	const exec = require("child_process").execSync;
+
+	input = exec("m4", {
+		encoding: "utf8",
+		input: input
+	});
+}
 
 if (argv.debug) {
 	let eqn;
