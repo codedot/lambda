@@ -31,23 +31,23 @@ compare()
 	printf "\n"
 }
 
-printf "$TERMF$CELLF$CELLF$CELLF\n" SAMPLE \
-	ABSTRACT CLOSED OPTIMAL
+printf "$TERMF$CELLF$CELLF$CELLF$CELLF\n" SAMPLE \
+	ABSTRACT CLOSED OPTIMAL STANDARD
 
-compare counter  abstract closed optimal
-compare w2eta    abstract closed optimal
-compare 1021     abstract closed optimal
-compare 22210i   abstract closed optimal
-compare 3222i    abstract closed optimal
-compare 1022i    abstract closed OPTIMAL
-compare 4222i    abstract closed OPTIMAL
-compare 222210i  abstract closed OPTIMAL
-compare 2222101  abstract CLOSED OPTIMAL
-compare facty6nt abstract closed optimal
-compare facty9i  abstract closed OPTIMAL
-compare 33-fact4 abstract closed optimal
-compare fibo16nt abstract closed optimal
-compare fact100i abstract closed OPTIMAL
-compare 35-fact5 abstract closed optimal
-compare fibo20i  abstract closed optimal
-compare fact1knt abstract CLOSED OPTIMAL
+compare counter  abstract closed optimal standard
+compare w2eta    abstract closed optimal standard
+compare 1021     abstract closed optimal standard
+compare 22210i   abstract closed optimal STANDARD
+compare 3222i    abstract closed optimal STANDARD
+compare 1022i    abstract closed OPTIMAL STANDARD
+compare 4222i    abstract closed OPTIMAL STANDARD
+compare 222210i  abstract closed OPTIMAL STANDARD
+compare 2222101  abstract CLOSED OPTIMAL STANDARD
+compare facty6nt abstract closed optimal standard
+compare facty9i  abstract closed OPTIMAL STANDARD
+compare 33-fact4 abstract closed optimal standard
+compare fibo16nt abstract closed optimal standard
+compare fact100i abstract closed OPTIMAL STANDARD
+compare 35-fact5 abstract closed optimal STANDARD
+compare fibo20i  abstract closed optimal standard
+compare fact1knt abstract CLOSED OPTIMAL STANDARD
