@@ -1,141 +1,56 @@
-\cro_{i}[\fan_{j - 1}(a, b)] {
-	/* Level down higher fan. */
+\fan_{i}[\scope_{j}(a), \scope_{j}(b)] {
+	/* Duplicate higher delimiter. */
 	if (i < j)
 		++this.total;
 	else
 		return false;
-} \fan_{j}[\cro_{i}(a), \cro_{i}(b)];
+} \scope_{j}[\fan_{i}(a, b)];
 
-\fan_{i}[\cro_{j}(a), \cro_{j}(b)] {
-	/* Duplicate higher croissant. */
-	if (i < j)
+\scope_{i}[\fan_{j + 1}(a, b)] {
+	/* Level up higher or matching fan. */
+	if (i <= j)
 		++this.total;
 	else
 		return false;
-} \cro_{j}[\fan_{i}(a, b)];
+} \fan_{j}[\scope_{i}(a), \scope_{i}(b)];
 
-\fan_{i}[\bra_{j}(a), \bra_{j}(b)] {
-	/* Duplicate higher bracket. */
+\scope_{i}[\scope_{j + 1}(a)] {
+	/* Level up higher delimiter. */
 	if (i < j)
 		++this.total;
 	else
 		return false;
-} \bra_{j}[\fan_{i}(a, b)];
-
-\bra_{i}[\fan_{j + 1}(a, b)] {
-	/* Level up higher fan. */
-	if (i < j)
-		++this.total;
-	else
-		return false;
-} \fan_{j}[\bra_{i}(a), \bra_{i}(b)];
-
-\bra_{i}[\bra_{j + 1}(a)] {
-	/* Level up higher bracket. */
-	if (i < j)
-		++this.total;
-	else
-		return false;
-} \bra_{j}[\bra_{i}(a)];
-
-\cro_{i}[\cro_{j - 1}(a)] {
-	/* Level down higher bracket. */
-	if (i < j)
-		++this.total;
-	else
-		return false;
-} \cro_{j}[\cro_{i}(a)];
-
-\cro_{i}[\bra_{j - 1}(a)] {
-	/* Level down higher bracket. */
-	if (i < j)
-		++this.total;
-	else
-		return false;
-} \bra_{j}[\cro_{i}(a)];
-
-\bra_{i}[\cro_{j + 1}(a)] {
-	/* Level up higher croissant. */
-	if (i < j)
-		++this.total;
-	else
-		return false;
-} \cro_{j}[\bra_{i}(a)];
+} \scope_{j}[\scope_{i}(a)];
 
 \print {
-	/* Ignore bracket. */
+	/* Ignore delimiter. */
 	++this.total;
-} \bra_{i}[\print];
+} \scope_{i}[!print];
 
-\read_{C}[\bra_{i}(a)] {
+\read_{C}[\scope_{i}(a)] {
 	/* Pass through context. */
 	++this.total;
-} \bra_{i}[\read_{C}(a)];
+} \scope_{i}[\read_{C}(a)];
 
-\cro_{i}[a] {
-	/* Annihilate matching croissants. */
+\scope_{i}[a] {
+	/* Annihilate matching delimiters. */
 	if (i == j)
 		++this.total;
 	else
 		return false;
-} \cro_{j}[a];
+} \scope_{j}[a];
 
-\bra_{i}[a] {
-	/* Annihilate matching brackets. */
-	if (i == j)
-		++this.total;
-	else
-		return false;
-} \bra_{j}[a];
-
-\bra_{i}[\app_{j + 1}(a, b)] {
-	/* Level up higher application. */
-	if (i < j)
-		++this.total;
-	else
-		return false;
-} \app_{j}[\bra_{i}(a), \bra_{i}(b)];
-
-\bra_{i}[\lam_{j + 1}(a, b)] {
-	/* Level up higher abstraction. */
-	if (i < j)
-		++this.total;
-	else
-		return false;
-} \lam_{j}[\bra_{i}(a), \bra_{i}(b)];
-
-\print {
-	/* Ignore croissant. */
+\scope_{i}[\apply(a, b)] {
+	/* Pass through application. */
 	++this.total;
-} \cro_{i}[\print];
+} \apply[\scope_{i}(a), \scope_{i}(b)];
 
-\read_{C}[\cro_{i}(a)] {
-	/* Pass through context. */
+\scope_{i}[\lambda(a, b)] {
+	/* Level up delimiter. */
 	++this.total;
-} \cro_{i}[\read_{C}(a)];
+} \lambda[\scope_{i + 1}(a), \scope_{i + 1}(b)];
 
-\cro_{i}[\app_{j - 1}(a, b)] {
-	/* Level down higher application. */
-	if (i < j)
-		++this.total;
-	else
-		return false;
-} \app_{j}[\cro_{i}(a), \cro_{i}(b)];
-
-\cro_{i}[\lam_{j - 1}(a, b)] {
-	/* Level down higher abstraction. */
-	if (i < j)
-		++this.total;
-	else
-		return false;
-} \lam_{j}[\cro_{i}(a), \cro_{i}(b)];
-
-\cro_{i}[\atom_{M}] {
-	/* Return an atom. */
-	++this.total;
-} \atom_{M};
-
-\bra_{i}[\atom_{M}] {
+\scope_{i}[\atom_{M}] {
 	/* Return an atom. */
 	++this.total;
 } \atom_{M};
@@ -154,9 +69,9 @@
 \read_{C}[a] {
 	/* Read back abstraction. */
 	++this.total;
-} \lam_{i}[\atom_{this.mkid()}, \read_{this.abst(C)}(a)];
+} \lambda[\atom_{this.mkid()}, \read_{this.abst(C)}(a)];
 
-\app_{i}[\read_{this.appl(M)}(a), a] {
+\apply[\read_{this.appl(M)}(a), a] {
 	/* Read back application. */
 	++this.total;
 } \atom_{M};
@@ -171,30 +86,21 @@
 	++this.total;
 } \atom_{M};
 
-\app_{i}[a, b] {
-	/* Annihilate matching abstraction and application. */
-	if (i != j)
-		return false;
-
+\apply[\scope_{0}(a), \scope_{0}(b)] {
+	/* Apply beta reduction. */
 	++this.beta;
 	++this.total;
-} \lam_{j}[a, b];
+} \lambda[a, b];
 
-\fan_{i}[\app_{j}(a, b), \app_{j}(c, d)] {
-	/* Duplicate higher application. */
-	if (i < j)
-		++this.total;
-	else
-		return false;
-} \app_{j}[\fan_{i}(a, c), \fan_{i}(b, d)];
+\fan_{i}[\apply(a, b), \apply(c, d)] {
+	/* Duplicate application. */
+	++this.total;
+} \apply[\fan_{i}(a, c), \fan_{i}(b, d)];
 
-\fan_{i}[\lam_{j}(a, b), \lam_{j}(c, d)] {
-	/* Duplicate higher abstraction. */
-	if (i < j)
-		++this.total;
-	else
-		return false;
-} \lam_{j}[\fan_{i}(a, c), \fan_{i}(b, d)];
+\fan_{i}[\lambda(a, b), \lambda(c, d)] {
+	/* Level up fan. */
+	++this.total;
+} \lambda[\fan_{i + 1}(a, c), \fan_{i + 1}(b, d)];
 
 \fan_{i}[a, b] {
 	/* Annihilate matching fans. */

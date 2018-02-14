@@ -4,6 +4,7 @@ const generic = require("./generic");
 const abstract = require("./abstract");
 const closed = require("./closed");
 const optimal = require("./optimal");
+const standard = require("./standard");
 
 const expand = generic.expand;
 const readback = generic.readback;
@@ -30,3 +31,4 @@ function addalgo(name, algo)
 addalgo("abstract", abstract);
 addalgo("closed", closed);
 addalgo("optimal", optimal);
+addalgo("standard", standard);

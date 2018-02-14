@@ -5,30 +5,32 @@ const path = require("path");
 
 const template = fs.readFileSync(path.join(__dirname, "template.txt"), "utf8");
 
-let mkwire, mktwins, getfv;
+let mkwire, mktwins, getfv, subst;
 
-function psi(shared, list)
+function box(fv, list, lvl)
+{
+	for (const atom in fv) {
+		const ref = fv[atom].ref;
+		const agent = `\\bra_{${lvl}}(${ref})`;
+
+		list.push(`${atom} = ${agent}`);
+	}
+}
+
+function psi(shared, list, lvl)
 {
 	for (const atom in shared) {
 		const twins = shared[atom];
 		const wleft = twins.left;
 		const wright = twins.right;
-		const agent = `\\fan_{0}`;
+		const agent = `\\fan_{${lvl}}`;
 		const tree = `${agent}(${wright}, ${wleft})`;
 
 		list.push(`${atom} = ${tree}`);
 	}
 }
 
-function mkscope(n, s)
-{
-	for (let i = 0; i < n; i++)
-		s = `\\scope_{0}(${s})`;
-
-	return s;
-}
-
-function gamma(obj, root, list)
+function gamma(obj, root, list, lvl)
 {
 	const node = obj.node;
 
@@ -39,7 +41,7 @@ function gamma(obj, root, list)
 
 			list.push(`${root} = ${agent}`);
 		} else {
-			const agent = mkscope(obj.index, root);
+			const agent = `\\cro_{${lvl}}(${root})`;
 
 			list.push(`${obj.name} = ${agent}`);
 		}
@@ -49,25 +51,38 @@ function gamma(obj, root, list)
 		const fv = getfv(body);
 		const wire = mkwire();
 		const agent = (id in fv) ? id : "\\erase";
-		const tree = `\\lambda(${agent}, ${wire})`;
+		const tree = `\\lam_{${lvl}}(${agent}, ${wire})`;
 
 		list.push(`${root} = ${tree}`);
 
-		gamma(body, wire, list);
+		gamma(body, wire, list, lvl);
 	} else if ("appl" == node) {
 		const wleft = mkwire();
 		const wright = mkwire();
 		const left = obj.left;
 		const right = obj.right;
 		const shared = mktwins(left, right);
-		const agent = `\\apply(${wright}, ${root})`;
+		const agent = `\\app_{${lvl}}`;
+		const tree = `${agent}(${wright}, ${root})`;
+		const fv = getfv(right);
 
-		list.push(`${wleft} = ${agent}`);
+		for (const atom in fv) {
+			const wref = mkwire();
 
-		gamma(left, wleft, list);
-		gamma(right, wright, list);
+			fv[atom] = {
+				ref: wref
+			};
+		}
 
-		psi(shared, list);
+		subst(right, fv, "ref");
+
+		list.push(`${wleft} = ${tree}`);
+
+		gamma(left, wleft, list, lvl);
+		gamma(right, wright, list, lvl + 1);
+
+		box(fv, list, lvl);
+		psi(shared, list, lvl);
 	}
 }
 
@@ -80,8 +95,9 @@ function encode(generic, term)
 	mkwire = generic.mkwire;
 	mktwins = generic.mktwins;
 	getfv = generic.getfv;
+	subst = generic.subst;
 
-	gamma(term, "root", inconfig);
+	gamma(term, "root", inconfig, 0);
 
 	inconfig.inet = template;
 	return inconfig;

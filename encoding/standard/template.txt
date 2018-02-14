@@ -1,0 +1,224 @@
+\cro_{i}[\fan_{j - 1}(a, b)] {
+	/* Level down higher fan. */
+	if (i < j)
+		++this.total;
+	else
+		return false;
+} \fan_{j}[\cro_{i}(a), \cro_{i}(b)];
+
+\fan_{i}[\cro_{j}(a), \cro_{j}(b)] {
+	/* Duplicate higher croissant. */
+	if (i < j)
+		++this.total;
+	else
+		return false;
+} \cro_{j}[\fan_{i}(a, b)];
+
+\fan_{i}[\bra_{j}(a), \bra_{j}(b)] {
+	/* Duplicate higher bracket. */
+	if (i < j)
+		++this.total;
+	else
+		return false;
+} \bra_{j}[\fan_{i}(a, b)];
+
+\bra_{i}[\fan_{j + 1}(a, b)] {
+	/* Level up higher fan. */
+	if (i < j)
+		++this.total;
+	else
+		return false;
+} \fan_{j}[\bra_{i}(a), \bra_{i}(b)];
+
+\bra_{i}[\bra_{j + 1}(a)] {
+	/* Level up higher bracket. */
+	if (i < j)
+		++this.total;
+	else
+		return false;
+} \bra_{j}[\bra_{i}(a)];
+
+\cro_{i}[\cro_{j - 1}(a)] {
+	/* Level down higher bracket. */
+	if (i < j)
+		++this.total;
+	else
+		return false;
+} \cro_{j}[\cro_{i}(a)];
+
+\cro_{i}[\bra_{j - 1}(a)] {
+	/* Level down higher bracket. */
+	if (i < j)
+		++this.total;
+	else
+		return false;
+} \bra_{j}[\cro_{i}(a)];
+
+\bra_{i}[\cro_{j + 1}(a)] {
+	/* Level up higher croissant. */
+	if (i < j)
+		++this.total;
+	else
+		return false;
+} \cro_{j}[\bra_{i}(a)];
+
+\print {
+	/* Ignore bracket. */
+	++this.total;
+} \bra_{i}[\print];
+
+\read_{C}[\bra_{i}(a)] {
+	/* Pass through context. */
+	++this.total;
+} \bra_{i}[\read_{C}(a)];
+
+\cro_{i}[a] {
+	/* Annihilate matching croissants. */
+	if (i == j)
+		++this.total;
+	else
+		return false;
+} \cro_{j}[a];
+
+\bra_{i}[a] {
+	/* Annihilate matching brackets. */
+	if (i == j)
+		++this.total;
+	else
+		return false;
+} \bra_{j}[a];
+
+\bra_{i}[\app_{j + 1}(a, b)] {
+	/* Level up higher application. */
+	if (i < j)
+		++this.total;
+	else
+		return false;
+} \app_{j}[\bra_{i}(a), \bra_{i}(b)];
+
+\bra_{i}[\lam_{j + 1}(a, b)] {
+	/* Level up higher abstraction. */
+	if (i < j)
+		++this.total;
+	else
+		return false;
+} \lam_{j}[\bra_{i}(a), \bra_{i}(b)];
+
+\print {
+	/* Ignore croissant. */
+	++this.total;
+} \cro_{i}[\print];
+
+\read_{C}[\cro_{i}(a)] {
+	/* Pass through context. */
+	++this.total;
+} \cro_{i}[\read_{C}(a)];
+
+\cro_{i}[\app_{j - 1}(a, b)] {
+	/* Level down higher application. */
+	if (i < j)
+		++this.total;
+	else
+		return false;
+} \app_{j}[\cro_{i}(a), \cro_{i}(b)];
+
+\cro_{i}[\lam_{j - 1}(a, b)] {
+	/* Level down higher abstraction. */
+	if (i < j)
+		++this.total;
+	else
+		return false;
+} \lam_{j}[\cro_{i}(a), \cro_{i}(b)];
+
+\cro_{i}[\atom_{M}] {
+	/* Return an atom. */
+	++this.total;
+} \atom_{M};
+
+\bra_{i}[\atom_{M}] {
+	/* Return an atom. */
+	++this.total;
+} \atom_{M};
+
+\read_{C}[\fan_{i}(a, b)] {
+	/* Duplicate context. */
+	++this.total;
+} \fan_{i}[\read_{C}(a), \read_{this.clone(C)}(b)];
+
+\print {
+	/* Output results of read-back. */
+	this.nf = M;
+	++this.total;
+} \atom_{M};
+
+\read_{C}[a] {
+	/* Read back abstraction. */
+	++this.total;
+} \lam_{i}[\atom_{this.mkid()}, \read_{this.abst(C)}(a)];
+
+\app_{i}[\read_{this.appl(M)}(a), a] {
+	/* Read back application. */
+	++this.total;
+} \atom_{M};
+
+\read_{C}[\atom_{this.atom(C, M)}] {
+	/* Read back an atom. */
+	++this.total;
+} \atom_{M};
+
+\fan_{i}[\atom_{M}, \atom_{M}] {
+	/* Duplicate an atom. */
+	++this.total;
+} \atom_{M};
+
+\app_{i}[a, b] {
+	/* Annihilate matching abstraction and application. */
+	if (i != j)
+		return false;
+
+	++this.beta;
+	++this.total;
+} \lam_{j}[a, b];
+
+\fan_{i}[\app_{j}(a, b), \app_{j}(c, d)] {
+	/* Duplicate higher application. */
+	if (i < j)
+		++this.total;
+	else
+		return false;
+} \app_{j}[\fan_{i}(a, c), \fan_{i}(b, d)];
+
+\fan_{i}[\lam_{j}(a, b), \lam_{j}(c, d)] {
+	/* Duplicate higher abstraction. */
+	if (i < j)
+		++this.total;
+	else
+		return false;
+} \lam_{j}[\fan_{i}(a, c), \fan_{i}(b, d)];
+
+\fan_{i}[a, b] {
+	/* Annihilate matching fans. */
+	if (i == j)
+		++this.total;
+	else
+		return false;
+} \fan_{j}[a, b];
+
+\fan_{i}[\fan_{j}(a, b), \fan_{j}(c, d)] {
+	/* Duplicate higher fan. */
+	if (i < j)
+		++this.total;
+	else
+		return false;
+} \fan_{j}[\fan_{i}(a, c), \fan_{i}(b, d)];
+
+$$
+
+INCONFIG
+
+$$
+
+READBACK
+
+this.beta = 0;
+this.total = 0;
