@@ -14,7 +14,7 @@ in [Lamping's abstract algorithm][7],
 described in [arXiv:1710.07516][6],
 this is the default algorithm;
 
-* `closed`, the approach of [arXiv:1304.2290v8][2] applied to
+* `closed`, the approach of [arXiv:1304.2290][2] applied to
 [_An Interaction Net Implementation of Closed Reduction_][3]
 by Ian Mackie;
 
@@ -23,12 +23,12 @@ by Ian Mackie;
 
 * `standard`, an implementation of optimal reduction as in
 [_The Optimal Implementation of Functional Programming Languages_][8],
-pages 40-41.
+pp. 40-41.
 
 The embedded read-back mechanism is described
 in Section 7 of [10.4204/EPTCS.225.7][4].
 
-[2]: https://arxiv.org/abs/1304.2290v8
+[2]: https://arxiv.org/abs/1304.2290
 [3]: http://dx.doi.org/10.1007/978-3-642-24452-0_3
 [4]: http://dx.doi.org/10.4204/EPTCS.225.7
 [5]: http://www.phil.uu.nl/~oostrom/publication/pdf/lambdascope.pdf
@@ -42,22 +42,22 @@ The following is output of the `test.sh` script provided in the package:
 
 ```
 SAMPLE          ABSTRACT         CLOSED        OPTIMAL       STANDARD
-counter             27/4           58/6          143/4          121/4
-w2eta               37/7         137/16          205/7          374/7
-1021              199/55     11871/1088     1599875/55     4307803/55
-22210i            494/68       2539/254       58602/68            N/A
-3222i            1206/50       8638/819      804529/50            N/A
+counter             27/4           58/6          161/4          121/4
+w2eta               37/7         137/16          207/7          374/7
+1021              199/55     11871/1088     1599877/55     4307803/55
+22210i            494/68       2539/254       58603/68            N/A
+3222i            1206/50       8638/819      804530/50            N/A
 1022i            4317/69     33369/3139            N/A            N/A
 4222i          262425/72 2097926/196692            N/A            N/A
 222210i      1311135/139 8652059/852063            N/A            N/A
 2222101   2621862/327818            N/A            N/A            N/A
-facty6nt        1112/210     80562/2436    2790150/210    3013433/210
+facty6nt        1112/210     80562/2436    2790152/210    3013433/210
 facty9i         1629/287 3746232/130949            N/A            N/A
-33-fact4        3770/704      16114/912      80706/704     234075/704
-fibo16nt      24931/3042    134135/5673   5462373/3042   8959455/3042
+33-fact4        3770/704      16114/912      80708/704     234075/704
+fibo16nt      24931/3042    134135/5673   5462375/3042   8959455/3042
 fact100i      28502/3752   121854/10565            N/A            N/A
-35-fact5     72944/13480   805218/16206  4702709/13480            N/A
-fibo20i       93534/6863   536843/24626   1961507/6863   4023117/6863
+35-fact5     72944/13480   805218/16206  4702711/13480            N/A
+fibo20i       93534/6863   536843/24626   1961508/6863   4023117/6863
 fact1knt 6215039/1353692            N/A            N/A            N/A
 ```
 

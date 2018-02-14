@@ -66,7 +66,7 @@
 	++this.total;
 } \atom_{M};
 
-\read_{C}[a] {
+\read_{C}[\scope_{0}(a)] {
 	/* Read back abstraction. */
 	++this.total;
 } \lambda[\atom_{this.mkid()}, \read_{this.abst(C)}(a)];
