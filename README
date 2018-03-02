@@ -1,0 +1,53 @@
+Exhaustive search through MLC inputs
+
+Usage:
+
+node generate.js min max >file.txt
+node compute.js algo limit min max >file.tsv
+tail -f -n +1 file.tsv | awk -f stats.awk
+paste left.tsv right.tsv | awk -f diff.awk
+
+where
+
+algo - MLC algorithm to use
+limit - maximum number of interactions per term
+min/max - minimum/maximum size for terms
+
+and
+
+size(x) = 0;
+size(x: M) = 1 + size(M);
+size(M N) = 1 + size(M) + size(N).
+
+The idea was suggested by Gabriel Scherer:
+http://lambda-the-ultimate.org/node/5487
+
+Number of closed lambda-terms of size n with size 0 for the variables:
+http://oeis.org/A220894
+
+All 69445532 closed terms of sizes 1-10:
+https://drive.google.com/open?id=1XjEa-N40wSqmSWnesahnxz6SXVUzzBig
+
+Results for "abstract", up to 250 interactions, sizes 1-9:
+https://drive.google.com/open?id=1O2aTULUXuLIl3LArehMtwmoQiIGB62-A
+
+Results for "optimal", up to 250 interactions, sizes 1-9:
+https://drive.google.com/open?id=16W_HSmwlRB6EAW5XxwVb4MqvkEZPf9HN
+
+Difference between results for "abstract" and "optimal":
+https://drive.google.com/open?id=1ldxxnbzdxZDk5-9VMDzLvS7BouxwbCfH
+
+Results for "standard", up to 250 interactions, sizes 1-9:
+https://drive.google.com/open?id=1k4HJTbafkhMJ6s2-vCs99YoKcJYdDhdl
+
+Difference between "abstract" and "standard", sizes 1-9:
+https://drive.google.com/open?id=1-acHtF-qmahPxzEzQGiPBcRj4EZ69V1l
+
+Results for "abstract", up to 250 interactions, size 10:
+https://drive.google.com/open?id=1irvjKZlKpXQykZvY2DPBWF7oYyES070I
+
+Results for "standard", up to 250 interactions, size 10:
+https://drive.google.com/open?id=1pyiiMKeCDdei9GJrRZmEV80axjE6karf
+
+Difference between "abstract" and "standard", size 10:
+https://drive.google.com/open?id=1zttDhqTHNrWZMBgXUndrFlWy0NC6eMBF
