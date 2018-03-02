@@ -1,8 +1,8 @@
 {
 	"dependencies": {
-		"@alexo/lambda": "0.3.9",
-		"browserify": "14.0.0",
-		"brfs": "1.4.3"
+		"@alexo/lambda": "0.4.0",
+		"browserify": "16.1.0",
+		"brfs": "1.5.0"
 	},
 	"private": true
 }
