@@ -7,10 +7,11 @@ const fs = require("fs");
 const argv = process.argv;
 const max = parseInt(argv.pop());
 const min = parseInt(argv.pop());
+const ctx = argv.pop();
 const limit = parseInt(argv.pop());
 const algo = argv.pop();
 
-for (const term of exhaust(min, max)) {
+for (const term of exhaust(ctx, min, max)) {
 	let result;
 
 	try {

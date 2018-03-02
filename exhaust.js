@@ -18,10 +18,16 @@ function* sub(len, nv)
 	}
 }
 
-function* exhaust(min, max)
+function* wrap(ctx, len)
+{
+	for (const m of sub(len, 0))
+		yield ctx.replace("M", m);
+}
+
+function* exhaust(ctx, min, max)
 {
 	for (let len = min; len <= max; len++)
-		yield* sub(len, 0);
+		yield* wrap(ctx, len);
 }
 
 module.exports = exhaust;

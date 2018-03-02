@@ -1,7 +1,9 @@
+CTX = (x: x x) M
+
 all:
 	npm install
-	time -p node generate.js 1 8 >terms.txt
-	time -p node compute.js abstract 250 1 5 >abstract.tsv
+	node generate.js "$(CTX)" 1 8 >terms.txt
+	node compute.js abstract 250 "$(CTX)" 1 5 >abstract.tsv
 
 clean:
 	-rm -fr node_modules

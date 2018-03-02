@@ -3,17 +3,18 @@ Exhaustive search through MLC inputs
 # Usage
 
 ```
-node generate.js min max >file.txt
-node compute.js algo limit min max >file.tsv
+node generate.js ctx min max >file.txt
+node compute.js algo limit ctx min max >file.tsv
 tail -f -n +1 file.tsv | awk -f stats.awk
 paste left.tsv right.tsv | awk -f diff.awk
 ```
 
 where
 
+* `ctx` is a context `...M...` with one hole `M`;
+* `min`/`max` is the minimum/maximum size for terms;
 * `algo` is the MLC algorithm to use;
 * `limit` is the maximum number of interactions per term;
-* `min`/`max` is the minimum/maximum size for terms,
 
 and
 
