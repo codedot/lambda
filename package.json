@@ -4,7 +4,20 @@
 	"repository": "codedot/lambda",
 	"name": "@alexo/lambda",
 	"bin": "./lambda.js",
-	"version": "0.4.0",
+	"version": "0.4.1",
+	"keywords": [
+		"lambda-calculus",
+		"pure",
+		"untyped",
+		"interaction-nets",
+		"interaction-calculus",
+		"optimal-reduction",
+		"abstract-algorithm",
+		"closed-reduction",
+		"lambdascope",
+		"api",
+		"cli"
+	],
 	"license": "MIT",
 	"dependencies": {
 		"inet-lib": "0.2.5",
