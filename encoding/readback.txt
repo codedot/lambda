@@ -1,4 +1,4 @@
-const gfv = [];
+const gfv = new Set();
 let id = 0;
 
 function mkvar(fresh)
@@ -20,13 +20,13 @@ function mkid(name)
 	if (name) {
 		name = JSON.stringify(name);
 		obj.name = name;
-		gfv[name] = true;
+		gfv.add(name);
 		return obj;
 	}
 
 	do {
 		name = mkvar(true);
-	} while (gfv[name]);
+	} while (gfv.has(name));
 
 	obj.name = name;
 	fv[name] = true;
