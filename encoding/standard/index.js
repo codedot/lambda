@@ -5,7 +5,7 @@ const path = require("path");
 
 const template = fs.readFileSync(path.join(__dirname, "template.txt"), "utf8");
 
-let mkwire, mktwins, getfv, subst;
+let mkwire, mktwins, getfv, rename;
 
 function box(fv, list, lvl)
 {
@@ -65,6 +65,7 @@ function gamma(obj, root, list, lvl)
 		const agent = `\\app_{${lvl}}`;
 		const tree = `${agent}(${wright}, ${root})`;
 		const fv = getfv(right);
+		const map = new Map();
 
 		for (const atom in fv) {
 			const wref = mkwire();
@@ -72,9 +73,11 @@ function gamma(obj, root, list, lvl)
 			fv[atom] = {
 				ref: wref
 			};
+
+			map.set(atom, wref);
 		}
 
-		subst(right, fv, "ref");
+		rename(right, map);
 
 		list.push(`${wleft} = ${tree}`);
 
@@ -95,7 +98,7 @@ function encode(generic, term)
 	mkwire = generic.mkwire;
 	mktwins = generic.mktwins;
 	getfv = generic.getfv;
-	subst = generic.subst;
+	rename = generic.rename;
 
 	gamma(term, "root", inconfig, 0);
 

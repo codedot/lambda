@@ -60,25 +60,22 @@ function mkwire()
 	return "w" + lastwire.toFixed(0);
 }
 
-function subst(obj, shared, side)
+function rename(obj, map)
 {
 	const node = obj.node;
 
 	if ("atom" == node) {
 		const name = obj.name;
 
-		if (name in shared) {
-			const entry = shared[name];
-
-			obj.name = entry[side];
-		}
+		if (map.has(name))
+			obj.name = map.get(name);
 	} else if ("abst" == node) {
 		const body = obj.body;
 
-		subst(body, shared, side);
+		rename(body, map);
 	} else if ("appl" == node) {
-		subst(obj.left, shared, side);
-		subst(obj.right, shared, side);
+		rename(obj.left, map);
+		rename(obj.right, map);
 	}
 }
 
@@ -87,6 +84,8 @@ function mktwins(left, right)
 	const fvleft = getfv(left);
 	const fvright = getfv(right);
 	const shared = getcap(fvleft, fvright);
+	const lmap = new Map();
+	const rmap = new Map();
 
 	for (const atom in shared) {
 		const wleft = mkwire();
@@ -96,10 +95,13 @@ function mktwins(left, right)
 			left: wleft,
 			right: wright
 		};
+
+		lmap.set(atom, wleft);
+		rmap.set(atom, wright);
 	}
 
-	subst(left, shared, "left");
-	subst(right, shared, "right");
+	rename(left, lmap);
+	rename(right, rmap);
 
 	return shared;
 }
@@ -191,5 +193,5 @@ exports.expand = expand;
 exports.mkwire = mkwire;
 exports.mktwins = mktwins;
 exports.getfv = getfv;
-exports.subst = subst;
+exports.rename = rename;
 exports.readback = readback;

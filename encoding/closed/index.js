@@ -5,7 +5,7 @@ const path = require("path");
 
 const template = fs.readFileSync(path.join(__dirname, "template.txt"), "utf8");
 
-let mkwire, mktwins, getfv, subst;
+let mkwire, mktwins, getfv, rename;
 
 function psi(shared, list)
 {
@@ -58,6 +58,7 @@ function gamma(obj, root, list)
 		const wire = mkwire();
 		const agent = (id in fv) ? id : "\\erase";
 		const tree = `\\lambda(${agent}, ${wire})`;
+		const map = new Map();
 
 		delete fv[id];
 
@@ -67,9 +68,11 @@ function gamma(obj, root, list)
 			fv[atom] = {
 				ref: wref
 			};
+
+			map.set(atom, wref);
 		}
 
-		subst(body, fv, "ref");
+		rename(body, map);
 
 		rho(fv, root, tree, list);
 
@@ -100,7 +103,7 @@ function encode(generic, term)
 	mkwire = generic.mkwire;
 	mktwins = generic.mktwins;
 	getfv = generic.getfv;
-	subst = generic.subst;
+	rename = generic.rename;
 
 	gamma(term, "root", inconfig);
 
