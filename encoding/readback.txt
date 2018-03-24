@@ -11,7 +11,7 @@ function mkvar(fresh)
 
 function mkid(name)
 {
-	const fv = {};
+	const fv = new Set();
 	const obj = {
 		node: "atom",
 		fv: fv
@@ -29,7 +29,7 @@ function mkid(name)
 	} while (gfv.has(name));
 
 	obj.name = name;
-	fv[name] = true;
+	fv.add(name);
 	return obj;
 }
 
@@ -37,8 +37,8 @@ function mkhole()
 {
 	const obj = {};
 
-	obj.fv = {};
-	obj.bv = {};
+	obj.fv = new Set();
+	obj.bv = new Set();
 	obj.hole = obj;
 	return obj;
 }
@@ -87,7 +87,7 @@ function eta(obj)
 		return;
 
 	left = obj.left;
-	if (left.fv[name])
+	if (left.fv.has(name))
 		return;
 
 	subst(parent, left);
@@ -104,11 +104,12 @@ function atom(context, obj, name)
 	const ohole = obj.hole;
 
 	if (name)
-		bv[name] = true;
+		bv.add(name);
 
-	for (const key in ofv)
-		if (!(key in bv))
-			cfv[key] = true;
+	ofv.forEach(x => {
+		if (!bv.has(x))
+			cfv.add(x);
+	});
 
 	subst(chole, obj);
 
@@ -131,7 +132,7 @@ function abst(context)
 		node: "abst",
 		var: name,
 		body: hole,
-		fv: {},
+		fv: new Set(),
 		hole: hole
 	};
 
@@ -147,7 +148,7 @@ function appl(left)
 		node: "appl",
 		left: left,
 		right: hole,
-		fv: Object.assign({}, left.fv),
+		fv: new Set(left.fv),
 		hole: hole
 	};
 
@@ -176,8 +177,8 @@ function clone(obj, root, hole, parent)
 	copy.left = clone(obj.left, root, hole, copy);
 	copy.right = clone(obj.right, root, hole, copy);
 
-	copy.fv = Object.assign({}, obj.fv);
-	copy.bv = Object.assign({}, obj.bv);
+	copy.fv = new Set(obj.fv);
+	copy.bv = new Set(obj.bv);
 
 	if (obj === hole)
 		root.hole = copy;
