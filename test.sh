@@ -40,8 +40,6 @@ compare 1021     abstract closed optimal standard
 compare 22210i   abstract closed optimal STANDARD
 compare 3222i    abstract closed optimal STANDARD
 compare 1022i    abstract closed OPTIMAL STANDARD
-compare 4222i    abstract closed OPTIMAL STANDARD
-compare 222210i  abstract closed OPTIMAL STANDARD
 compare 2222101  abstract CLOSED OPTIMAL STANDARD
 compare facty6nt abstract closed optimal standard
 compare facty9i  abstract closed OPTIMAL STANDARD
