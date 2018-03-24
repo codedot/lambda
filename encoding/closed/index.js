@@ -22,15 +22,14 @@ function psi(shared, list)
 
 function rho(fv, root, end, list)
 {
-	for (const atom in fv) {
-		const ref = fv[atom].ref;
+	fv.forEach((ref, atom) => {
 		const next = mkwire();
 		const agent = `\\bind(${next}, ${ref}, ${root})`;
 
 		list.push(`${atom} = ${agent}`);
 
 		root = next;
-	}
+	});
 
 	list.push(`${root} = ${end}`);
 }
@@ -61,19 +60,12 @@ function gamma(obj, root, list)
 
 		delete fv[id];
 
-		for (const atom in fv) {
-			const wref = mkwire();
-
-			fv[atom] = {
-				ref: wref
-			};
-
-			map.set(atom, wref);
-		}
+		for (const atom in fv)
+			map.set(atom, mkwire());
 
 		rename(body, map);
 
-		rho(fv, root, tree, list);
+		rho(map, root, tree, list);
 
 		gamma(body, wire, list);
 	} else if ("appl" == node) {

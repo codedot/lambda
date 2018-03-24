@@ -9,12 +9,11 @@ let mkwire, mktwins, getfv, rename;
 
 function box(fv, list, lvl)
 {
-	for (const atom in fv) {
-		const ref = fv[atom].ref;
+	fv.forEach((ref, atom) => {
 		const agent = `\\bra_{${lvl}}(${ref})`;
 
 		list.push(`${atom} = ${agent}`);
-	}
+	});
 }
 
 function psi(shared, list, lvl)
@@ -66,15 +65,8 @@ function gamma(obj, root, list, lvl)
 		const fv = getfv(right);
 		const map = new Map();
 
-		for (const atom in fv) {
-			const wref = mkwire();
-
-			fv[atom] = {
-				ref: wref
-			};
-
-			map.set(atom, wref);
-		}
+		for (const atom in fv)
+			map.set(atom, mkwire());
 
 		rename(right, map);
 
@@ -83,7 +75,7 @@ function gamma(obj, root, list, lvl)
 		gamma(left, wleft, list, lvl);
 		gamma(right, wright, list, lvl + 1);
 
-		box(fv, list, lvl);
+		box(map, list, lvl);
 		psi(shared, list, lvl);
 	}
 }
