@@ -20,10 +20,10 @@ function box(fv, list, lvl)
 function psi(shared, list, lvl)
 {
 	shared.forEach((twins, atom) => {
-		const wleft = twins.left;
-		const wright = twins.right;
+		const left = twins.left;
+		const right = twins.right;
 		const agent = `\\fan_{${lvl}}`;
-		const tree = `${agent}(${wright}, ${wleft})`;
+		const tree = `${agent}(${right}, ${left})`;
 
 		list.push(`${atom} = ${tree}`);
 	});
