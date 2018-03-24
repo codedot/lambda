@@ -86,15 +86,16 @@ function mktwins(left, right)
 	const shared = getcap(fvleft, fvright);
 	const lmap = new Map();
 	const rmap = new Map();
+	const map = new Map();
 
 	for (const atom in shared) {
 		const wleft = mkwire();
 		const wright = mkwire();
 
-		shared[atom] = {
+		map.set(atom, {
 			left: wleft,
 			right: wright
-		};
+		});
 
 		lmap.set(atom, wleft);
 		rmap.set(atom, wright);
@@ -103,7 +104,7 @@ function mktwins(left, right)
 	rename(left, lmap);
 	rename(right, rmap);
 
-	return shared;
+	return map;
 }
 
 function alpha(obj, bv, lvl)

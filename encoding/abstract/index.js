@@ -9,15 +9,14 @@ let mkwire, mktwins, getfv;
 
 function psi(shared, list)
 {
-	for (const atom in shared) {
-		const twins = shared[atom];
+	shared.forEach((twins, atom) => {
 		const wleft = twins.left;
 		const wright = twins.right;
 		const agent = `\\fanin_{this.uniq()}`;
 		const tree = `${agent}(${wright}, ${wleft})`;
 
 		list.push(`${atom} = ${tree}`);
-	}
+	});
 }
 
 function gamma(obj, root, list)

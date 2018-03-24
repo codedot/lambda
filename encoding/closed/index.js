@@ -9,8 +9,7 @@ let mkwire, mktwins, getfv, rename;
 
 function psi(shared, list)
 {
-	for (const atom in shared) {
-		const twins = shared[atom];
+	shared.forEach((twins, atom) => {
 		const left = twins.left;
 		const right = twins.right;
 		const wire = mkwire();
@@ -18,7 +17,7 @@ function psi(shared, list)
 		const amb = `\\amb(${right}, ${agent}, ${wire})`;
 
 		list.push(`${left} = ${amb}`);
-	}
+	});
 }
 
 function rho(fv, root, end, list)
