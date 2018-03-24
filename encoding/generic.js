@@ -8,13 +8,16 @@ let lastwire;
 
 function getcap(left, right)
 {
-	const dict = {};
+	const cap = new Set();
+
+	left = getfv(left);
+	right = getfv(right);
 
 	for (const prop in left)
 		if (prop in right)
-			dict[prop] = left[prop];
+			cap.add(prop);
 
-	return dict;
+	return cap;
 }
 
 function merge(left, right)
@@ -81,30 +84,25 @@ function rename(obj, map)
 
 function mktwins(left, right)
 {
-	const fvleft = getfv(left);
-	const fvright = getfv(right);
-	const shared = getcap(fvleft, fvright);
 	const lmap = new Map();
 	const rmap = new Map();
-	const map = new Map();
+	const smap = new Map();
 
-	for (const atom in shared) {
+	getcap(left, right).forEach(atom => {
 		const wleft = mkwire();
 		const wright = mkwire();
 
-		map.set(atom, {
+		lmap.set(atom, wleft);
+		rmap.set(atom, wright);
+		smap.set(atom, {
 			left: wleft,
 			right: wright
 		});
-
-		lmap.set(atom, wleft);
-		rmap.set(atom, wright);
-	}
+	});
 
 	rename(left, lmap);
 	rename(right, rmap);
-
-	return map;
+	return smap;
 }
 
 function alpha(obj, bv, lvl)
