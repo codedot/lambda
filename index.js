@@ -49,7 +49,7 @@ function obj2mlc(obj)
 
 function mlc2in(mlc, algo)
 {
-	const encode = encoding[algo ? algo : defalgo];
+	const encode = encoding.get(algo ? algo : defalgo);
 	let insrc;
 
 	if (!encode)
@@ -111,7 +111,7 @@ function run(mlc, algo, max)
 }
 
 run.defalgo = defalgo;
-run.algos = Object.keys(encoding);
+run.algos = Array.from(encoding.keys());
 run.prepare = prepare;
 run.debug = debug;
 run.debug0 = debug0;

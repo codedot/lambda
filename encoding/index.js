@@ -6,29 +6,23 @@ const closed = require("./closed");
 const optimal = require("./optimal");
 const standard = require("./standard");
 
+const map = new Map();
 const expand = generic.expand;
 const readback = generic.readback;
+const encode = algo => term => {
+	const expanded = expand(term);
+	const eqns = algo(generic, expanded);
+	const conf = eqns.join(";\n") + ";";
+	let inet = eqns.inet;
 
-function addalgo(name, algo)
-{
-	function encode(term)
-	{
-		let conf, inet;
+	inet = inet.replace("INCONFIG", conf);
+	inet = inet.replace("READBACK\n", readback);
+	return inet;
+};
 
-		term = expand(term);
-		conf = algo(generic, term);
-		inet = conf.inet;
+map.set("abstract", encode(abstract));
+map.set("closed", encode(closed));
+map.set("optimal", encode(optimal));
+map.set("standard", encode(standard));
 
-		conf = conf.join(";\n")  + ";";
-		inet = inet.replace("INCONFIG", conf);
-		inet = inet.replace("READBACK\n", readback);
-		return inet;
-	}
-
-	exports[name] = encode;
-}
-
-addalgo("abstract", abstract);
-addalgo("closed", closed);
-addalgo("optimal", optimal);
-addalgo("standard", standard);
+module.exports = map;
