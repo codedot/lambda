@@ -193,6 +193,6 @@ function expand(dict)
 exports.expand = expand;
 exports.mkwire = mkwire;
 exports.mktwins = mktwins;
-exports.getfv = getfv;
+exports.getfv = obj => new Set(Object.keys(getfv(obj)));
 exports.rename = rename;
 exports.readback = readback;

@@ -48,7 +48,7 @@ function gamma(obj, root, list, lvl)
 		const body = obj.body;
 		const fv = getfv(body);
 		const wire = mkwire();
-		const agent = (id in fv) ? id : "\\erase";
+		const agent = fv.has(id) ? id : "\\erase";
 		const tree = `\\lam_{${lvl}}(${agent}, ${wire})`;
 
 		list.push(`${root} = ${tree}`);
@@ -65,8 +65,9 @@ function gamma(obj, root, list, lvl)
 		const fv = getfv(right);
 		const map = new Map();
 
-		for (const atom in fv)
+		fv.forEach(atom => {
 			map.set(atom, mkwire());
+		});
 
 		rename(right, map);
 

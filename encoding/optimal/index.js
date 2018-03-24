@@ -47,7 +47,7 @@ function gamma(obj, root, list)
 		const body = obj.body;
 		const fv = getfv(body);
 		const wire = mkwire();
-		const agent = (id in fv) ? id : "\\erase";
+		const agent = fv.has(id) ? id : "\\erase";
 		const tree = `\\lambda(${agent}, ${wire})`;
 
 		list.push(`${root} = ${tree}`);
