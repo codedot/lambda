@@ -112,15 +112,9 @@ function alpha(obj, bv, lvl)
 		node: node
 	};
 
-	if (!bv)
-		bv = {};
-
-	if (!lvl)
-		lvl = 0;
-
 	if ("atom" == node) {
 		const name = obj.name;
-		const id = bv[name];
+		const id = bv.get(name);
 
 		if (id) {
 			aobj.name = id.name;
@@ -131,21 +125,21 @@ function alpha(obj, bv, lvl)
 		}
 	} else if ("abst" == node) {
 		const id = obj.var;
-		const old = bv[id];
+		const old = bv.get(id);
 		const wire = mkwire();
 
-		bv[id] = {
+		bv.set(id, {
 			name: wire,
 			lvl: ++lvl
-		};
+		});
 
 		aobj.var = wire;
 		aobj.body = alpha(obj.body, bv, lvl);
 
 		if (old)
-			bv[id] = old;
+			bv.set(id, old);
 		else
-			delete bv[id];
+			bv.delete(id);
 	} else if ("appl" == node) {
 		aobj.left = alpha(obj.left, bv, lvl);
 		aobj.right = alpha(obj.right, bv, lvl);
@@ -188,7 +182,7 @@ function expand(dict)
 
 	dict.expanded = term;
 	lastwire = 0;
-	return alpha(term);
+	return alpha(term, new Map(), 0);
 }
 
 exports.expand = expand;
