@@ -33,7 +33,7 @@ function gamma(obj, root, list)
 
 	if ("atom" == node) {
 		if (obj.free) {
-			const name = `this.mkid(${obj.name})`;
+			const name = `this.mkid("${obj.name}")`;
 			const agent = `\\atom_{${name}}`;
 
 			list.push(`${root} = ${agent}`);

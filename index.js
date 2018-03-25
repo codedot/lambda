@@ -13,10 +13,9 @@ function obj2mlc(obj)
 	const node = obj.node;
 
 	if ("atom" == node)
-		return JSON.parse(obj.name);
+		return obj.name;
 
 	if ("abst" == node) {
-		const id = JSON.parse(obj.var);
 		const body = obj.body;
 		let sep;
 
@@ -25,7 +24,7 @@ function obj2mlc(obj)
 		else
 			sep = ": ";
 
-		return id + sep + obj2mlc(body);
+		return obj.var + sep + obj2mlc(body);
 	}
 
 	if ("appl" == node) {
