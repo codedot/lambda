@@ -150,18 +150,14 @@ function alpha(obj, bv, lvl)
 
 function expand(dict)
 {
-	const macros = dict.macros;
-	const mlen = macros.length;
-	let term = dict.term;
-	let fv = getfv(term);
-
-	for (let i = 0; i < mlen; i++) {
-		const macro = macros[i];
+	const orig = dict.term;
+	const term = dict.macros.reduce((acc, macro) => {
+		const fv = acc.fv;
 		const id = macro.id;
 		const def = macro.def;
 
 		if (!fv.has(id))
-			continue;
+			return acc;
 
 		fv.delete(id);
 
@@ -169,16 +165,20 @@ function expand(dict)
 			fv.add(atom);
 		});
 
-		term = {
+		acc.term = {
 			node: "appl",
 			left: {
 				node: "abst",
 				var: id,
-				body: term
+				body: acc.term
 			},
 			right: def
 		};
-	}
+		return acc;
+	}, {
+		term: orig,
+		fv: getfv(orig)
+	}).term;
 
 	dict.expanded = term;
 	lastwire = 0;
