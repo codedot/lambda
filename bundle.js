@@ -87,12 +87,12 @@ global.mlcjs = mlcjs;
   }
 */
 var compile = (function(){
-var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[15,17],$V1=[1,9],$V2=[1,7],$V3=[2,11],$V4=[1,12],$V5=[1,13],$V6=[6,9,16],$V7=[6,9,15,16,17];
+var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[7,15],$V1=[1,8],$V2=[2,11],$V3=[1,11],$V4=[1,12],$V5=[6,9,16],$V6=[6,7,9,15,16],$V7=[1,16];
 var parser = {trace: function trace() { },
 yy: {},
-symbols_: {"error":2,"text":3,"defs":4,"term":5,"EOF":6,"name":7,"=":8,";":9,"appl":10,"abst":11,",":12,":":13,"atom":14,"(":15,")":16,"NAME":17,"$accept":0,"$end":1},
-terminals_: {2:"error",6:"EOF",8:"=",9:";",12:",",13:":",15:"(",16:")",17:"NAME"},
-productions_: [0,[3,3],[4,0],[4,5],[5,1],[5,1],[11,3],[11,3],[10,1],[10,2],[14,3],[14,1],[7,1]],
+symbols_: {"error":2,"text":3,"defs":4,"term":5,"EOF":6,"NAME":7,"=":8,";":9,"appl":10,"abst":11,",":12,":":13,"atom":14,"(":15,")":16,"$accept":0,"$end":1},
+terminals_: {2:"error",6:"EOF",7:"NAME",8:"=",9:";",12:",",13:":",15:"(",16:")"},
+productions_: [0,[3,3],[4,0],[4,5],[5,1],[5,1],[11,3],[11,3],[10,1],[10,2],[14,3],[14,1]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
@@ -108,7 +108,7 @@ case 3:
 $$[$0-4].unshift({id: $$[$0-3], def: $$[$0-1]}); this.$ = $$[$0-4];
 break;
 case 6: case 7:
-this.$ = {node: "abst", var: $$[$0-2], body: $$[$0]};
+this.$ = {node: "abst", bound: $$[$0-2], body: $$[$0]};
 break;
 case 9:
 this.$ = {node: "appl", left: $$[$0-1], right: $$[$0]};
@@ -117,15 +117,12 @@ case 10:
 this.$ = $$[$0-1];
 break;
 case 11:
-this.$ = {node: "atom", name: $$[$0]};
-break;
-case 12:
-this.$ = JSON.stringify($$[$0]);
+this.$ = {node: "atom", name: yytext};
 break;
 }
 },
-table: [o($V0,[2,2],{3:1,4:2}),{1:[3]},{5:3,7:4,10:5,11:6,14:8,15:$V1,17:$V2},{6:[1,10]},o([6,15,17],$V3,{8:[1,11],12:$V4,13:$V5}),o($V6,[2,4],{14:14,7:15,15:$V1,17:$V2}),o($V6,[2,5]),o([6,8,9,12,13,15,16,17],[2,12]),o($V7,[2,8]),{5:16,7:17,10:5,11:6,14:8,15:$V1,17:$V2},{1:[2,1]},{5:18,7:17,10:5,11:6,14:8,15:$V1,17:$V2},{7:20,11:19,17:$V2},{5:21,7:17,10:5,11:6,14:8,15:$V1,17:$V2},o($V7,[2,9]),o($V7,$V3),{16:[1,22]},o($V7,$V3,{12:$V4,13:$V5}),{9:[1,23]},o($V6,[2,6]),{12:$V4,13:$V5},o($V6,[2,7]),o($V7,[2,10]),o($V0,[2,3])],
-defaultActions: {10:[2,1]},
+table: [o($V0,[2,2],{3:1,4:2}),{1:[3]},{5:3,7:[1,4],10:5,11:6,14:7,15:$V1},{6:[1,9]},o([6,7,15],$V2,{8:[1,10],12:$V3,13:$V4}),o($V5,[2,4],{14:13,7:[1,14],15:$V1}),o($V5,[2,5]),o($V6,[2,8]),{5:15,7:$V7,10:5,11:6,14:7,15:$V1},{1:[2,1]},{5:17,7:$V7,10:5,11:6,14:7,15:$V1},{7:[1,19],11:18},{5:20,7:$V7,10:5,11:6,14:7,15:$V1},o($V6,[2,9]),o($V6,$V2),{16:[1,21]},o($V6,$V2,{12:$V3,13:$V4}),{9:[1,22]},o($V5,[2,6]),{12:$V3,13:$V4},o($V5,[2,7]),o($V6,[2,10]),o($V0,[2,3])],
+defaultActions: {9:[2,1]},
 parseError: function parseError(str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -661,21 +658,20 @@ if (typeof module !== 'undefined' && require.main === module) {
 
 const path = require("path");
 
-const template = "\\apply[a, b] {\n\t/* Apply beta reduction. */\n\t++this.beta;\n\t++this.total;\n} \\lambda[a, b];\n\n\\apply[\\fanin_{i}(a, b), \\fanout_{i}(c, d)] {\n\t/* Duplicate application. */\n\t++this.total;\n} \\fanout_{i}[\\apply(a, c), \\apply(b, d)];\n\n\\fanin_{i}[\\lambda(a, b), \\lambda(c, d)] {\n\t/* Duplicate abstraction. */\n\t++this.total;\n} \\lambda[\\fanout_{i}(a, c), \\fanin_{i}(b, d)];\n\n\\fanin_{i}[\\fanout_{this.int1(j, i)}(a, b), \\fanout_{this.int2(j, i)}(c, d)] {\n\t/* Duplicate different fans. */\n\tif (!this.match(i, j))\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\fanout_{j}[\\fanin_{this.int1(i, j)}(a, c), \\fanin_{this.int2(i, j)}(b, d)];\n\n\\fanin_{i}[a, b] {\n\t/* Annihilate matching fans. */\n\tif (this.match(i, j))\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\fanout_{j}[a, b];\n\n\\read_{C}[\\fanout_{i}(a, b)] {\n\t/* Duplicate context. */\n\t++this.total;\n} \\fanout_{i}[\\read_{C}(a), \\read_{this.clone(C)}(b)];\n\n\\print {\n\t/* Output results of read-back. */\n\tthis.nf = M;\n\t++this.total;\n} \\atom_{M};\n\n\\read_{C}[a] {\n\t/* Read back abstraction. */\n\t++this.total;\n} \\lambda[\\atom_{this.mkid()}, \\read_{this.abst(C)}(a)];\n\n\\apply[\\read_{this.appl(M)}(a), a] {\n\t/* Read back application. */\n\t++this.total;\n} \\atom_{M};\n\n\\read_{C}[\\atom_{this.atom(C, M)}] {\n\t/* Read back an atom. */\n\t++this.total;\n} \\atom_{M};\n\n\\fanin_{i}[\\atom_{M}, \\atom_{M}] {\n\t/* Duplicate an atom. */\n\t++this.total;\n} \\atom_{M};\n\n$$\n\nINCONFIG\n\n$$\n\nREADBACK\n\nconst db = {};\nlet nonce = 0;\n\nfunction decide(i, j)\n{\n\tif (db[`${i}-${j}`])\n\t\treturn;\n\n\tdb[`${i}-${j}`] = ++nonce;\n\tdb[`${i}+${j}`] = ++nonce;\n\tdb[`${j}-${i}`] = j;\n\tdb[`${j}+${i}`] = j;\n}\n\nthis.uniq = () => ++nonce;\nthis.int1 = (i, j) => db[`${i}-${j}`];\nthis.int2 = (i, j) => db[`${i}+${j}`];\nthis.match = (i, j) => {\n\tif (i == j)\n\t\treturn true;\n\n\tdecide(i, j);\n\treturn false;\n};\nthis.beta = 0;\nthis.total = 0;\n";
+const template = "\\apply[a, b] {\n\t/* Apply beta reduction. */\n\t++this.beta;\n\t++this.total;\n} \\lambda[a, b];\n\n\\apply[\\fanin_{i}(a, b), \\fanout_{i}(c, d)] {\n\t/* Duplicate application. */\n\t++this.total;\n} \\fanout_{i}[\\apply(a, c), \\apply(b, d)];\n\n\\fanin_{i}[\\lambda(a, b), \\lambda(c, d)] {\n\t/* Duplicate abstraction. */\n\t++this.total;\n} \\lambda[\\fanout_{i}(a, c), \\fanin_{i}(b, d)];\n\n\\fanin_{i}[\\fanout_{this.f1(j, i)}(a, b), \\fanout_{this.f2(j, i)}(c, d)] {\n\t/* Duplicate different fans. */\n\tif (!this.match(i, j))\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\fanout_{j}[\\fanin_{this.f1(i, j)}(a, c), \\fanin_{this.f2(i, j)}(b, d)];\n\n\\fanin_{i}[a, b] {\n\t/* Annihilate matching fans. */\n\tif (this.match(i, j))\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\fanout_{j}[a, b];\n\n\\read_{C}[\\fanout_{i}(a, b)] {\n\t/* Duplicate context. */\n\t++this.total;\n} \\fanout_{i}[\\read_{C}(a), \\read_{this.clone(C)}(b)];\n\n\\print {\n\t/* Output results of read-back. */\n\tthis.nf = M;\n\t++this.total;\n} \\atom_{M};\n\n\\read_{C}[a] {\n\t/* Read back abstraction. */\n\t++this.total;\n} \\lambda[\\atom_{this.mkid()}, \\read_{this.abst(C)}(a)];\n\n\\apply[\\read_{this.appl(M)}(a), a] {\n\t/* Read back application. */\n\t++this.total;\n} \\atom_{M};\n\n\\read_{C}[\\atom_{this.atom(C, M)}] {\n\t/* Read back an atom. */\n\t++this.total;\n} \\atom_{M};\n\n\\fanin_{i}[\\atom_{M}, \\atom_{M}] {\n\t/* Duplicate an atom. */\n\t++this.total;\n} \\atom_{M};\n\n$$\n\nINCONFIG\n\n$$\n\nREADBACK\n\nconst map = new Map();\nlet nonce = 0;\n\nfunction decide(i, j)\n{\n\tconst key = `${i},${j}`;\n\n\tif (map.has(key))\n\t\treturn;\n\n\tmap.set(key, {\n\t\tleft: ++nonce,\n\t\tright: ++nonce\n\t});\n\tmap.set(`${j},${i}`, {\n\t\tleft: j,\n\t\tright: j\n\t});\n}\n\nthis.uniq = () => ++nonce;\nthis.f1 = (i, j) => map.get(`${i},${j}`).left;\nthis.f2 = (i, j) => map.get(`${i},${j}`).right;\nthis.match = (i, j) => {\n\tif (i == j)\n\t\treturn true;\n\n\tdecide(i, j);\n\treturn false;\n};\n\nthis.beta = 0;\nthis.total = 0;\n";
 
 let mkwire, mktwins, getfv;
 
 function psi(shared, list)
 {
-	for (const atom in shared) {
-		const twins = shared[atom];
-		const wleft = twins.left;
-		const wright = twins.right;
+	shared.forEach((twins, atom) => {
+		const left = twins.left;
+		const right = twins.right;
 		const agent = `\\fanin_{this.uniq()}`;
-		const tree = `${agent}(${wright}, ${wleft})`;
+		const tree = `${agent}(${right}, ${left})`;
 
 		list.push(`${atom} = ${tree}`);
-	}
+	});
 }
 
 function gamma(obj, root, list)
@@ -684,7 +680,7 @@ function gamma(obj, root, list)
 
 	if ("atom" == node) {
 		if (obj.free) {
-			const name = `this.mkid(${obj.name})`;
+			const name = `this.mkid("${obj.name}")`;
 			const agent = `\\atom_{${name}}`;
 
 			list.push(`${root} = ${agent}`);
@@ -694,11 +690,11 @@ function gamma(obj, root, list)
 			list.push(`${root} = ${name}`);
 		}
 	} else if ("abst" == node) {
-		const id = obj.var;
+		const id = obj.bound;
 		const body = obj.body;
 		const fv = getfv(body);
 		const wire = mkwire();
-		const agent = (id in fv) ? id : "\\erase";
+		const agent = fv.has(id) ? id : "\\erase";
 		const tree = `\\lambda(${agent}, ${wire})`;
 
 		list.push(`${root} = ${tree}`);
@@ -747,12 +743,11 @@ const path = require("path");
 
 const template = "\\read_{C}[a] {\n\t/* Unshare variable. */\n\t++this.total;\n} \\share[\\copy(b, \\read_{C}(a)), b];\n\n\\copy[a, b] {\n\t/* Unshare variable. */\n\t++this.total;\n} \\share[\\copy(c, \\copy(a, b)), c];\n\n\\copy[a, b] {\n\t/* Initiate application. */\n\t++this.total;\n} \\outapp[\\apply(c, \\copy(a, b)), c];\n\n\\dup[a, b] {\n\t/* Unshare variable. */\n\t++this.total;\n} \\share[\\copy(c, \\dup(a, b)), c];\n\n\\dup[a, b] {\n\t/* Initiate application. */\n\t++this.total;\n} \\outapp[\\apply(c, \\dup(a, b)), c];\n\n\\apply[a, b] {\n\t/* Unshare variable. */\n\t++this.total;\n} \\share[\\copy(c, \\apply(a, b)), c];\n\n\\apply[a, b] {\n\t/* Initiate application. */\n\t++this.total;\n} \\outapp[\\apply(c, \\apply(a, b)), c];\n\n\\bind[a, \\outapp(b, c), d] {\n\t/* Inject application. */\n\t++this.total;\n} \\outapp[\\bind(e, b, d), \\bind(a, c, e)];\n\n\\erase {\n\t/* Erase sharing. */\n\t++this.total;\n} \\share[a, a];\n\n\\erase {\n\t/* Erase application. */\n\t++this.total;\n} \\outapp[\\erase, \\erase];\n\n\\bind[a, \\amb(b, \\share(c, d), d), e] {\n\t/* Inject sharing. */\n\t++this.total;\n} \\share[\\bind(a, c, e), b];\n\n\\read_{C}[a] {\n\t/* Initiate application. */\n\t++this.total;\n} \\outapp[\\apply(b, \\read_{C}(a)), b];\n\n\\print {\n\t/* Output results of read-back. */\n\tthis.nf = M;\n\t++this.total;\n} \\atom_{M};\n\n\\bind[a, \\erase, a] {\n\t/* Erase FV. */\n\t++this.total;\n} \\erase;\n\n\\bind[a, \\atom_{M}, a] {\n\t/* Bind an atom. */\n\t++this.total;\n} \\atom_{M};\n\n\\bind[a, \\lambda(b, c), a] {\n\t/* Bind a closed abstraction. */\n\t++this.total;\n} \\lambda[b, c];\n\n\\bind[\\dup(a, b), \\dup(c, d), \\dup(e, f)] {\n\t/* Duplicate FV. */\n\t++this.total;\n} \\dup[\\bind(a, c, e), \\bind(b, d, f)];\n\n\\read_{C}[\\dup(a, b)] {\n\t/* Duplicate context. */\n\t++this.total;\n} \\dup[\\read_{C}(a), \\read_{this.clone(C)}(b)];\n\n\\dup[a, b] {\n\t/* Duplicate sharing. */\n\t++this.total;\n} \\copy[\\dup(\\amb(c, \\share(a, d), d), \\amb(e, \\share(b, f), f)), \\dup(c, e)];\n\n\\read_{C}[a] {\n\t/* Read back abstraction. */\n\t++this.total;\n} \\lambda[\\atom_{this.mkid()}, \\read_{this.abst(C)}(a)];\n\n\\apply[\\read_{this.appl(M)}(a), a] {\n\t/* Read back application. */\n\t++this.total;\n} \\atom_{M};\n\n\\read_{C}[\\atom_{this.atom(C, M)}] {\n\t/* Read back an atom. */\n\t++this.total;\n} \\atom_{M};\n\n\\copy[\\atom_{M}, \\atom_{M}] {\n\t/* Copy an atom. */\n\t++this.total;\n} \\atom_{M};\n\n\\dup[\\atom_{M}, \\atom_{M}] {\n\t/* Duplicate an atom. */\n\t++this.total;\n} \\atom_{M};\n\n\\apply[a, b] {\n\t/* Apply a closed term. */\n\t++this.beta;\n\t++this.total;\n} \\lambda[a, b];\n\n\\copy[\\lambda(a, b), \\lambda(c, d)] {\n\t/* Initiate copy of a closed term. */\n\t++this.total;\n} \\lambda[\\dup(a, c), \\dup(b, d)];\n\n\\apply[\\dup(a, b), \\dup(\\outapp(c, a), \\outapp(d, b))] {\n\t/* Duplicate application. */\n\t++this.total;\n} \\dup[c, d];\n\n\\dup[\\lambda(a, b), \\lambda(c, d)] {\n\t/* Duplicate abstraction. */\n\t++this.total;\n} \\lambda[\\dup(a, c), \\dup(b, d)];\n\n\\dup[a, b] {\n\t/* Finish duplication. */\n\t++this.total;\n} \\dup[a, b];\n\n\\erase {\n\t/* Erase an atom. */\n\t++this.total;\n} \\atom_{M};\n\n\\erase {\n\t/* Erase application. */\n\t++this.total;\n} \\apply[\\erase, \\erase];\n\n\\erase {\n\t/* Erase abstraction. */\n\t++this.total;\n} \\lambda[\\erase, \\erase];\n\n\\erase {\n\t/* Erase copy initiator. */\n\t++this.total;\n} \\copy[\\erase, \\erase];\n\n\\erase {\n\t/* Erase duplicator. */\n\t++this.total;\n} \\dup[\\erase, \\erase];\n\n\\erase {\n\t/* Finish erasing. */\n\t++this.total;\n} \\erase;\n\n$$\n\nINCONFIG\n\n$$\n\nREADBACK\n\nthis.beta = 0;\nthis.total = 0;\n";
 
-let mkwire, mktwins, getfv, subst;
+let mkwire, mktwins, getfv, rename;
 
 function psi(shared, list)
 {
-	for (const atom in shared) {
-		const twins = shared[atom];
+	shared.forEach((twins, atom) => {
 		const left = twins.left;
 		const right = twins.right;
 		const wire = mkwire();
@@ -760,20 +755,19 @@ function psi(shared, list)
 		const amb = `\\amb(${right}, ${agent}, ${wire})`;
 
 		list.push(`${left} = ${amb}`);
-	}
+	});
 }
 
 function rho(fv, root, end, list)
 {
-	for (const atom in fv) {
-		const ref = fv[atom].ref;
+	fv.forEach((ref, atom) => {
 		const next = mkwire();
 		const agent = `\\bind(${next}, ${ref}, ${root})`;
 
 		list.push(`${atom} = ${agent}`);
 
 		root = next;
-	}
+	});
 
 	list.push(`${root} = ${end}`);
 }
@@ -784,7 +778,7 @@ function gamma(obj, root, list)
 
 	if ("atom" == node) {
 		if (obj.free) {
-			const name = `this.mkid(${obj.name})`;
+			const name = `this.mkid("${obj.name}")`;
 			const agent = `\\atom_{${name}}`;
 
 			list.push(`${root} = ${agent}`);
@@ -794,26 +788,23 @@ function gamma(obj, root, list)
 			list.push(`${root} = ${name}`);
 		}
 	} else if ("abst" == node) {
-		const id = obj.var;
+		const id = obj.bound;
 		const body = obj.body;
 		const fv = getfv(body);
 		const wire = mkwire();
-		const agent = (id in fv) ? id : "\\erase";
+		const agent = fv.has(id) ? id : "\\erase";
 		const tree = `\\lambda(${agent}, ${wire})`;
+		const map = new Map();
 
-		delete fv[id];
+		fv.delete(id);
 
-		for (const atom in fv) {
-			const wref = mkwire();
+		fv.forEach(atom => {
+			map.set(atom, mkwire());
+		});
 
-			fv[atom] = {
-				ref: wref
-			};
-		}
+		rename(body, map);
 
-		subst(body, fv, "ref");
-
-		rho(fv, root, tree, list);
+		rho(map, root, tree, list);
 
 		gamma(body, wire, list);
 	} else if ("appl" == node) {
@@ -842,7 +833,7 @@ function encode(generic, term)
 	mkwire = generic.mkwire;
 	mktwins = generic.mktwins;
 	getfv = generic.getfv;
-	subst = generic.subst;
+	rename = generic.rename;
 
 	gamma(term, "root", inconfig);
 
@@ -858,55 +849,58 @@ module.exports = encode;
 
 const path = require("path");
 
-const readback = "const gfv = [];\nlet id = 0;\n\nfunction mkvar(fresh)\n{\n\tif (fresh)\n\t\t++id;\n\n\treturn JSON.stringify(`v${id}`);\n}\n\nfunction mkid(name)\n{\n\tconst fv = {};\n\tconst obj = {\n\t\tnode: \"atom\",\n\t\tfv: fv\n\t};\n\n\tif (name) {\n\t\tname = JSON.stringify(name);\n\t\tobj.name = name;\n\t\tgfv[name] = true;\n\t\treturn obj;\n\t}\n\n\tdo {\n\t\tname = mkvar(true);\n\t} while (gfv[name]);\n\n\tobj.name = name;\n\tfv[name] = true;\n\treturn obj;\n}\n\nfunction mkhole()\n{\n\tconst obj = {};\n\n\tobj.fv = {};\n\tobj.bv = {};\n\tobj.hole = obj;\n\treturn obj;\n}\n\nfunction subst(hole, obj)\n{\n\tconst parent = hole.parent;\n\tconst body = obj.body;\n\tconst left = obj.left;\n\tconst right = obj.right;\n\n\tif (parent)\n\t\tobj.parent = hole.parent;\n\telse\n\t\tdelete obj.parent;\n\n\tObject.assign(hole, obj);\n\n\tif (body)\n\t\tbody.parent = hole;\n\tif (left)\n\t\tleft.parent = hole;\n\tif (right)\n\t\tright.parent = hole;\n}\n\nfunction eta(obj)\n{\n\tlet parent, left, right, name;\n\n\tif (\"appl\" != obj.node)\n\t\treturn;\n\n\tparent = obj.parent;\n\tif (!parent)\n\t\treturn;\n\tif (\"abst\" != parent.node)\n\t\treturn;\n\n\tright = obj.right;\n\tif (\"atom\" != right.node)\n\t\treturn;\n\n\tname = parent.var;\n\tif (name != right.name)\n\t\treturn;\n\n\tleft = obj.left;\n\tif (left.fv[name])\n\t\treturn;\n\n\tsubst(parent, left);\n\n\teta(parent);\n}\n\nfunction atom(context, obj, name)\n{\n\tconst ofv = obj.fv;\n\tconst cfv = context.fv;\n\tconst bv = context.bv;\n\tconst chole = context.hole;\n\tconst ohole = obj.hole;\n\n\tif (name)\n\t\tbv[name] = true;\n\n\tfor (const key in ofv)\n\t\tif (!(key in bv))\n\t\t\tcfv[key] = true;\n\n\tsubst(chole, obj);\n\n\tif (ohole) {\n\t\tdelete chole.hole;\n\t\tcontext.hole = ohole;\n\t} else {\n\t\tdelete context.hole;\n\t\teta(chole);\n\t}\n\n\treturn context;\n}\n\nfunction abst(context)\n{\n\tconst hole = mkhole();\n\tconst name = mkvar();\n\tconst obj = {\n\t\tnode: \"abst\",\n\t\tvar: name,\n\t\tbody: hole,\n\t\tfv: {},\n\t\thole: hole\n\t};\n\n\thole.parent = obj;\n\treturn atom(context, obj, name);\n}\n\nfunction appl(left)\n{\n\tconst context = mkhole();\n\tconst hole = mkhole();\n\tconst obj = {\n\t\tnode: \"appl\",\n\t\tleft: left,\n\t\tright: hole,\n\t\tfv: Object.assign({}, left.fv),\n\t\thole: hole\n\t};\n\n\tleft.parent = obj;\n\thole.parent = obj;\n\treturn atom(context, obj);\n}\n\nfunction clone(obj, root, hole, parent)\n{\n\tconst copy = {};\n\n\tif (!obj)\n\t\treturn;\n\n\tif (!root) {\n\t\troot = copy;\n\t\thole = obj.hole;\n\t}\n\n\tcopy.node = obj.node;\n\tcopy.var = obj.var;\n\tcopy.name = obj.name;\n\tcopy.parent = parent;\n\tcopy.body = clone(obj.body, root, hole, copy);\n\tcopy.left = clone(obj.left, root, hole, copy);\n\tcopy.right = clone(obj.right, root, hole, copy);\n\n\tcopy.fv = Object.assign({}, obj.fv);\n\tcopy.bv = Object.assign({}, obj.bv);\n\n\tif (obj === hole)\n\t\troot.hole = copy;\n\n\treturn copy;\n}\n\nthis.clone = clone;\nthis.mkid = mkid;\nthis.mkvar = mkvar;\nthis.mkhole = mkhole;\nthis.abst = abst;\nthis.appl = appl;\nthis.atom = atom;\n";
+const readback = "const gfv = new Set();\nlet id = 0;\n\nfunction mkvar(fresh)\n{\n\tif (fresh)\n\t\t++id;\n\n\treturn `v${id}`;\n}\n\nfunction mkid(name)\n{\n\tconst fv = new Set();\n\tconst obj = {\n\t\tnode: \"atom\",\n\t\tfv: fv\n\t};\n\n\tif (name) {\n\t\tobj.name = name;\n\t\tgfv.add(name);\n\t\treturn obj;\n\t}\n\n\tdo {\n\t\tname = mkvar(true);\n\t} while (gfv.has(name));\n\n\tobj.name = name;\n\tfv.add(name);\n\treturn obj;\n}\n\nfunction mkhole()\n{\n\tconst obj = {};\n\n\tobj.fv = new Set();\n\tobj.bv = new Set();\n\tobj.hole = obj;\n\treturn obj;\n}\n\nfunction subst(hole, obj)\n{\n\tconst parent = hole.parent;\n\tconst body = obj.body;\n\tconst left = obj.left;\n\tconst right = obj.right;\n\n\tif (parent)\n\t\tobj.parent = hole.parent;\n\telse\n\t\tdelete obj.parent;\n\n\tObject.assign(hole, obj);\n\n\tif (body)\n\t\tbody.parent = hole;\n\tif (left)\n\t\tleft.parent = hole;\n\tif (right)\n\t\tright.parent = hole;\n}\n\nfunction eta(obj)\n{\n\tlet parent, left, right, name;\n\n\tif (\"appl\" != obj.node)\n\t\treturn;\n\n\tparent = obj.parent;\n\tif (!parent)\n\t\treturn;\n\tif (\"abst\" != parent.node)\n\t\treturn;\n\n\tright = obj.right;\n\tif (\"atom\" != right.node)\n\t\treturn;\n\n\tname = parent.bound;\n\tif (name != right.name)\n\t\treturn;\n\n\tleft = obj.left;\n\tif (left.fv.has(name))\n\t\treturn;\n\n\tsubst(parent, left);\n\n\teta(parent);\n}\n\nfunction atom(context, obj, name)\n{\n\tconst ofv = obj.fv;\n\tconst cfv = context.fv;\n\tconst bv = context.bv;\n\tconst chole = context.hole;\n\tconst ohole = obj.hole;\n\n\tif (name)\n\t\tbv.add(name);\n\n\tofv.forEach(x => {\n\t\tif (!bv.has(x))\n\t\t\tcfv.add(x);\n\t});\n\n\tsubst(chole, obj);\n\n\tif (ohole) {\n\t\tdelete chole.hole;\n\t\tcontext.hole = ohole;\n\t} else {\n\t\tdelete context.hole;\n\t\teta(chole);\n\t}\n\n\treturn context;\n}\n\nfunction abst(context)\n{\n\tconst hole = mkhole();\n\tconst name = mkvar();\n\tconst obj = {\n\t\tnode: \"abst\",\n\t\tbound: name,\n\t\tbody: hole,\n\t\tfv: new Set(),\n\t\thole: hole\n\t};\n\n\thole.parent = obj;\n\treturn atom(context, obj, name);\n}\n\nfunction appl(left)\n{\n\tconst context = mkhole();\n\tconst hole = mkhole();\n\tconst obj = {\n\t\tnode: \"appl\",\n\t\tleft: left,\n\t\tright: hole,\n\t\tfv: new Set(left.fv),\n\t\thole: hole\n\t};\n\n\tleft.parent = obj;\n\thole.parent = obj;\n\treturn atom(context, obj);\n}\n\nfunction clone(obj, root, hole, parent)\n{\n\tconst copy = {};\n\n\tif (!obj)\n\t\treturn;\n\n\tif (!root) {\n\t\troot = copy;\n\t\thole = obj.hole;\n\t}\n\n\tcopy.node = obj.node;\n\tcopy.bound = obj.bound;\n\tcopy.name = obj.name;\n\tcopy.parent = parent;\n\tcopy.body = clone(obj.body, root, hole, copy);\n\tcopy.left = clone(obj.left, root, hole, copy);\n\tcopy.right = clone(obj.right, root, hole, copy);\n\n\tcopy.fv = new Set(obj.fv);\n\tcopy.bv = new Set(obj.bv);\n\n\tif (obj === hole)\n\t\troot.hole = copy;\n\n\treturn copy;\n}\n\nthis.clone = clone;\nthis.mkid = mkid;\nthis.mkvar = mkvar;\nthis.mkhole = mkhole;\nthis.abst = abst;\nthis.appl = appl;\nthis.atom = atom;\n";
 let lastwire;
 
 function getcap(left, right)
 {
-	const dict = {};
+	const cap = new Set();
 
-	for (const prop in left)
-		if (prop in right)
-			dict[prop] = left[prop];
+	left = getfv(left);
+	right = getfv(right);
 
-	return dict;
+	left.forEach(atom => {
+		if (right.has(atom))
+			cap.add(atom);
+	});
+
+	return cap;
 }
 
 function merge(left, right)
 {
-	const dict = {};
-
-	for (const prop in left)
-		dict[prop] = left[prop];
-
-	for (const prop in right)
-		dict[prop] = right[prop];
-
-	return dict;
+	left = Array.from(left);
+	right = Array.from(right);
+	return new Set(left.concat(right));
 }
 
 function getfv(obj)
 {
 	const node = obj.node;
-	let fv;
 
 	if ("atom" == node) {
-		fv = {};
+		const fv = new Set();
 
 		if (!obj.free)
-			fv[obj.name] = true;
-	} else if ("abst" == node) {
-		fv = getfv(obj.body);
+			fv.add(obj.name);
 
-		delete fv[obj.var];
-	} else if ("appl" == node) {
+		return fv;
+	}
+
+	if ("abst" == node) {
+		const fv = getfv(obj.body);
+
+		fv.delete(obj.bound);
+
+		return fv;
+	}
+
+	if ("appl" == node) {
 		const left = getfv(obj.left);
 		const right = getfv(obj.right);
 
-		fv = merge(left, right);
+		return merge(left, right);
 	}
-
-	return fv;
 }
 
 function mkwire()
@@ -915,48 +909,46 @@ function mkwire()
 	return "w" + lastwire.toFixed(0);
 }
 
-function subst(obj, shared, side)
+function rename(obj, map)
 {
 	const node = obj.node;
 
 	if ("atom" == node) {
 		const name = obj.name;
 
-		if (name in shared) {
-			const entry = shared[name];
-
-			obj.name = entry[side];
-		}
+		if (map.has(name))
+			obj.name = map.get(name);
 	} else if ("abst" == node) {
 		const body = obj.body;
 
-		subst(body, shared, side);
+		rename(body, map);
 	} else if ("appl" == node) {
-		subst(obj.left, shared, side);
-		subst(obj.right, shared, side);
+		rename(obj.left, map);
+		rename(obj.right, map);
 	}
 }
 
 function mktwins(left, right)
 {
-	const fvleft = getfv(left);
-	const fvright = getfv(right);
-	const shared = getcap(fvleft, fvright);
+	const lmap = new Map();
+	const rmap = new Map();
+	const smap = new Map();
 
-	for (const atom in shared) {
+	getcap(left, right).forEach(atom => {
 		const wleft = mkwire();
 		const wright = mkwire();
 
-		shared[atom] = {
+		lmap.set(atom, wleft);
+		rmap.set(atom, wright);
+		smap.set(atom, {
 			left: wleft,
 			right: wright
-		};
-	}
+		});
+	});
 
-	subst(left, shared, "left");
-	subst(right, shared, "right");
-
-	return shared;
+	rename(left, lmap);
+	rename(right, rmap);
+	return smap;
 }
 
 function alpha(obj, bv, lvl)
@@ -966,15 +958,9 @@ function alpha(obj, bv, lvl)
 		node: node
 	};
 
-	if (!bv)
-		bv = {};
-
-	if (!lvl)
-		lvl = 0;
-
 	if ("atom" == node) {
 		const name = obj.name;
-		const id = bv[name];
+		const id = bv.get(name);
 
 		if (id) {
 			aobj.name = id.name;
@@ -984,22 +970,22 @@ function alpha(obj, bv, lvl)
 			aobj.free = true;
 		}
 	} else if ("abst" == node) {
-		const id = obj.var;
-		const old = bv[id];
+		const id = obj.bound;
+		const old = bv.get(id);
 		const wire = mkwire();
 
-		bv[id] = {
+		bv.set(id, {
 			name: wire,
 			lvl: ++lvl
-		};
+		});
 
-		aobj.var = wire;
+		aobj.bound = wire;
 		aobj.body = alpha(obj.body, bv, lvl);
 
 		if (old)
-			bv[id] = old;
+			bv.set(id, old);
 		else
-			delete bv[id];
+			bv.delete(id);
 	} else if ("appl" == node) {
 		aobj.left = alpha(obj.left, bv, lvl);
 		aobj.right = alpha(obj.right, bv, lvl);
@@ -1010,43 +996,46 @@ function alpha(obj, bv, lvl)
 
 function expand(dict)
 {
-	const macros = dict.macros;
-	const mlen = macros.length;
-	let term = dict.term;
-	let fv = getfv(term);
-
-	for (let i = 0; i < mlen; i++) {
-		const macro = macros[i];
+	const orig = dict.term;
+	const term = dict.macros.reduce((acc, macro) => {
+		const fv = acc.fv;
 		const id = macro.id;
 		const def = macro.def;
 
-		if (!fv[id])
-			continue;
+		if (!fv.has(id))
+			return acc;
 
-		delete fv[id];
-		fv = merge(fv, getfv(def));
+		fv.delete(id);
 
-		term = {
+		getfv(def).forEach(atom => {
+			fv.add(atom);
+		});
+
+		acc.term = {
 			node: "appl",
 			left: {
 				node: "abst",
-				var: id,
-				body: term
+				bound: id,
+				body: acc.term
 			},
 			right: def
 		};
-	}
+		return acc;
+	}, {
+		term: orig,
+		fv: getfv(orig)
+	}).term;
 
 	dict.expanded = term;
 	lastwire = 0;
-	return alpha(term);
+	return alpha(term, new Map(), 0);
 }
 
 exports.expand = expand;
 exports.mkwire = mkwire;
 exports.mktwins = mktwins;
 exports.getfv = getfv;
-exports.subst = subst;
+exports.rename = rename;
 exports.readback = readback;
 
 },{"path":16}],6:[function(require,module,exports){
@@ -1058,32 +1047,26 @@ const closed = require("./closed");
 const optimal = require("./optimal");
 const standard = require("./standard");
 
+const map = new Map();
 const expand = generic.expand;
 const readback = generic.readback;
+const encode = algo => term => {
+	const expanded = expand(term);
+	const eqns = algo(generic, expanded);
+	const conf = eqns.join(";\n") + ";";
+	let inet = eqns.inet;
 
-function addalgo(name, algo)
-{
-	function encode(term)
-	{
-		let conf, inet;
+	inet = inet.replace("INCONFIG", conf);
+	inet = inet.replace("READBACK\n", readback);
+	return inet;
+};
 
-		term = expand(term);
-		conf = algo(generic, term);
-		inet = conf.inet;
+map.set("abstract", encode(abstract));
+map.set("closed", encode(closed));
+map.set("optimal", encode(optimal));
+map.set("standard", encode(standard));
 
-		conf = conf.join(";\n")  + ";";
-		inet = inet.replace("INCONFIG", conf);
-		inet = inet.replace("READBACK\n", readback);
-		return inet;
-	}
-
-	exports[name] = encode;
-}
-
-addalgo("abstract", abstract);
-addalgo("closed", closed);
-addalgo("optimal", optimal);
-addalgo("standard", standard);
+module.exports = map;
 
 },{"./abstract":3,"./closed":4,"./generic":5,"./optimal":7,"./standard":8}],7:[function(require,module,exports){
 "use strict";
@@ -1097,15 +1080,14 @@ let mkwire, mktwins, getfv;
 
 function psi(shared, list)
 {
-	for (const atom in shared) {
-		const twins = shared[atom];
-		const wleft = twins.left;
-		const wright = twins.right;
+	shared.forEach((twins, atom) => {
+		const left = twins.left;
+		const right = twins.right;
 		const agent = `\\fan_{0}`;
-		const tree = `${agent}(${wright}, ${wleft})`;
+		const tree = `${agent}(${right}, ${left})`;
 
 		list.push(`${atom} = ${tree}`);
-	}
+	});
 }
 
 function mkscope(n, s)
@@ -1122,7 +1104,7 @@ function gamma(obj, root, list)
 
 	if ("atom" == node) {
 		if (obj.free) {
-			const name = `this.mkid(${obj.name})`;
+			const name = `this.mkid("${obj.name}")`;
 			const agent = `\\atom_{${name}}`;
 
 			list.push(`${root} = ${agent}`);
@@ -1132,11 +1114,11 @@ function gamma(obj, root, list)
 			list.push(`${obj.name} = ${agent}`);
 		}
 	} else if ("abst" == node) {
-		const id = obj.var;
+		const id = obj.bound;
 		const body = obj.body;
 		const fv = getfv(body);
 		const wire = mkwire();
-		const agent = (id in fv) ? id : "\\erase";
+		const agent = fv.has(id) ? id : "\\erase";
 		const tree = `\\lambda(${agent}, ${wire})`;
 
 		list.push(`${root} = ${tree}`);
@@ -1185,29 +1167,27 @@ const path = require("path");
 
 const template = "\\cro_{i}[\\fan_{j - 1}(a, b)] {\n\t/* Level down higher fan. */\n\tif (i < j)\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\fan_{j}[\\cro_{i}(a), \\cro_{i}(b)];\n\n\\fan_{i}[\\cro_{j}(a), \\cro_{j}(b)] {\n\t/* Duplicate higher croissant. */\n\tif (i < j)\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\cro_{j}[\\fan_{i}(a, b)];\n\n\\fan_{i}[\\bra_{j}(a), \\bra_{j}(b)] {\n\t/* Duplicate higher bracket. */\n\tif (i < j)\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\bra_{j}[\\fan_{i}(a, b)];\n\n\\bra_{i}[\\fan_{j + 1}(a, b)] {\n\t/* Level up higher fan. */\n\tif (i < j)\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\fan_{j}[\\bra_{i}(a), \\bra_{i}(b)];\n\n\\bra_{i}[\\bra_{j + 1}(a)] {\n\t/* Level up higher bracket. */\n\tif (i < j)\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\bra_{j}[\\bra_{i}(a)];\n\n\\cro_{i}[\\cro_{j - 1}(a)] {\n\t/* Level down higher bracket. */\n\tif (i < j)\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\cro_{j}[\\cro_{i}(a)];\n\n\\cro_{i}[\\bra_{j - 1}(a)] {\n\t/* Level down higher bracket. */\n\tif (i < j)\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\bra_{j}[\\cro_{i}(a)];\n\n\\bra_{i}[\\cro_{j + 1}(a)] {\n\t/* Level up higher croissant. */\n\tif (i < j)\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\cro_{j}[\\bra_{i}(a)];\n\n\\print {\n\t/* Ignore bracket. */\n\t++this.total;\n} \\bra_{i}[\\print];\n\n\\read_{C}[\\bra_{i}(a)] {\n\t/* Pass through context. */\n\t++this.total;\n} \\bra_{i}[\\read_{C}(a)];\n\n\\cro_{i}[a] {\n\t/* Annihilate matching croissants. */\n\tif (i == j)\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\cro_{j}[a];\n\n\\bra_{i}[a] {\n\t/* Annihilate matching brackets. */\n\tif (i == j)\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\bra_{j}[a];\n\n\\bra_{i}[\\app_{j + 1}(a, b)] {\n\t/* Level up higher application. */\n\tif (i < j)\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\app_{j}[\\bra_{i}(a), \\bra_{i}(b)];\n\n\\bra_{i}[\\lam_{j + 1}(a, b)] {\n\t/* Level up higher abstraction. */\n\tif (i < j)\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\lam_{j}[\\bra_{i}(a), \\bra_{i}(b)];\n\n\\print {\n\t/* Ignore croissant. */\n\t++this.total;\n} \\cro_{i}[\\print];\n\n\\read_{C}[\\cro_{i}(a)] {\n\t/* Pass through context. */\n\t++this.total;\n} \\cro_{i}[\\read_{C}(a)];\n\n\\cro_{i}[\\app_{j - 1}(a, b)] {\n\t/* Level down higher application. */\n\tif (i < j)\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\app_{j}[\\cro_{i}(a), \\cro_{i}(b)];\n\n\\cro_{i}[\\lam_{j - 1}(a, b)] {\n\t/* Level down higher abstraction. */\n\tif (i < j)\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\lam_{j}[\\cro_{i}(a), \\cro_{i}(b)];\n\n\\cro_{i}[\\atom_{M}] {\n\t/* Return an atom. */\n\t++this.total;\n} \\atom_{M};\n\n\\bra_{i}[\\atom_{M}] {\n\t/* Return an atom. */\n\t++this.total;\n} \\atom_{M};\n\n\\read_{C}[\\fan_{i}(a, b)] {\n\t/* Duplicate context. */\n\t++this.total;\n} \\fan_{i}[\\read_{C}(a), \\read_{this.clone(C)}(b)];\n\n\\print {\n\t/* Output results of read-back. */\n\tthis.nf = M;\n\t++this.total;\n} \\atom_{M};\n\n\\read_{C}[a] {\n\t/* Read back abstraction. */\n\t++this.total;\n} \\lam_{i}[\\atom_{this.mkid()}, \\read_{this.abst(C)}(a)];\n\n\\app_{i}[\\read_{this.appl(M)}(a), a] {\n\t/* Read back application. */\n\t++this.total;\n} \\atom_{M};\n\n\\read_{C}[\\atom_{this.atom(C, M)}] {\n\t/* Read back an atom. */\n\t++this.total;\n} \\atom_{M};\n\n\\fan_{i}[\\atom_{M}, \\atom_{M}] {\n\t/* Duplicate an atom. */\n\t++this.total;\n} \\atom_{M};\n\n\\app_{i}[a, b] {\n\t/* Annihilate matching abstraction and application. */\n\tif (i != j)\n\t\treturn false;\n\n\t++this.beta;\n\t++this.total;\n} \\lam_{j}[a, b];\n\n\\fan_{i}[\\app_{j}(a, b), \\app_{j}(c, d)] {\n\t/* Duplicate higher application. */\n\tif (i < j)\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\app_{j}[\\fan_{i}(a, c), \\fan_{i}(b, d)];\n\n\\fan_{i}[\\lam_{j}(a, b), \\lam_{j}(c, d)] {\n\t/* Duplicate higher abstraction. */\n\tif (i < j)\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\lam_{j}[\\fan_{i}(a, c), \\fan_{i}(b, d)];\n\n\\fan_{i}[a, b] {\n\t/* Annihilate matching fans. */\n\tif (i == j)\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\fan_{j}[a, b];\n\n\\fan_{i}[\\fan_{j}(a, b), \\fan_{j}(c, d)] {\n\t/* Duplicate higher fan. */\n\tif (i < j)\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\fan_{j}[\\fan_{i}(a, c), \\fan_{i}(b, d)];\n\n$$\n\nINCONFIG\n\n$$\n\nREADBACK\n\nthis.beta = 0;\nthis.total = 0;\n";
 
-let mkwire, mktwins, getfv, subst;
+let mkwire, mktwins, getfv, rename;
 
 function box(fv, list, lvl)
 {
-	for (const atom in fv) {
-		const ref = fv[atom].ref;
+	fv.forEach((ref, atom) => {
 		const agent = `\\bra_{${lvl}}(${ref})`;
 
 		list.push(`${atom} = ${agent}`);
-	}
+	});
 }
 
 function psi(shared, list, lvl)
 {
-	for (const atom in shared) {
-		const twins = shared[atom];
-		const wleft = twins.left;
-		const wright = twins.right;
+	shared.forEach((twins, atom) => {
+		const left = twins.left;
+		const right = twins.right;
 		const agent = `\\fan_{${lvl}}`;
-		const tree = `${agent}(${wright}, ${wleft})`;
+		const tree = `${agent}(${right}, ${left})`;
 
 		list.push(`${atom} = ${tree}`);
-	}
+	});
 }
 
 function gamma(obj, root, list, lvl)
@@ -1216,7 +1196,7 @@ function gamma(obj, root, list, lvl)
 
 	if ("atom" == node) {
 		if (obj.free) {
-			const name = `this.mkid(${obj.name})`;
+			const name = `this.mkid("${obj.name}")`;
 			const agent = `\\atom_{${name}}`;
 
 			list.push(`${root} = ${agent}`);
@@ -1226,11 +1206,11 @@ function gamma(obj, root, list, lvl)
 			list.push(`${obj.name} = ${agent}`);
 		}
 	} else if ("abst" == node) {
-		const id = obj.var;
+		const id = obj.bound;
 		const body = obj.body;
 		const fv = getfv(body);
 		const wire = mkwire();
-		const agent = (id in fv) ? id : "\\erase";
+		const agent = fv.has(id) ? id : "\\erase";
 		const tree = `\\lam_{${lvl}}(${agent}, ${wire})`;
 
 		list.push(`${root} = ${tree}`);
@@ -1245,23 +1225,20 @@ function gamma(obj, root, list, lvl)
 		const agent = `\\app_{${lvl}}`;
 		const tree = `${agent}(${wright}, ${root})`;
 		const fv = getfv(right);
+		const map = new Map();
 
-		for (const atom in fv) {
-			const wref = mkwire();
+		fv.forEach(atom => {
+			map.set(atom, mkwire());
+		});
 
-			fv[atom] = {
-				ref: wref
-			};
-		}
-
-		subst(right, fv, "ref");
+		rename(right, map);
 
 		list.push(`${wleft} = ${tree}`);
 
 		gamma(left, wleft, list, lvl);
 		gamma(right, wright, list, lvl + 1);
 
-		box(fv, list, lvl);
+		box(map, list, lvl);
 		psi(shared, list, lvl);
 	}
 }
@@ -1275,7 +1252,7 @@ function encode(generic, term)
 	mkwire = generic.mkwire;
 	mktwins = generic.mktwins;
 	getfv = generic.getfv;
-	subst = generic.subst;
+	rename = generic.rename;
 
 	gamma(term, "root", inconfig, 0);
 
@@ -1301,10 +1278,9 @@ function obj2mlc(obj)
 	const node = obj.node;
 
 	if ("atom" == node)
-		return JSON.parse(obj.name);
+		return obj.name;
 
 	if ("abst" == node) {
-		const id = JSON.parse(obj.var);
 		const body = obj.body;
 		let sep;
 
@@ -1313,7 +1289,7 @@ function obj2mlc(obj)
 		else
 			sep = ": ";
 
-		return id + sep + obj2mlc(body);
+		return obj.bound + sep + obj2mlc(body);
 	}
 
 	if ("appl" == node) {
@@ -1337,7 +1313,7 @@ function obj2mlc(obj)
 
 function mlc2in(mlc, algo)
 {
-	const encode = encoding[algo ? algo : defalgo];
+	const encode = encoding.get(algo ? algo : defalgo);
 	let insrc;
 
 	if (!encode)
@@ -1399,7 +1375,7 @@ function run(mlc, algo, max)
 }
 
 run.defalgo = defalgo;
-run.algos = Object.keys(encoding);
+run.algos = Array.from(encoding.keys());
 run.prepare = prepare;
 run.debug = debug;
 run.debug0 = debug0;
