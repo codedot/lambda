@@ -81,7 +81,7 @@ function eta(obj)
 	if ("atom" != right.node)
 		return;
 
-	name = parent.var;
+	name = parent.bound;
 	if (name != right.name)
 		return;
 
@@ -129,7 +129,7 @@ function abst(context)
 	const name = mkvar();
 	const obj = {
 		node: "abst",
-		var: name,
+		bound: name,
 		body: hole,
 		fv: new Set(),
 		hole: hole
@@ -169,7 +169,7 @@ function clone(obj, root, hole, parent)
 	}
 
 	copy.node = obj.node;
-	copy.var = obj.var;
+	copy.bound = obj.bound;
 	copy.name = obj.name;
 	copy.parent = parent;
 	copy.body = clone(obj.body, root, hole, copy);

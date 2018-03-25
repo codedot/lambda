@@ -44,7 +44,7 @@ function getfv(obj)
 	if ("abst" == node) {
 		const fv = getfv(obj.body);
 
-		fv.delete(obj.var);
+		fv.delete(obj.bound);
 
 		return fv;
 	}
@@ -124,7 +124,7 @@ function alpha(obj, bv, lvl)
 			aobj.free = true;
 		}
 	} else if ("abst" == node) {
-		const id = obj.var;
+		const id = obj.bound;
 		const old = bv.get(id);
 		const wire = mkwire();
 
@@ -133,7 +133,7 @@ function alpha(obj, bv, lvl)
 			lvl: ++lvl
 		});
 
-		aobj.var = wire;
+		aobj.bound = wire;
 		aobj.body = alpha(obj.body, bv, lvl);
 
 		if (old)
@@ -169,7 +169,7 @@ function expand(dict)
 			node: "appl",
 			left: {
 				node: "abst",
-				var: id,
+				bound: id,
 				body: acc.term
 			},
 			right: def

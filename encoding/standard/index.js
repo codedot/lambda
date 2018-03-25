@@ -44,7 +44,7 @@ function gamma(obj, root, list, lvl)
 			list.push(`${obj.name} = ${agent}`);
 		}
 	} else if ("abst" == node) {
-		const id = obj.var;
+		const id = obj.bound;
 		const body = obj.body;
 		const fv = getfv(body);
 		const wire = mkwire();

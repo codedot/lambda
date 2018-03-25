@@ -24,7 +24,7 @@ function obj2mlc(obj)
 		else
 			sep = ": ";
 
-		return obj.var + sep + obj2mlc(body);
+		return obj.bound + sep + obj2mlc(body);
 	}
 
 	if ("appl" == node) {

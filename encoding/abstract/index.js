@@ -35,7 +35,7 @@ function gamma(obj, root, list)
 			list.push(`${root} = ${name}`);
 		}
 	} else if ("abst" == node) {
-		const id = obj.var;
+		const id = obj.bound;
 		const body = obj.body;
 		const fv = getfv(body);
 		const wire = mkwire();

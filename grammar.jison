@@ -30,8 +30,8 @@ defs : /* empty */ {$$ = [];}
 term : appl
      | abst
      ;
-abst : NAME ',' abst {$$ = {node: "abst", var: $1, body: $3};}
-     | NAME ':' term {$$ = {node: "abst", var: $1, body: $3};}
+abst : NAME ',' abst {$$ = {node: "abst", bound: $1, body: $3};}
+     | NAME ':' term {$$ = {node: "abst", bound: $1, body: $3};}
      ;
 appl :      atom
      | appl atom {$$ = {node: "appl", left: $1, right: $2};}

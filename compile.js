@@ -93,7 +93,7 @@ case 3:
 $$[$0-4].unshift({id: $$[$0-3], def: $$[$0-1]}); this.$ = $$[$0-4];
 break;
 case 6: case 7:
-this.$ = {node: "abst", var: $$[$0-2], body: $$[$0]};
+this.$ = {node: "abst", bound: $$[$0-2], body: $$[$0]};
 break;
 case 9:
 this.$ = {node: "appl", left: $$[$0-1], right: $$[$0]};
