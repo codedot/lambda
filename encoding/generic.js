@@ -13,48 +13,48 @@ function getcap(left, right)
 	left = getfv(left);
 	right = getfv(right);
 
-	for (const prop in left)
-		if (prop in right)
-			cap.add(prop);
+	left.forEach(atom => {
+		if (right.has(atom))
+			cap.add(atom);
+	});
 
 	return cap;
 }
 
 function merge(left, right)
 {
-	const dict = {};
-
-	for (const prop in left)
-		dict[prop] = left[prop];
-
-	for (const prop in right)
-		dict[prop] = right[prop];
-
-	return dict;
+	left = Array.from(left);
+	right = Array.from(right);
+	return new Set(left.concat(right));
 }
 
 function getfv(obj)
 {
 	const node = obj.node;
-	let fv;
 
 	if ("atom" == node) {
-		fv = {};
+		const fv = new Set();
 
 		if (!obj.free)
-			fv[obj.name] = true;
-	} else if ("abst" == node) {
-		fv = getfv(obj.body);
+			fv.add(obj.name);
 
-		delete fv[obj.var];
-	} else if ("appl" == node) {
+		return fv;
+	}
+
+	if ("abst" == node) {
+		const fv = getfv(obj.body);
+
+		fv.delete(obj.var);
+
+		return fv;
+	}
+
+	if ("appl" == node) {
 		const left = getfv(obj.left);
 		const right = getfv(obj.right);
 
-		fv = merge(left, right);
+		return merge(left, right);
 	}
-
-	return fv;
 }
 
 function mkwire()
@@ -166,11 +166,14 @@ function expand(dict)
 		const id = macro.id;
 		const def = macro.def;
 
-		if (!fv[id])
+		if (!fv.has(id))
 			continue;
 
-		delete fv[id];
-		fv = merge(fv, getfv(def));
+		fv.delete(id);
+
+		getfv(def).forEach(atom => {
+			fv.add(atom);
+		});
 
 		term = {
 			node: "appl",
@@ -191,6 +194,6 @@ function expand(dict)
 exports.expand = expand;
 exports.mkwire = mkwire;
 exports.mktwins = mktwins;
-exports.getfv = obj => new Set(Object.keys(getfv(obj)));
+exports.getfv = getfv;
 exports.rename = rename;
 exports.readback = readback;
