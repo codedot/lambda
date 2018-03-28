@@ -42,7 +42,7 @@ The following is output of the `test.sh` script provided in the package:
 
 ```
 SAMPLE          ABSTRACT         CLOSED        OPTIMAL       STANDARD
-counter             27/4           58/6          161/4          121/4
+counter              N/A         289/31        1023/25        1360/25
 w2eta               37/7         137/16          207/7          374/7
 1021              199/55     11871/1088     1599877/55     4307803/55
 22210i            494/68       2539/254       58603/68            N/A

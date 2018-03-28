@@ -1,2 +1,2 @@
-(f, x: x f f) (x: (y: y y) (y: y x))
-# v1: v1 (v2: v2 v2) (v3: v3 v3)
+(f: K f f I) (h: 2 2 (z, t: h (K z z t)))
+# v1: v1
