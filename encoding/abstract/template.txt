@@ -14,13 +14,13 @@
 	++this.total;
 } \lambda[\fanout_{i}(a, c), \fanin_{i}(b, d)];
 
-\fanin_{i}[\fanout_{this.f1(j, i)}(a, b), \fanout_{this.f2(j, i)}(c, d)] {
+\fanin_{i}[\fanout_{this.phi(j, i)}(a, b), \fanout_{j}(c, d)] {
 	/* Duplicate different fans. */
 	if (!this.match(i, j))
 		++this.total;
 	else
 		return false;
-} \fanout_{j}[\fanin_{this.f1(i, j)}(a, c), \fanin_{this.f2(i, j)}(b, d)];
+} \fanout_{j}[\fanin_{this.phi(i, j)}(a, c), \fanin_{i}(b, d)];
 
 \fanin_{i}[a, b] {
 	/* Annihilate matching fans. */
@@ -79,19 +79,12 @@ function decide(i, j)
 	if (map.has(key))
 		return;
 
-	map.set(key, {
-		left: ++nonce,
-		right: ++nonce
-	});
-	map.set(`${j},${i}`, {
-		left: j,
-		right: j
-	});
+	map.set(key, ++nonce);
+	map.set(`${j},${i}`, j);
 }
 
 this.uniq = () => ++nonce;
-this.f1 = (i, j) => map.get(`${i},${j}`).left;
-this.f2 = (i, j) => map.get(`${i},${j}`).right;
+this.phi = (i, j) => map.get(`${i},${j}`);
 this.match = (i, j) => {
 	if (i == j)
 		return true;
