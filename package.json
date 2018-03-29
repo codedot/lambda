@@ -1,6 +1,6 @@
 {
 	"dependencies": {
-		"@alexo/lambda": "0.4.3"
+		"@alexo/lambda": "0.5.0"
 	},
 	"private": true
 }
