@@ -3,6 +3,7 @@ all: compile.js
 	node lambda -e 'eval(1 << 3) f x'
 	node lambda -t 'S hello bye world'
 	node lambda -d 'x: (x: x) v1 x'
+	sh bad.sh
 	sh test.sh
 
 compile.js: grammar.jison
