@@ -1,4 +1,4 @@
-(function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
+(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -658,7 +658,7 @@ if (typeof module !== 'undefined' && require.main === module) {
 
 const path = require("path");
 
-const template = "\\apply[a, b] {\n\t/* Apply beta reduction. */\n\t++this.beta;\n\t++this.total;\n} \\lambda[a, b];\n\n\\apply[\\fanin_{i}(a, b), \\fanout_{i}(c, d)] {\n\t/* Duplicate application. */\n\t++this.total;\n} \\fanout_{i}[\\apply(a, c), \\apply(b, d)];\n\n\\fanin_{i}[\\lambda(a, b), \\lambda(c, d)] {\n\t/* Duplicate abstraction. */\n\t++this.total;\n} \\lambda[\\fanout_{i}(a, c), \\fanin_{i}(b, d)];\n\n\\fanin_{i}[\\fanout_{this.f1(j, i)}(a, b), \\fanout_{this.f2(j, i)}(c, d)] {\n\t/* Duplicate different fans. */\n\tif (!this.match(i, j))\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\fanout_{j}[\\fanin_{this.f1(i, j)}(a, c), \\fanin_{this.f2(i, j)}(b, d)];\n\n\\fanin_{i}[a, b] {\n\t/* Annihilate matching fans. */\n\tif (this.match(i, j))\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\fanout_{j}[a, b];\n\n\\read_{C}[\\fanout_{i}(a, b)] {\n\t/* Duplicate context. */\n\t++this.total;\n} \\fanout_{i}[\\read_{C}(a), \\read_{this.clone(C)}(b)];\n\n\\print {\n\t/* Output results of read-back. */\n\tthis.nf = M;\n\t++this.total;\n} \\atom_{M};\n\n\\read_{C}[a] {\n\t/* Read back abstraction. */\n\t++this.total;\n} \\lambda[\\atom_{this.mkid()}, \\read_{this.abst(C)}(a)];\n\n\\apply[\\read_{this.appl(M)}(a), a] {\n\t/* Read back application. */\n\t++this.total;\n} \\atom_{M};\n\n\\read_{C}[\\atom_{this.atom(C, M)}] {\n\t/* Read back an atom. */\n\t++this.total;\n} \\atom_{M};\n\n\\fanin_{i}[\\atom_{M}, \\atom_{M}] {\n\t/* Duplicate an atom. */\n\t++this.total;\n} \\atom_{M};\n\n$$\n\nINCONFIG\n\n$$\n\nREADBACK\n\nconst map = new Map();\nlet nonce = 0;\n\nfunction decide(i, j)\n{\n\tconst key = `${i},${j}`;\n\n\tif (map.has(key))\n\t\treturn;\n\n\tmap.set(key, {\n\t\tleft: ++nonce,\n\t\tright: ++nonce\n\t});\n\tmap.set(`${j},${i}`, {\n\t\tleft: j,\n\t\tright: j\n\t});\n}\n\nthis.uniq = () => ++nonce;\nthis.f1 = (i, j) => map.get(`${i},${j}`).left;\nthis.f2 = (i, j) => map.get(`${i},${j}`).right;\nthis.match = (i, j) => {\n\tif (i == j)\n\t\treturn true;\n\n\tdecide(i, j);\n\treturn false;\n};\n\nthis.beta = 0;\nthis.total = 0;\n";
+const template = "\\apply[a, b] {\n\t/* Apply beta reduction. */\n\t++this.beta;\n\t++this.total;\n} \\lambda[a, b];\n\n\\apply[\\fanin_{i}(a, b), \\fanout_{i}(c, d)] {\n\t/* Duplicate application. */\n\t++this.total;\n} \\fanout_{i}[\\apply(a, c), \\apply(b, d)];\n\n\\fanin_{i}[\\lambda(a, b), \\lambda(c, d)] {\n\t/* Duplicate abstraction. */\n\t++this.total;\n} \\lambda[\\fanout_{i}(a, c), \\fanin_{i}(b, d)];\n\n\\fanin_{i}[\\fanout_{this.phi(j, i)}(a, b), \\fanout_{j}(c, d)] {\n\t/* Duplicate different fans. */\n\tif (!this.match(i, j))\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\fanout_{j}[\\fanin_{this.phi(i, j)}(a, c), \\fanin_{i}(b, d)];\n\n\\fanin_{i}[a, b] {\n\t/* Annihilate matching fans. */\n\tif (this.match(i, j))\n\t\t++this.total;\n\telse\n\t\treturn false;\n} \\fanout_{j}[a, b];\n\n\\read_{C}[\\fanout_{i}(a, b)] {\n\t/* Duplicate context. */\n\t++this.total;\n} \\fanout_{i}[\\read_{C}(a), \\read_{this.clone(C)}(b)];\n\n\\print {\n\t/* Output results of read-back. */\n\tthis.nf = M;\n\t++this.total;\n} \\atom_{M};\n\n\\read_{C}[a] {\n\t/* Read back abstraction. */\n\t++this.total;\n} \\lambda[\\atom_{this.mkid()}, \\read_{this.abst(C)}(a)];\n\n\\apply[\\read_{this.appl(M)}(a), a] {\n\t/* Read back application. */\n\t++this.total;\n} \\atom_{M};\n\n\\read_{C}[\\atom_{this.atom(C, M)}] {\n\t/* Read back an atom. */\n\t++this.total;\n} \\atom_{M};\n\n\\fanin_{i}[\\atom_{M}, \\atom_{M}] {\n\t/* Duplicate an atom. */\n\t++this.total;\n} \\atom_{M};\n\n$$\n\nINCONFIG\n\n$$\n\nREADBACK\n\nconst map = new Map();\nlet nonce = 0;\n\nfunction decide(i, j)\n{\n\tconst key = `${i},${j}`;\n\n\tif (map.has(key))\n\t\treturn;\n\n\tmap.set(key, ++nonce);\n\tmap.set(`${j},${i}`, j);\n}\n\nthis.uniq = () => ++nonce;\nthis.phi = (i, j) => map.get(`${i},${j}`);\nthis.match = (i, j) => {\n\tif (i == j)\n\t\treturn true;\n\n\tdecide(i, j);\n\treturn false;\n};\n\nthis.beta = 0;\nthis.total = 0;\n";
 
 let mkwire, mktwins, getfv;
 
@@ -1387,7 +1387,8 @@ module.exports = run;
 },{"./compile":2,"./encoding":6,"inet-lib":13}],10:[function(require,module,exports){
 
 },{}],11:[function(require,module,exports){
-/* parser generated by jison 0.4.15 */
+(function (process){
+/* parser generated by jison 0.4.18 */
 /*
   Returns a Parser object of the following structure:
 
@@ -1460,7 +1461,7 @@ module.exports = run;
     recoverable: (boolean: TRUE when the parser has a error recovery rule available for this particular error)
   }
 */
-var parser = (function(){
+var compile = (function(){
 var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[5,23,24],$V1=[1,7],$V2=[1,8],$V3=[1,5,20,23,24],$V4=[9,10],$V5=[1,18],$V6=[9,10,12,14,17,18,19,25],$V7=[10,14,18,19,25],$V8=[1,28],$V9=[14,18,19];
 var parser = {trace: function trace() { },
 yy: {},
@@ -1525,7 +1526,9 @@ parseError: function parseError(str, hash) {
     if (hash.recoverable) {
         this.trace(str);
     } else {
-        throw new Error(str);
+        var error = new Error(str);
+        error.hash = hash;
+        throw error;
     }
 },
 parse: function parse(input) {
@@ -1558,14 +1561,14 @@ parse: function parse(input) {
         lstack.length = lstack.length - n;
     }
     _token_stack:
-        function lex() {
+        var lex = function () {
             var token;
             token = lexer.lex() || EOF;
             if (typeof token !== 'number') {
                 token = self.symbols_[token] || token;
             }
             return token;
-        }
+        };
     var symbol, preErrorSymbol, state, action, a, r, yyval = {}, p, len, newState, expected;
     while (true) {
         state = stack[stack.length - 1];
@@ -2039,9 +2042,26 @@ function Parser () {
 Parser.prototype = parser;parser.Parser = Parser;
 return new Parser;
 })();
-module.exports = parser;
 
-},{}],12:[function(require,module,exports){
+
+if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
+exports.parser = compile;
+exports.Parser = compile.Parser;
+exports.parse = function () { return compile.parse.apply(compile, arguments); };
+exports.main = function commonjsMain(args) {
+    if (!args[1]) {
+        console.log('Usage: '+args[0]+' FILE');
+        process.exit(1);
+    }
+    var source = require('fs').readFileSync(require('path').normalize(args[1]), "utf8");
+    return exports.parser.parse(source);
+};
+if (typeof module !== 'undefined' && require.main === module) {
+  exports.main(process.argv.slice(1));
+}
+}
+}).call(this,require('_process'))
+},{"_process":17,"fs":10,"path":16}],12:[function(require,module,exports){
 "use strict";
 
 const ambtype = 1;
