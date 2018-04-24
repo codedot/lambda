@@ -56,17 +56,16 @@ function gamma(obj, root, list)
 		const wire = mkwire();
 		const agent = fv.has(id) ? id : "\\erase";
 		const tree = `\\lambda(${agent}, ${wire})`;
-		const map = new Map();
 
 		fv.delete(id);
 
-		fv.forEach(atom => {
+		fv.forEach((proper, atom, map) => {
 			map.set(atom, mkwire());
 		});
 
-		rename(body, map);
+		rename(body, fv);
 
-		rho(map, root, tree, list);
+		rho(fv, root, tree, list);
 
 		gamma(body, wire, list);
 	} else if ("appl" == node) {

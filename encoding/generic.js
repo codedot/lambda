@@ -8,14 +8,14 @@ let lastwire;
 
 function getcap(left, right)
 {
-	const cap = new Set();
+	const cap = new Map();
 
 	left = getfv(left);
 	right = getfv(right);
 
-	left.forEach(atom => {
+	left.forEach((proper, atom) => {
 		if (right.has(atom))
-			cap.add(atom);
+			cap.set(atom, proper);
 	});
 
 	return cap;
@@ -25,7 +25,7 @@ function merge(left, right)
 {
 	left = Array.from(left);
 	right = Array.from(right);
-	return new Set(left.concat(right));
+	return new Map(left.concat(right));
 }
 
 function getfv(obj)
@@ -33,10 +33,10 @@ function getfv(obj)
 	const node = obj.node;
 
 	if ("atom" == node) {
-		const fv = new Set();
+		const fv = new Map();
 
 		if (!obj.free)
-			fv.add(obj.name);
+			fv.set(obj.name, obj.proper);
 
 		return fv;
 	}
@@ -88,13 +88,14 @@ function mktwins(left, right)
 	const rmap = new Map();
 	const smap = new Map();
 
-	getcap(left, right).forEach(atom => {
+	getcap(left, right).forEach((proper, atom) => {
 		const wleft = mkwire();
 		const wright = mkwire();
 
 		lmap.set(atom, wleft);
 		rmap.set(atom, wright);
 		smap.set(atom, {
+			proper: proper,
 			left: wleft,
 			right: wright
 		});
@@ -117,7 +118,10 @@ function alpha(obj, bv, lvl)
 		const id = bv.get(name);
 
 		if (id) {
-			aobj.name = id.name;
+			const proper = id.name;
+
+			aobj.name = proper;
+			aobj.proper = proper;
 			aobj.index = lvl - id.lvl;
 		} else {
 			aobj.name = name;
@@ -161,8 +165,8 @@ function expand(dict)
 
 		fv.delete(id);
 
-		getfv(def).forEach(atom => {
-			fv.add(atom);
+		getfv(def).forEach((proper, atom) => {
+			fv.set(atom, proper);
 		});
 
 		acc.term = {

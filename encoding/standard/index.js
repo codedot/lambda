@@ -63,20 +63,19 @@ function gamma(obj, root, list, lvl)
 		const agent = `\\app_{${lvl}}`;
 		const tree = `${agent}(${wright}, ${root})`;
 		const fv = getfv(right);
-		const map = new Map();
 
-		fv.forEach(atom => {
+		fv.forEach((proper, atom, map) => {
 			map.set(atom, mkwire());
 		});
 
-		rename(right, map);
+		rename(right, fv);
 
 		list.push(`${wleft} = ${tree}`);
 
 		gamma(left, wleft, list, lvl);
 		gamma(right, wright, list, lvl + 1);
 
-		box(map, list, lvl);
+		box(fv, list, lvl);
 		psi(shared, list, lvl);
 	}
 }
