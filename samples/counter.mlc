@@ -1,2 +1,2 @@
-2 (f, x: 2 f (h, u: x (K h h u))) 2 I I
+(f: f (f (x: x))) (i: (f: f (x: x) (f (x: x))) (x: (h, u: h (h u)) (y: x (i y))))
 # v1: v1
