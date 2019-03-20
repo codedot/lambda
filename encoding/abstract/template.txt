@@ -1,23 +1,22 @@
 \apply[a, b] {
 	/* Apply beta reduction. */
-	++this.beta;
-	++this.total;
+	this.debug.b();
 } \lambda[a, b];
 
 \apply[\fanin_{i}(a, b), \fanout_{i}(c, d)] {
 	/* Duplicate application. */
-	++this.total;
+	this.debug.o();
 } \fanout_{i}[\apply(a, c), \apply(b, d)];
 
 \fanin_{i}[\lambda(a, b), \lambda(c, d)] {
 	/* Duplicate abstraction. */
-	++this.total;
+	this.debug.o();
 } \lambda[\fanout_{i}(a, c), \fanin_{i}(b, d)];
 
 \fanin_{i}[\fanout_{this.phi(j, i)}(a, b), \fanout_{j}(c, d)] {
 	/* Duplicate different fans. */
 	if (!this.match(i, j))
-		++this.total;
+		this.debug.d();
 	else
 		return false;
 } \fanout_{j}[\fanin_{this.phi(i, j)}(a, c), \fanin_{i}(b, d)];
@@ -25,40 +24,40 @@
 \fanin_{i}[a, b] {
 	/* Annihilate matching fans. */
 	if (this.match(i, j))
-		++this.total;
+		this.debug.a();
 	else
 		return false;
 } \fanout_{j}[a, b];
 
 \read_{C}[\fanout_{i}(a, b)] {
 	/* Duplicate context. */
-	++this.total;
+	this.debug.o();
 } \fanout_{i}[\read_{C}(a), \read_{this.clone(C)}(b)];
 
 \print {
 	/* Output results of read-back. */
 	this.nf = M;
-	++this.total;
+	this.debug.o();
 } \atom_{M};
 
 \read_{C}[a] {
 	/* Read back abstraction. */
-	++this.total;
+	this.debug.o();
 } \lambda[\atom_{this.mkid()}, \read_{this.abst(C)}(a)];
 
 \apply[\read_{this.appl(M)}(a), a] {
 	/* Read back application. */
-	++this.total;
+	this.debug.o();
 } \atom_{M};
 
 \read_{C}[\atom_{this.atom(C, M)}] {
 	/* Read back an atom. */
-	++this.total;
+	this.debug.o();
 } \atom_{M};
 
 \fanin_{i}[\atom_{M}, \atom_{M}] {
 	/* Duplicate an atom. */
-	++this.total;
+	this.debug.o();
 } \atom_{M};
 
 $$
@@ -92,6 +91,3 @@ this.match = (i, j) => {
 	decide(i, j);
 	return false;
 };
-
-this.beta = 0;
-this.total = 0;

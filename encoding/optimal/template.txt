@@ -1,7 +1,7 @@
 \fan_{i}[\scope_{j}(a), \scope_{j}(b)] {
 	/* Duplicate higher delimiter. */
 	if (i < j)
-		++this.total;
+		this.debug.o();
 	else
 		return false;
 } \scope_{j}[\fan_{i}(a, b)];
@@ -9,7 +9,7 @@
 \scope_{i}[\fan_{j + 1}(a, b)] {
 	/* Level up higher or matching fan. */
 	if (i <= j)
-		++this.total;
+		this.debug.o();
 	else
 		return false;
 } \fan_{j}[\scope_{i}(a), \scope_{i}(b)];
@@ -17,95 +17,94 @@
 \scope_{i}[\scope_{j + 1}(a)] {
 	/* Level up higher delimiter. */
 	if (i < j)
-		++this.total;
+		this.debug.o();
 	else
 		return false;
 } \scope_{j}[\scope_{i}(a)];
 
 \print {
 	/* Ignore delimiter. */
-	++this.total;
+	this.debug.o();
 } \scope_{i}[!print];
 
 \read_{C}[\scope_{i}(a)] {
 	/* Pass through context. */
-	++this.total;
+	this.debug.o();
 } \scope_{i}[\read_{C}(a)];
 
 \scope_{i}[a] {
 	/* Annihilate matching delimiters. */
 	if (i == j)
-		++this.total;
+		this.debug.o();
 	else
 		return false;
 } \scope_{j}[a];
 
 \scope_{i}[\apply(a, b)] {
 	/* Pass through application. */
-	++this.total;
+	this.debug.o();
 } \apply[\scope_{i}(a), \scope_{i}(b)];
 
 \scope_{i}[\lambda(a, b)] {
 	/* Level up delimiter. */
-	++this.total;
+	this.debug.o();
 } \lambda[\scope_{i + 1}(a), \scope_{i + 1}(b)];
 
 \scope_{i}[\atom_{M}] {
 	/* Return an atom. */
-	++this.total;
+	this.debug.o();
 } \atom_{M};
 
 \read_{C}[\fan_{i}(a, b)] {
 	/* Duplicate context. */
-	++this.total;
+	this.debug.o();
 } \fan_{i}[\read_{C}(a), \read_{this.clone(C)}(b)];
 
 \print {
 	/* Output results of read-back. */
 	this.nf = M;
-	++this.total;
+	this.debug.o();
 } \atom_{M};
 
 \read_{C}[\scope_{0}(a)] {
 	/* Read back abstraction. */
-	++this.total;
+	this.debug.o();
 } \lambda[\atom_{this.mkid()}, \read_{this.abst(C)}(a)];
 
 \apply[\read_{this.appl(M)}(a), a] {
 	/* Read back application. */
-	++this.total;
+	this.debug.o();
 } \atom_{M};
 
 \read_{C}[\atom_{this.atom(C, M)}] {
 	/* Read back an atom. */
-	++this.total;
+	this.debug.o();
 } \atom_{M};
 
 \fan_{i}[\atom_{M}, \atom_{M}] {
 	/* Duplicate an atom. */
-	++this.total;
+	this.debug.o();
 } \atom_{M};
 
 \apply[\scope_{0}(a), \scope_{0}(b)] {
 	/* Apply beta reduction. */
-	++this.beta;
-	++this.total;
+	this.debug.b();
 } \lambda[a, b];
 
 \fan_{i}[\apply(a, b), \apply(c, d)] {
 	/* Duplicate application. */
-	++this.total;
+	this.debug.o();
 } \apply[\fan_{i}(a, c), \fan_{i}(b, d)];
 
 \fan_{i}[\lambda(a, b), \lambda(c, d)] {
 	/* Level up fan. */
-	++this.total;
+	this.debug.o();
 } \lambda[\fan_{i + 1}(a, c), \fan_{i + 1}(b, d)];
 
 \fan_{i}[a, b] {
 	/* Annihilate matching fans. */
 	if (i == j)
-		++this.total;
+		this.debug.a();
 	else
 		return false;
 } \fan_{j}[a, b];
@@ -113,7 +112,7 @@
 \fan_{i}[\fan_{j}(a, b), \fan_{j}(c, d)] {
 	/* Duplicate higher fan. */
 	if (i < j)
-		++this.total;
+		this.debug.d();
 	else
 		return false;
 } \fan_{j}[\fan_{i}(a, c), \fan_{i}(b, d)];
@@ -125,6 +124,3 @@ INCONFIG
 $$
 
 READBACK
-
-this.beta = 0;
-this.total = 0;

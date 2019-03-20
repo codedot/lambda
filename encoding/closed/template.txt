@@ -1,178 +1,177 @@
 \read_{C}[a] {
 	/* Unshare variable. */
-	++this.total;
+	this.debug.o();
 } \share[\copy(b, \read_{C}(a)), b];
 
 \copy[a, b] {
 	/* Unshare variable. */
-	++this.total;
+	this.debug.o();
 } \share[\copy(c, \copy(a, b)), c];
 
 \copy[a, b] {
 	/* Initiate application. */
-	++this.total;
+	this.debug.o();
 } \outapp[\apply(c, \copy(a, b)), c];
 
 \dup[a, b] {
 	/* Unshare variable. */
-	++this.total;
+	this.debug.o();
 } \share[\copy(c, \dup(a, b)), c];
 
 \dup[a, b] {
 	/* Initiate application. */
-	++this.total;
+	this.debug.o();
 } \outapp[\apply(c, \dup(a, b)), c];
 
 \apply[a, b] {
 	/* Unshare variable. */
-	++this.total;
+	this.debug.o();
 } \share[\copy(c, \apply(a, b)), c];
 
 \apply[a, b] {
 	/* Initiate application. */
-	++this.total;
+	this.debug.o();
 } \outapp[\apply(c, \apply(a, b)), c];
 
 \bind[a, \outapp(b, c), d] {
 	/* Inject application. */
-	++this.total;
+	this.debug.o();
 } \outapp[\bind(e, b, d), \bind(a, c, e)];
 
 \erase {
 	/* Erase sharing. */
-	++this.total;
+	this.debug.o();
 } \share[a, a];
 
 \erase {
 	/* Erase application. */
-	++this.total;
+	this.debug.o();
 } \outapp[\erase, \erase];
 
 \bind[a, \amb(b, \share(c, d), d), e] {
 	/* Inject sharing. */
-	++this.total;
+	this.debug.o();
 } \share[\bind(a, c, e), b];
 
 \read_{C}[a] {
 	/* Initiate application. */
-	++this.total;
+	this.debug.o();
 } \outapp[\apply(b, \read_{C}(a)), b];
 
 \print {
 	/* Output results of read-back. */
 	this.nf = M;
-	++this.total;
+	this.debug.o();
 } \atom_{M};
 
 \bind[a, \erase, a] {
 	/* Erase FV. */
-	++this.total;
+	this.debug.o();
 } \erase;
 
 \bind[a, \atom_{M}, a] {
 	/* Bind an atom. */
-	++this.total;
+	this.debug.o();
 } \atom_{M};
 
 \bind[a, \lambda(b, c), a] {
 	/* Bind a closed abstraction. */
-	++this.total;
+	this.debug.o();
 } \lambda[b, c];
 
 \bind[\dup(a, b), \dup(c, d), \dup(e, f)] {
 	/* Duplicate FV. */
-	++this.total;
+	this.debug.o();
 } \dup[\bind(a, c, e), \bind(b, d, f)];
 
 \read_{C}[\dup(a, b)] {
 	/* Duplicate context. */
-	++this.total;
+	this.debug.o();
 } \dup[\read_{C}(a), \read_{this.clone(C)}(b)];
 
 \dup[a, b] {
 	/* Duplicate sharing. */
-	++this.total;
+	this.debug.o();
 } \copy[\dup(\amb(c, \share(a, d), d), \amb(e, \share(b, f), f)), \dup(c, e)];
 
 \read_{C}[a] {
 	/* Read back abstraction. */
-	++this.total;
+	this.debug.o();
 } \lambda[\atom_{this.mkid()}, \read_{this.abst(C)}(a)];
 
 \apply[\read_{this.appl(M)}(a), a] {
 	/* Read back application. */
-	++this.total;
+	this.debug.o();
 } \atom_{M};
 
 \read_{C}[\atom_{this.atom(C, M)}] {
 	/* Read back an atom. */
-	++this.total;
+	this.debug.o();
 } \atom_{M};
 
 \copy[\atom_{M}, \atom_{M}] {
 	/* Copy an atom. */
-	++this.total;
+	this.debug.o();
 } \atom_{M};
 
 \dup[\atom_{M}, \atom_{M}] {
 	/* Duplicate an atom. */
-	++this.total;
+	this.debug.o();
 } \atom_{M};
 
 \apply[a, b] {
 	/* Apply a closed term. */
-	++this.beta;
-	++this.total;
+	this.debug.b();
 } \lambda[a, b];
 
 \copy[\lambda(a, b), \lambda(c, d)] {
 	/* Initiate copy of a closed term. */
-	++this.total;
+	this.debug.o();
 } \lambda[\dup(a, c), \dup(b, d)];
 
 \apply[\dup(a, b), \dup(\outapp(c, a), \outapp(d, b))] {
 	/* Duplicate application. */
-	++this.total;
+	this.debug.o();
 } \dup[c, d];
 
 \dup[\lambda(a, b), \lambda(c, d)] {
 	/* Duplicate abstraction. */
-	++this.total;
+	this.debug.o();
 } \lambda[\dup(a, c), \dup(b, d)];
 
 \dup[a, b] {
 	/* Finish duplication. */
-	++this.total;
+	this.debug.o();
 } \dup[a, b];
 
 \erase {
 	/* Erase an atom. */
-	++this.total;
+	this.debug.o();
 } \atom_{M};
 
 \erase {
 	/* Erase application. */
-	++this.total;
+	this.debug.o();
 } \apply[\erase, \erase];
 
 \erase {
 	/* Erase abstraction. */
-	++this.total;
+	this.debug.o();
 } \lambda[\erase, \erase];
 
 \erase {
 	/* Erase copy initiator. */
-	++this.total;
+	this.debug.o();
 } \copy[\erase, \erase];
 
 \erase {
 	/* Erase duplicator. */
-	++this.total;
+	this.debug.o();
 } \dup[\erase, \erase];
 
 \erase {
 	/* Finish erasing. */
-	++this.total;
+	this.debug.o();
 } \erase;
 
 $$
@@ -182,6 +181,3 @@ INCONFIG
 $$
 
 READBACK
-
-this.beta = 0;
-this.total = 0;

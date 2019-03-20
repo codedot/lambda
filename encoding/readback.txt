@@ -192,3 +192,35 @@ this.mkhole = mkhole;
 this.abst = abst;
 this.appl = appl;
 this.atom = atom;
+
+function noop()
+{
+}
+
+this.beta = 0;
+this.total = 0;
+this.cb = Object.assign({
+	a: noop,
+	b: noop,
+	d: noop,
+	o: noop
+}, this.cb);
+this.debug = {
+	a: () => {
+		++this.total;
+		this.cb.a();
+	},
+	b: () => {
+		++this.beta;
+		++this.total;
+		this.cb.b();
+	},
+	d: () => {
+		++this.total;
+		this.cb.d();
+	},
+	o: () => {
+		++this.total;
+		this.cb.o();
+	}
+};

@@ -46,7 +46,7 @@ function obj2mlc(obj)
 	return "[ ]";
 }
 
-function mlc2in(mlc, algo)
+function mlc2in(mlc, algo, cb)
 {
 	const encode = encoding.get(algo ? algo : defalgo);
 	let insrc;
@@ -57,7 +57,9 @@ function mlc2in(mlc, algo)
 	mlc = parser.parse(mlc);
 	insrc = encode(mlc);
 	expanded = mlc.expanded;
-	inet.inenv = {};
+	inet.inenv = {
+		cb: cb
+	};
 
 	return insrc;
 }
@@ -96,9 +98,9 @@ function debug1()
 	return inet.debug1();
 }
 
-function run(mlc, algo, max)
+function run(mlc, algo, max, cb)
 {
-	const src = mlc2in(mlc, algo);
+	const src = mlc2in(mlc, algo, cb);
 	const output = inet(src, max);
 
 	output.term = obj2mlc(expanded);
